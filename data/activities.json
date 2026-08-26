@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "types": [
+    {
+      "id": "jumpingOx",
+      "name": "Jumping OX",
+      "description": "Classroom Jumping OX: unit cards, runner jumps O or X, reveal, Mistake Spotted, teacher config.",
+      "template": "templates/jumpingOx.template.html",
+      "contentSchema": "unitQuestions",
+      "cefrAgnostic": true
+    },
+    {
+      "id": "jeopardy",
+      "name": "Jeopardy",
+      "description": "Classroom canvas Jeopardy board. Categories are book units. Clues are short definitions.",
+      "template": "templates/jeopardy.template.html",
+      "contentSchema": "unitClues",
+      "cefrAgnostic": true
+    },
+    {
+      "id": "vocabulary",
+      "name": "Vocabulary",
+      "description": "Classroom timer and flip-card vocab game with team scores.",
+      "template": "templates/vocabulary.template.html",
+      "contentSchema": "vocabByUnit",
+      "cefrAgnostic": true
+    },
+    {
+      "id": "teamMatch",
+      "name": "Team Match",
+      "description": "Memory match of English and Korean.",
+      "template": "templates/teamMatch.template.html",
+      "contentSchema": "matchPairs",
+      "cefrAgnostic": true
+    },
+    {
+      "id": "charades",
+      "name": "Charades",
+      "description": "Act out unit vocabulary.",
+      "template": "templates/charades.template.html",
+      "contentSchema": "vocabByUnit",
+      "cefrAgnostic": true
+    },
+    {
+      "id": "quizQuizTrade",
+      "name": "Quiz-Quiz-Trade",
+      "description": "Print fold cards: question on front, answer on back. Also for Mix-Pair-Share.",
+      "template": "templates/quizQuizTrade.template.html",
+      "contentSchema": "vocabByUnit",
+      "cefrAgnostic": true
+    },
+    {
+      "id": "fanNPick",
+      "name": "Fan-N-Pick",
+      "description": "Numbered Q/A cards with 4 student roles (Fan, Pick, Answer, Coach).",
+      "template": "templates/fanNPick.template.html",
+      "contentSchema": "vocabByUnit",
+      "cefrAgnostic": true
+    },
+    {
+      "id": "findSomeoneWho",
+      "name": "Find Someone Who",
+      "description": "Printable grid worksheet — find a classmate who can answer each cell.",
+      "template": "templates/findSomeoneWho.template.html",
+      "contentSchema": "vocabByUnit",
+      "cefrAgnostic": true
+    },
+    {
+      "id": "showdown",
+      "name": "Showdown",
+      "description": "Team question cards — everyone writes, captain says Showdown, compare.",
+      "template": "templates/showdown.template.html",
+      "contentSchema": "vocabByUnit",
+      "cefrAgnostic": true
+    },
+    {
+      "id": "rallyCoach",
+      "name": "RallyCoach",
+      "description": "Pair cards — one partner solves, the other coaches, then switch.",
+      "template": "templates/rallyCoach.template.html",
+      "contentSchema": "vocabByUnit",
+      "cefrAgnostic": true
+    }
+  ]
+}

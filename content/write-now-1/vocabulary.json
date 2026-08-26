@@ -1,0 +1,528 @@
+{
+  "bookId": "write-now-1",
+  "activityId": "vocabulary",
+  "cefr": "A1",
+  "title": "Write Now 1 Vocabulary",
+  "vocabByUnit": {
+    "1": {
+      "name": "Unit 1: My Family and I",
+      "words": [
+        {
+          "en": "tall",
+          "ko": "키가 큰"
+        },
+        {
+          "en": "short",
+          "ko": "키가 작은"
+        },
+        {
+          "en": "chubby",
+          "ko": "통통한"
+        },
+        {
+          "en": "thin",
+          "ko": "마른"
+        },
+        {
+          "en": "straight",
+          "ko": "곧은 (머리)"
+        },
+        {
+          "en": "curly",
+          "ko": "곱슬곱슬한 (머리)"
+        },
+        {
+          "en": "healthy",
+          "ko": "건강한"
+        },
+        {
+          "en": "skinny",
+          "ko": "날씬한"
+        },
+        {
+          "en": "strong",
+          "ko": "힘이 센"
+        },
+        {
+          "en": "weak",
+          "ko": "약한"
+        },
+        {
+          "en": "grandpa",
+          "ko": "할아버지"
+        },
+        {
+          "en": "grandma",
+          "ko": "할머니"
+        },
+        {
+          "en": "uncle",
+          "ko": "삼촌"
+        },
+        {
+          "en": "aunt",
+          "ko": "이모, 고모"
+        },
+        {
+          "en": "kind",
+          "ko": "친절한"
+        }
+      ]
+    },
+    "2": {
+      "name": "Unit 2: My Friend Daisy",
+      "words": [
+        {
+          "en": "funny",
+          "ko": "재미있는"
+        },
+        {
+          "en": "smart",
+          "ko": "똑똑한"
+        },
+        {
+          "en": "brave",
+          "ko": "용감한"
+        },
+        {
+          "en": "kind",
+          "ko": "친절한"
+        },
+        {
+          "en": "shy",
+          "ko": "수줍은"
+        },
+        {
+          "en": "quiet",
+          "ko": "조용한"
+        },
+        {
+          "en": "curious",
+          "ko": "호기심 많은"
+        },
+        {
+          "en": "friendly",
+          "ko": "친근한"
+        },
+        {
+          "en": "talkative",
+          "ko": "말이 많은"
+        },
+        {
+          "en": "playful",
+          "ko": "장난기 많은"
+        },
+        {
+          "en": "read books",
+          "ko": "책을 읽다"
+        },
+        {
+          "en": "watch birds",
+          "ko": "새를 관찰하다"
+        },
+        {
+          "en": "play baseball",
+          "ko": "야구를 하다"
+        },
+        {
+          "en": "climb trees",
+          "ko": "나무를 오르다"
+        },
+        {
+          "en": "help people",
+          "ko": "사람들을 돕다"
+        }
+      ]
+    },
+    "3": {
+      "name": "Unit 3: School Market Day",
+      "words": [
+        {
+          "en": "umbrella",
+          "ko": "우산"
+        },
+        {
+          "en": "sneakers",
+          "ko": "운동화"
+        },
+        {
+          "en": "teddy bear",
+          "ko": "곰인형"
+        },
+        {
+          "en": "marble",
+          "ko": "구슬"
+        },
+        {
+          "en": "soccer ball",
+          "ko": "축구공"
+        },
+        {
+          "en": "hairband",
+          "ko": "머리띠"
+        },
+        {
+          "en": "skateboard",
+          "ko": "스케이트보드"
+        },
+        {
+          "en": "flowerpot",
+          "ko": "화분"
+        },
+        {
+          "en": "baseball glove",
+          "ko": "야구 글러브"
+        },
+        {
+          "en": "basketball",
+          "ko": "농구공"
+        },
+        {
+          "en": "crayons",
+          "ko": "크레용"
+        },
+        {
+          "en": "ruler",
+          "ko": "자"
+        },
+        {
+          "en": "necklace",
+          "ko": "목걸이"
+        },
+        {
+          "en": "toy car",
+          "ko": "장난감 자동차"
+        },
+        {
+          "en": "doll",
+          "ko": "인형"
+        }
+      ]
+    },
+    "4": {
+      "name": "Unit 4: What a Messy Room!",
+      "words": [
+        {
+          "en": "bed",
+          "ko": "침대"
+        },
+        {
+          "en": "chair",
+          "ko": "의자"
+        },
+        {
+          "en": "dresser",
+          "ko": "서랍장"
+        },
+        {
+          "en": "curtain",
+          "ko": "커튼"
+        },
+        {
+          "en": "rug",
+          "ko": "양탄자"
+        },
+        {
+          "en": "wardrobe",
+          "ko": "옷장"
+        },
+        {
+          "en": "clock",
+          "ko": "시계"
+        },
+        {
+          "en": "pillow",
+          "ko": "베개"
+        },
+        {
+          "en": "blanket",
+          "ko": "담요"
+        },
+        {
+          "en": "baseball bat",
+          "ko": "야구 방망이"
+        },
+        {
+          "en": "table",
+          "ko": "탁자"
+        },
+        {
+          "en": "basket",
+          "ko": "바구니"
+        },
+        {
+          "en": "bookcase",
+          "ko": "책장"
+        },
+        {
+          "en": "sofa",
+          "ko": "소파"
+        },
+        {
+          "en": "lamp",
+          "ko": "램프"
+        }
+      ]
+    },
+    "5": {
+      "name": "Unit 5: My Favorite Thing",
+      "words": [
+        {
+          "en": "basket",
+          "ko": "바구니"
+        },
+        {
+          "en": "robot",
+          "ko": "로봇"
+        },
+        {
+          "en": "bike",
+          "ko": "자전거"
+        },
+        {
+          "en": "wheel",
+          "ko": "바퀴"
+        },
+        {
+          "en": "toy truck",
+          "ko": "장난감 트럭"
+        },
+        {
+          "en": "seat",
+          "ko": "좌석"
+        },
+        {
+          "en": "backpack",
+          "ko": "배낭"
+        },
+        {
+          "en": "door",
+          "ko": "문"
+        },
+        {
+          "en": "headlight",
+          "ko": "헤드라이트"
+        },
+        {
+          "en": "ribbon",
+          "ko": "리본"
+        },
+        {
+          "en": "hat",
+          "ko": "모자"
+        },
+        {
+          "en": "soft fur",
+          "ko": "부드러운 털"
+        },
+        {
+          "en": "handle",
+          "ko": "손잡이"
+        },
+        {
+          "en": "pocket",
+          "ko": "주머니"
+        },
+        {
+          "en": "strap",
+          "ko": "끈"
+        }
+      ]
+    },
+    "6": {
+      "name": "Unit 6: Welcome to My Town!",
+      "words": [
+        {
+          "en": "library",
+          "ko": "도서관"
+        },
+        {
+          "en": "playground",
+          "ko": "놀이터"
+        },
+        {
+          "en": "supermarket",
+          "ko": "슈퍼마켓"
+        },
+        {
+          "en": "toy store",
+          "ko": "장난감 가게"
+        },
+        {
+          "en": "fire station",
+          "ko": "소방서"
+        },
+        {
+          "en": "restaurant",
+          "ko": "식당"
+        },
+        {
+          "en": "museum",
+          "ko": "박물관"
+        },
+        {
+          "en": "zoo",
+          "ko": "동물원"
+        },
+        {
+          "en": "bakery",
+          "ko": "빵집"
+        },
+        {
+          "en": "bookstore",
+          "ko": "서점"
+        },
+        {
+          "en": "pet shop",
+          "ko": "애완동물 가게"
+        },
+        {
+          "en": "park",
+          "ko": "공원"
+        },
+        {
+          "en": "hospital",
+          "ko": "병원"
+        },
+        {
+          "en": "bank",
+          "ko": "은행"
+        },
+        {
+          "en": "post office",
+          "ko": "우체국"
+        }
+      ]
+    },
+    "7": {
+      "name": "Unit 7: Different but Together",
+      "words": [
+        {
+          "en": "paint pictures",
+          "ko": "그림을 그리다"
+        },
+        {
+          "en": "play with blocks",
+          "ko": "블록놀이를 하다"
+        },
+        {
+          "en": "grow plants",
+          "ko": "식물을 기르다"
+        },
+        {
+          "en": "ride a bike",
+          "ko": "자전거를 타다"
+        },
+        {
+          "en": "watch TV",
+          "ko": "TV를 보다"
+        },
+        {
+          "en": "eat ice cream",
+          "ko": "아이스크림을 먹다"
+        },
+        {
+          "en": "play video games",
+          "ko": "비디오 게임을 하다"
+        },
+        {
+          "en": "watch movies",
+          "ko": "영화를 보다"
+        },
+        {
+          "en": "play tennis",
+          "ko": "테니스를 치다"
+        },
+        {
+          "en": "fly kites",
+          "ko": "연을 날리다"
+        },
+        {
+          "en": "listen to music",
+          "ko": "음악을 듣다"
+        },
+        {
+          "en": "play the piano",
+          "ko": "피아노를 치다"
+        },
+        {
+          "en": "swim",
+          "ko": "수영하다"
+        },
+        {
+          "en": "catch bugs",
+          "ko": "벌레를 잡다"
+        },
+        {
+          "en": "sing songs",
+          "ko": "노래를 부르다"
+        }
+      ]
+    },
+    "8": {
+      "name": "Unit 8: My Busy Day",
+      "words": [
+        {
+          "en": "get up",
+          "ko": "일어나다"
+        },
+        {
+          "en": "feed my dog",
+          "ko": "개에게 먹이를 주다"
+        },
+        {
+          "en": "eat dinner",
+          "ko": "저녁을 먹다"
+        },
+        {
+          "en": "study math",
+          "ko": "수학을 공부하다"
+        },
+        {
+          "en": "have violin lessons",
+          "ko": "바이올린 수업을 받다"
+        },
+        {
+          "en": "jog with my dad",
+          "ko": "아빠와 조깅하다"
+        },
+        {
+          "en": "take a shower",
+          "ko": "샤워하다"
+        },
+        {
+          "en": "brush teeth",
+          "ko": "이를 닦다"
+        },
+        {
+          "en": "get dressed",
+          "ko": "옷을 입다"
+        },
+        {
+          "en": "comb hair",
+          "ko": "머리를 빗다"
+        },
+        {
+          "en": "exercise",
+          "ko": "운동하다"
+        },
+        {
+          "en": "wash face",
+          "ko": "세수하다"
+        },
+        {
+          "en": "water plants",
+          "ko": "식물에 물을 주다"
+        },
+        {
+          "en": "do homework",
+          "ko": "숙제를 하다"
+        },
+        {
+          "en": "go to school",
+          "ko": "학교에 가다"
+        }
+      ]
+    }
+  }
+}

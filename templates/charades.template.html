@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>__TITLE__</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap");
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      font-family: Nunito, "Segoe UI", "Malgun Gothic", sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+    .shell {
+      width: 100%;
+      max-width: 56rem;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18);
+      padding: 1.75rem;
+      text-align: center;
+      position: relative;
+    }
+    .hidden { display: none !important; }
+    .header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      margin-bottom: .35rem;
+    }
+    #game-title {
+      font-size: clamp(1.6rem, 4vw, 2.25rem);
+      font-weight: 900;
+      color: #4338ca;
+      text-align: center;
+      width: 100%;
+      background: transparent;
+      border: 0;
+      border-radius: .5rem;
+      padding: .5rem;
+    }
+    #game-title:focus { outline: none; }
+    #view-words-btn {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #e2e8f0;
+      color: #334155;
+      border: 0;
+      border-radius: 999px;
+      padding: .45rem;
+      cursor: pointer;
+    }
+    #view-words-btn:hover { background: #cbd5e1; }
+    .sub { color: #64748b; margin: 0 0 1.4rem; }
+    .scoreboard {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: .5rem;
+    }
+    .scoreboard.cols-1 { grid-template-columns: 1fr; }
+    .scoreboard.cols-2 { grid-template-columns: 1fr 1fr; }
+    .scoreboard.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .scoreboard.cols-4 { grid-template-columns: repeat(2, 1fr); }
+    .scoreboard.cols-5,
+    .scoreboard.cols-6 { grid-template-columns: repeat(2, 1fr); }
+    @media (min-width: 768px) {
+      .scoreboard.cols-4 { grid-template-columns: repeat(4, 1fr); }
+      .scoreboard.cols-5 { grid-template-columns: repeat(3, 1fr); }
+      .scoreboard.cols-6 { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 1024px) {
+      .scoreboard.cols-5 { grid-template-columns: repeat(5, 1fr); }
+    }
+    .team-card {
+      padding: 1rem;
+      border-radius: .75rem;
+    }
+    .team-name-input {
+      font-weight: 800;
+      background: transparent;
+      width: 100%;
+      text-align: center;
+      margin-bottom: .5rem;
+      padding: .25rem;
+      border: 0;
+      border-radius: .4rem;
+      font-family: inherit;
+      font-size: 1.2rem;
+    }
+    .team-name-input:focus { outline: 2px solid currentColor; }
+    .team-score {
+      font-size: 2.25rem;
+      font-weight: 900;
+      margin: .4rem 0;
+    }
+    .scoreboard.small .team-name-input { font-size: 1.05rem; }
+    .scoreboard.small .team-score { font-size: 1.75rem; }
+    .point-row { display: flex; gap: .5rem; }
+    .add-point-btn, .minus-point-btn {
+      width: 100%;
+      color: #fff;
+      font-weight: 800;
+      border: 0;
+      border-radius: .4rem;
+      padding: .5rem .8rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .tone-blue { background: #dbeafe; }
+    .tone-blue .team-name-input, .tone-blue .team-score { color: #1e40af; }
+    .tone-blue .add-point-btn { background: #3b82f6; }
+    .tone-blue .minus-point-btn { background: #1d4ed8; }
+    .tone-rose { background: #ffe4e6; }
+    .tone-rose .team-name-input, .tone-rose .team-score { color: #9f1239; }
+    .tone-rose .add-point-btn { background: #f43f5e; }
+    .tone-rose .minus-point-btn { background: #be123c; }
+    .tone-amber { background: #fef3c7; }
+    .tone-amber .team-name-input, .tone-amber .team-score { color: #92400e; }
+    .tone-amber .add-point-btn { background: #f59e0b; }
+    .tone-amber .minus-point-btn { background: #b45309; }
+    .tone-teal { background: #ccfbf1; }
+    .tone-teal .team-name-input, .tone-teal .team-score { color: #115e59; }
+    .tone-teal .add-point-btn { background: #14b8a6; }
+    .tone-teal .minus-point-btn { background: #0f766e; }
+    .tone-violet { background: #ede9fe; }
+    .tone-violet .team-name-input, .tone-violet .team-score { color: #5b21b6; }
+    .tone-violet .add-point-btn { background: #8b5cf6; }
+    .tone-violet .minus-point-btn { background: #6d28d9; }
+    .tone-lime { background: #ecfccb; }
+    .tone-lime .team-name-input, .tone-lime .team-score { color: #3f6212; }
+    .tone-lime .add-point-btn { background: #84cc16; }
+    .tone-lime .minus-point-btn { background: #4d7c0f; }
+    .team-tools {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: .5rem;
+    }
+    .ghost {
+      font-size: .9rem;
+      background: #e2e8f0;
+      color: #334155;
+      border: 0;
+      border-radius: .4rem;
+      padding: .5rem 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .ghost:hover { background: #cbd5e1; }
+    .reset-link {
+      background: none;
+      border: 0;
+      color: #64748b;
+      font-size: .9rem;
+      cursor: pointer;
+      font-family: inherit;
+      margin-bottom: 1.4rem;
+    }
+    .reset-link:hover { color: #4f46e5; }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.4rem;
+    }
+    #unit-select {
+      background: #f1f5f9;
+      border: 2px solid #e2e8f0;
+      color: #334155;
+      font-weight: 800;
+      padding: .5rem 1rem;
+      border-radius: .6rem;
+      font-family: inherit;
+    }
+    #unit-select:focus { outline: none; border-color: #6366f1; }
+    .timer-box {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      background: #1e293b;
+      color: #fff;
+      font-weight: 800;
+      padding: .5rem;
+      border-radius: .6rem;
+    }
+    #timer-display { width: 4rem; text-align: center; font-size: 1.1rem; }
+    #timer-display.timer-urgent { color: #ef4444; animation: pulse-red 1s infinite; }
+    .timer-edit {
+      display: flex;
+      align-items: center;
+      gap: .25rem;
+      border-left: 1px solid #475569;
+      padding-left: .5rem;
+    }
+    #timer-setting {
+      background: #334155;
+      color: #fff;
+      width: 3rem;
+      text-align: center;
+      font-weight: 800;
+      border: 0;
+      border-radius: .4rem;
+      font-family: inherit;
+      padding: .2rem;
+    }
+    #timer-setting:focus { outline: 2px solid #6366f1; }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
+    .toggles { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .toggle-wrap { display: flex; align-items: center; }
+    .toggle-wrap span { margin-right: .45rem; font-size: .85rem; font-weight: 800; color: #475569; }
+    .switch { position: relative; display: inline-block; width: 2.5rem; height: 1.5rem; }
+    .toggle-checkbox {
+      position: absolute;
+      display: block;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 999px;
+      background: #fff;
+      border: 4px solid #d1d5db;
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      left: 0;
+      top: 0;
+      margin: 0;
+      z-index: 1;
+    }
+    .toggle-label {
+      display: block;
+      overflow: hidden;
+      height: 1.5rem;
+      border-radius: 999px;
+      background: #d1d5db;
+      cursor: pointer;
+    }
+    .toggle-checkbox:checked { right: 0; left: auto; border-color: #4f46e5; }
+    .toggle-checkbox:checked + .toggle-label { background: #4f46e5; }
+    .flip-card {
+      perspective: 1000px;
+      cursor: pointer;
+      margin-bottom: 1.4rem;
+      height: 350px;
+    }
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform .6s cubic-bezier(.4, .2, .2, 1);
+      transform-style: preserve-3d;
+      border-radius: .75rem;
+      box-shadow: inset 0 2px 8px rgba(15, 23, 42, .08);
+    }
+    .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      border-radius: .75rem;
+    }
+    .flip-card-front { background: #4f46e5; color: #fff; }
+    .flip-card-back { background: #4338ca; color: #fff; transform: rotateY(180deg); }
+    #image-display {
+      width: 12rem;
+      height: 12rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #image-display img, .word-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: .5rem;
+    }
+    #word-display-text, #translation-display {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 900;
+      margin: 0;
+      color: #fff;
+    }
+    .word-display-text { animation: pop-in .5s cubic-bezier(.68, -.55, .27, 1.55); }
+    #flip-hint {
+      color: #c7d2fe;
+      margin-top: 1rem;
+      font-size: .85rem;
+      font-weight: 700;
+      animation: pulse 1.4s infinite;
+    }
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 640px) {
+      .actions { grid-template-columns: 1fr 1fr 1fr; }
+    }
+    .btn {
+      width: 100%;
+      color: #fff;
+      font-weight: 800;
+      border: 0;
+      border-radius: .6rem;
+      padding: .85rem 1.4rem;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 1rem;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, .12);
+    }
+    .btn:hover { transform: scale(1.03); }
+    .btn-next { background: #6366f1; }
+    .btn-next:hover { background: #4338ca; }
+    .btn-start { background: #10b981; }
+    .btn-start:hover { background: #059669; }
+    .btn-start.is-paused { background: #eab308; }
+    .btn-start.is-paused:hover { background: #ca8a04; }
+    .btn-reset { background: #f59e0b; }
+    .btn-reset:hover { background: #d97706; }
+    .btn-back { background: #6366f1; }
+    .footer-tools {
+      margin-top: 1.4rem;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+    .btn-upload { background: #4b5563; font-size: .9rem; padding: .5rem 1rem; box-shadow: none; width: auto; }
+    .btn-upload:hover { background: #374151; transform: none; }
+    .btn-clear { background: #ef4444; font-size: .9rem; padding: .5rem 1rem; box-shadow: none; width: auto; }
+    .btn-clear:hover { background: #dc2626; transform: none; }
+    .list-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .list-head h2 { margin: 0; font-size: 1.4rem; color: #334155; }
+    .list-hint { font-size: .9rem; color: #64748b; margin-bottom: 1rem; }
+    #word-list-container {
+      max-height: 70vh;
+      overflow-y: auto;
+      text-align: left;
+      padding: 1rem;
+      background: #f8fafc;
+      border-radius: .6rem;
+    }
+    .unit-block { margin-bottom: 1.5rem; }
+    .unit-block h3 {
+      font-size: 1.2rem;
+      color: #4338ca;
+      margin: 0 0 .75rem;
+      position: sticky;
+      top: 0;
+      background: #f8fafc;
+      padding: .5rem 0;
+    }
+    .words-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    @media (min-width: 768px) { .words-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @media (min-width: 1024px) { .words-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+    .word-card {
+      background: #fff;
+      padding: .75rem;
+      border-radius: .6rem;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, .08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+    .remove-word-btn {
+      position: absolute;
+      top: .25rem;
+      right: .25rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      background: #e2e8f0;
+      color: #64748b;
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .remove-word-btn:hover { background: #ef4444; color: #fff; }
+    .word-card-image-trigger {
+      width: 6rem;
+      height: 6rem;
+      background: #e2e8f0;
+      border-radius: .4rem;
+      margin-bottom: .5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .word-card-image-trigger:hover { background: #cbd5e1; }
+    .edit-en-input, .edit-ko-input {
+      background: transparent;
+      border: 0;
+      text-align: center;
+      width: 100%;
+      font-family: inherit;
+      border-radius: .3rem;
+      padding: .15rem;
+    }
+    .edit-en-input { font-weight: 800; color: #1e293b; }
+    .edit-ko-input { font-size: .9rem; color: #64748b; margin-top: .2rem; }
+    .edit-en-input:focus, .edit-ko-input:focus { outline: 1px solid #6366f1; background: #f8fafc; }
+    .add-word-btn {
+      background: transparent;
+      border: 2px dashed #cbd5e1;
+      padding: .75rem;
+      border-radius: .6rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #64748b;
+      font-weight: 800;
+      font-size: .9rem;
+    }
+    .add-word-btn:hover { border-color: #6366f1; }
+    .drag-over-highlight {
+      outline: 3px dashed #4f46e5;
+      outline-offset: 4px;
+      background: #e0e7ff;
+    }
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,.5);
+      display: none;
+    }
+    .modal.open { display: flex; }
+    .modal-card {
+      background: #fff;
+      border-radius: .75rem;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, .2);
+      padding: 1.4rem;
+      width: min(24rem, calc(100% - 2rem));
+      text-align: left;
+    }
+    .modal-card h3 { margin: 0 0 .4rem; }
+    .modal-card p { color: #475569; margin: 0 0 1.2rem; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: .75rem; }
+    .btn-cancel { background: #e2e8f0; color: #1e293b; box-shadow: none; width: auto; }
+    .btn-danger { background: #dc2626; box-shadow: none; width: auto; }
+    .loading {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 1rem;
+      z-index: 40;
+    }
+    @keyframes pop-in {
+      0% { transform: scale(.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes pulse-red {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .55; }
+    }
+    @media (max-width: 700px) {
+      .shell { padding: 1rem; }
+      .scoreboard.cols-3 { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div id="loading-overlay" class="loading hidden">
+      <p id="loading-text">Loading…</p>
+    </div>
+    <div class="header">
+      <input type="text" id="game-title" value="__TITLE__" readonly>
+      <button type="button" id="view-words-btn" title="View Word Lists">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+      </button>
+    </div>
+    <p class="sub">Show the word to the actor. Classmates guess before the timer runs out!</p>
+
+    <div id="game-view">
+      <div id="scoreboard-container" class="scoreboard cols-2"></div>
+      <div class="team-tools">
+        <button type="button" id="add-team-btn" class="ghost">+ Add Team</button>
+        <button type="button" id="remove-team-btn" class="ghost">- Remove Team</button>
+      </div>
+      <button type="button" id="reset-scores-btn" class="reset-link">Reset All Scores</button>
+      <div class="controls">
+        <select id="unit-select"><option value="all">All Units</option></select>
+        <div class="timer-box">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span id="timer-display">01:00</span>
+          <div class="timer-edit">
+            <input type="number" id="timer-setting" value="60" min="10" max="300" step="5" title="Set timer in seconds">
+            <span style="color:#94a3b8;font-size:.85rem">sec</span>
+          </div>
+        </div>
+        <div class="toggles">
+          <div class="toggle-wrap">
+            <span>English</span>
+            <div class="switch">
+              <input type="checkbox" id="english-toggle" class="toggle-checkbox" checked>
+              <label for="english-toggle" class="toggle-label"></label>
+            </div>
+          </div>
+          <div class="toggle-wrap">
+            <span>Korean</span>
+            <div class="switch">
+              <input type="checkbox" id="korean-toggle" class="toggle-checkbox">
+              <label for="korean-toggle" class="toggle-label"></label>
+            </div>
+          </div>
+          <div class="toggle-wrap">
+            <span>Images</span>
+            <div class="switch">
+              <input type="checkbox" id="image-toggle" class="toggle-checkbox" checked>
+              <label for="image-toggle" class="toggle-label"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="word-container" class="flip-card">
+        <div id="flip-card-inner" class="flip-card-inner">
+          <div class="flip-card-front">
+            <div id="image-display" class="hidden"></div>
+            <p id="word-display-text">Click Next Word, then show this to the actor!</p>
+            <p id="flip-hint" class="hidden">(Click card to flip)</p>
+          </div>
+          <div class="flip-card-back">
+            <p id="translation-display"></p>
+          </div>
+        </div>
+      </div>
+      <div class="actions">
+        <button type="button" id="next-word-btn" class="btn btn-next">Next Word</button>
+        <button type="button" id="start-pause-btn" class="btn btn-start">Start</button>
+        <button type="button" id="reset-timer-btn" class="btn btn-reset">Reset Timer</button>
+      </div>
+      <div class="footer-tools">
+        <button type="button" id="upload-images-btn" class="btn btn-upload">Upload Custom Images</button>
+        <button type="button" id="clear-images-btn" class="btn btn-clear hidden">Clear Images</button>
+        <input type="file" id="image-upload-input" multiple accept="image/*" class="hidden">
+      </div>
+    </div>
+
+    <div id="word-list-view" class="hidden">
+      <div class="list-head">
+        <h2>Vocabulary Word Lists</h2>
+        <button type="button" id="back-to-game-btn" class="btn btn-back" style="width:auto">Back to Game</button>
+      </div>
+      <div class="list-hint">Click a card to upload, or drag and drop an image onto a card. You can also paste an image named like the word (for example, tall.jpg).</div>
+      <div id="word-list-container"></div>
+      <input type="file" id="word-list-image-upload" accept="image/*" class="hidden">
+    </div>
+  </div>
+
+  <div id="confirmation-modal" class="modal">
+    <div class="modal-card">
+      <h3 id="modal-title">Are you sure?</h3>
+      <p id="modal-message">This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button type="button" id="modal-cancel-btn" class="btn btn-cancel">Cancel</button>
+        <button type="button" id="modal-confirm-btn" class="btn btn-danger">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const GAME_TITLE = __TITLE_JSON__;
+    const GAME_LEVEL = __LEVEL_JSON__;
+    const GAME_BOOK = __BOOK_JSON__;
+    const DOWNLOAD_NAME = __DOWNLOAD_NAME_JSON__;
+    const IMAGE_KEY_PREFIX = __STORAGE_KEY_JSON__;
+    const vocabByUnit = __VOCAB_BY_UNIT__;
+    const TEAM_TONES = ["blue", "rose", "amber", "teal", "violet", "lime"];
+
+    function playTimeUpBeep() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        function tone(freq, start, dur) {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.frequency.value = freq;
+          osc.type = "sine";
+          gain.gain.setValueAtTime(0.0001, ctx.currentTime + start);
+          gain.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + start + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + start + dur);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + start);
+          osc.stop(ctx.currentTime + start + dur + 0.02);
+        }
+        tone(261.6, 0, 0.18);
+        tone(196, 0.2, 0.18);
+      } catch (e) {}
+    }
+
+    const els = {
+      loadingOverlay: document.getElementById("loading-overlay"),
+      loadingText: document.getElementById("loading-text"),
+      gameView: document.getElementById("game-view"),
+      gameTitle: document.getElementById("game-title"),
+      wordListView: document.getElementById("word-list-view"),
+      viewWordsBtn: document.getElementById("view-words-btn"),
+      backToGameBtn: document.getElementById("back-to-game-btn"),
+      wordListContainer: document.getElementById("word-list-container"),
+      wordListImageUpload: document.getElementById("word-list-image-upload"),
+      scoreboardContainer: document.getElementById("scoreboard-container"),
+      addTeamBtn: document.getElementById("add-team-btn"),
+      removeTeamBtn: document.getElementById("remove-team-btn"),
+      resetScoresBtn: document.getElementById("reset-scores-btn"),
+      unitSelect: document.getElementById("unit-select"),
+      timerDisplay: document.getElementById("timer-display"),
+      timerSetting: document.getElementById("timer-setting"),
+      wordContainer: document.getElementById("word-container"),
+      flipHint: document.getElementById("flip-hint"),
+      imageDisplay: document.getElementById("image-display"),
+      wordDisplayText: document.getElementById("word-display-text"),
+      translationDisplay: document.getElementById("translation-display"),
+      englishToggle: document.getElementById("english-toggle"),
+      koreanToggle: document.getElementById("korean-toggle"),
+      imageToggle: document.getElementById("image-toggle"),
+      nextWordBtn: document.getElementById("next-word-btn"),
+      startPauseBtn: document.getElementById("start-pause-btn"),
+      resetTimerBtn: document.getElementById("reset-timer-btn"),
+      uploadImagesBtn: document.getElementById("upload-images-btn"),
+      clearImagesBtn: document.getElementById("clear-images-btn"),
+      imageUploadInput: document.getElementById("image-upload-input"),
+      modal: document.getElementById("confirmation-modal"),
+      modalTitle: document.getElementById("modal-title"),
+      modalMessage: document.getElementById("modal-message"),
+      modalConfirmBtn: document.getElementById("modal-confirm-btn"),
+      modalCancelBtn: document.getElementById("modal-cancel-btn")
+    };
+
+    let teams = [{ name: "Team 1", score: 0 }, { name: "Team 2", score: 0 }];
+    let currentUnit = "all";
+    let lastWord = {};
+    let shownWords = {};
+    let timer = null;
+    let timeLeft = 60;
+    let isTimerRunning = false;
+    let isPaused = false;
+    let imageCache = {};
+    let wordToUploadFor = null;
+    let lastDragTarget = null;
+    let modalConfirmCallback = null;
+
+    function imageKey(wordId) {
+      return IMAGE_KEY_PREFIX + String(wordId || "").toLowerCase();
+    }
+
+    function showLoading(message) {
+      if (!els.loadingOverlay) return;
+      els.loadingText.textContent = message;
+      els.loadingOverlay.classList.remove("hidden");
+    }
+    function hideLoading() {
+      if (!els.loadingOverlay) return;
+      els.loadingOverlay.classList.add("hidden");
+    }
+    function showConfirmationModal(title, message, onConfirm) {
+      els.modalTitle.textContent = title;
+      els.modalMessage.textContent = message;
+      modalConfirmCallback = onConfirm;
+      els.modal.classList.add("open");
+    }
+    function hideConfirmationModal() {
+      els.modal.classList.remove("open");
+      modalConfirmCallback = null;
+    }
+    function updateScores() {
+      document.querySelectorAll(".team-score").forEach(function (el, index) {
+        if (teams[index]) el.textContent = teams[index].score;
+      });
+    }
+    function renderScoreboard() {
+      const count = teams.length;
+      els.scoreboardContainer.className = "scoreboard cols-" + count + (count > 4 ? " small" : "");
+      els.scoreboardContainer.innerHTML = "";
+      teams.forEach(function (team, index) {
+        const tone = TEAM_TONES[index % TEAM_TONES.length];
+        const card = document.createElement("div");
+        card.className = "team-card tone-" + tone;
+        card.innerHTML =
+          '<input type="text" value="' + team.name.replace(/"/g, "&quot;") + '" data-index="' + index + '" class="team-name-input">' +
+          '<p class="team-score">' + team.score + "</p>" +
+          '<div class="point-row">' +
+          '<button type="button" data-index="' + index + '" class="add-point-btn">+1</button>' +
+          '<button type="button" data-index="' + index + '" class="minus-point-btn">-1</button>' +
+          "</div>";
+        els.scoreboardContainer.appendChild(card);
+      });
+    }
+    function populateUnits() {
+      els.unitSelect.innerHTML = "";
+      const allOption = document.createElement("option");
+      allOption.value = "all";
+      allOption.textContent = "All Units";
+      els.unitSelect.appendChild(allOption);
+      const unitKeys = Object.keys(vocabByUnit || {});
+      els.unitSelect.disabled = unitKeys.length === 0;
+      unitKeys.forEach(function (unitId) {
+        const option = document.createElement("option");
+        option.value = unitId;
+        option.textContent = (vocabByUnit[unitId] && vocabByUnit[unitId].name) || unitId;
+        els.unitSelect.appendChild(option);
+      });
+    }
+    function updateWordCardDisplay() {
+      if (!lastWord.en) return;
+      const showEn = els.englishToggle.checked;
+      const showKo = els.koreanToggle.checked;
+      const showImg = els.imageToggle.checked;
+      const imageUrl = imageCache[String(lastWord.en).toLowerCase()];
+      els.wordDisplayText.classList.add("hidden");
+      els.translationDisplay.classList.add("hidden");
+      els.imageDisplay.classList.add("hidden");
+      els.flipHint.classList.add("hidden");
+      els.imageDisplay.innerHTML = "";
+      if (showEn) {
+        els.wordDisplayText.classList.remove("hidden");
+        els.flipHint.classList.remove("hidden");
+      }
+      if (showKo) {
+        els.translationDisplay.classList.remove("hidden");
+        if (!showEn) els.flipHint.classList.remove("hidden");
+      }
+      if (showImg) {
+        if (imageUrl) {
+          const img = document.createElement("img");
+          img.src = imageUrl;
+          img.alt = lastWord.en;
+          els.imageDisplay.appendChild(img);
+          els.imageDisplay.classList.remove("hidden");
+          els.flipHint.classList.remove("hidden");
+        } else if (!showEn) {
+          els.wordDisplayText.classList.remove("hidden");
+          els.flipHint.classList.remove("hidden");
+        }
+      }
+    }
+    function displayNewWord() {
+      if (!vocabByUnit || !Object.keys(vocabByUnit).length) {
+        els.wordDisplayText.textContent = "No Words Available!";
+        return;
+      }
+      els.wordContainer.classList.remove("flipped");
+      var allWordsInUnit = currentUnit === "all"
+        ? Object.keys(vocabByUnit).reduce(function (acc, id) {
+            return acc.concat((vocabByUnit[id] && vocabByUnit[id].words) || []);
+          }, [])
+        : ((vocabByUnit[currentUnit] && vocabByUnit[currentUnit].words) || []);
+      if (!allWordsInUnit.length) {
+        els.wordDisplayText.textContent = "No words in this unit!";
+        return;
+      }
+      if (!shownWords[currentUnit]) shownWords[currentUnit] = [];
+      var available = allWordsInUnit.filter(function (word) {
+        return shownWords[currentUnit].indexOf(word.en) === -1;
+      });
+      if (!available.length) {
+        shownWords[currentUnit] = [];
+        available = allWordsInUnit;
+      }
+      var newWord = available[Math.floor(Math.random() * available.length)];
+      shownWords[currentUnit].push(newWord.en);
+      lastWord = newWord;
+      els.wordDisplayText.textContent = newWord.en;
+      els.translationDisplay.textContent = newWord.ko;
+      updateWordCardDisplay();
+      els.wordDisplayText.classList.remove("word-display-text");
+      setTimeout(function () { els.wordDisplayText.classList.add("word-display-text"); }, 10);
+    }
+    function handleResetTimer() {
+      clearInterval(timer);
+      isTimerRunning = false;
+      isPaused = false;
+      timeLeft = parseInt(els.timerSetting.value, 10) || 60;
+      els.timerSetting.disabled = false;
+      updateTimerDisplay();
+      els.startPauseBtn.textContent = "Start";
+      els.startPauseBtn.classList.remove("is-paused");
+    }
+    function updateTimerDisplay() {
+      var minutes = Math.floor(timeLeft / 60).toString().padStart(2, "0");
+      var seconds = (timeLeft % 60).toString().padStart(2, "0");
+      els.timerDisplay.textContent = minutes + ":" + seconds;
+      if (timeLeft <= 10 && timeLeft > 0) els.timerDisplay.classList.add("timer-urgent");
+      else els.timerDisplay.classList.remove("timer-urgent");
+    }
+    function handleStartPause() {
+      if (isTimerRunning) {
+        clearInterval(timer);
+        isTimerRunning = false;
+        isPaused = true;
+        els.startPauseBtn.textContent = "Resume";
+        els.startPauseBtn.classList.add("is-paused");
+        return;
+      }
+      if (!isPaused) timeLeft = parseInt(els.timerSetting.value, 10) || 60;
+      els.timerSetting.disabled = true;
+      isTimerRunning = true;
+      isPaused = false;
+      els.startPauseBtn.textContent = "Pause";
+      els.startPauseBtn.classList.remove("is-paused");
+      timer = setInterval(function () {
+        timeLeft -= 1;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+          handleResetTimer();
+          els.wordDisplayText.textContent = "Time's Up!";
+          playTimeUpBeep();
+        }
+      }, 1000);
+    }
+    function processAndSaveImage(file, wordKey) {
+      if (!file || !file.type || file.type.indexOf("image/") !== 0 || !wordKey) return;
+      var wordId = String(wordKey).toLowerCase();
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        imageCache[wordId] = e.target.result;
+        try {
+          localStorage.setItem(imageKey(wordId), e.target.result);
+          els.clearImagesBtn.classList.remove("hidden");
+        } catch (err) {
+          alert("Could not save image. Storage may be full.");
+          delete imageCache[wordId];
+        }
+        if (!els.wordListView.classList.contains("hidden")) renderWordListPage();
+      };
+      reader.readAsDataURL(file);
+    }
+    function loadImagesFromLocalStorage() {
+      var found = false;
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (key && key.indexOf(IMAGE_KEY_PREFIX) === 0) {
+          var wordId = key.slice(IMAGE_KEY_PREFIX.length);
+          imageCache[wordId] = localStorage.getItem(key);
+          found = true;
+        }
+      }
+      if (found) els.clearImagesBtn.classList.remove("hidden");
+    }
+    function clearAllImages() {
+      showConfirmationModal("Delete All Images?", "This will permanently delete all your uploaded images from this browser.", function () {
+        var keysToRemove = [];
+        for (var i = 0; i < localStorage.length; i++) {
+          var key = localStorage.key(i);
+          if (key && key.indexOf(IMAGE_KEY_PREFIX) === 0) keysToRemove.push(key);
+        }
+        keysToRemove.forEach(function (key) { localStorage.removeItem(key); });
+        imageCache = {};
+        els.imageDisplay.innerHTML = "";
+        els.imageDisplay.classList.add("hidden");
+        els.clearImagesBtn.classList.add("hidden");
+        if (!els.wordListView.classList.contains("hidden")) renderWordListPage();
+      });
+    }
+    function handleBulkImageUpload(event) {
+      var files = event.target.files;
+      if (!files || !files.length) return;
+      for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        var wordKey = file.name.split(".").slice(0, -1).join(".");
+        processAndSaveImage(file, wordKey);
+      }
+      alert(files.length + " image(s) are being processed.");
+    }
+    function renderWordListPage() {
+      els.wordListContainer.innerHTML = "";
+      var ids = Object.keys(vocabByUnit || {});
+      if (!ids.length) {
+        els.wordListContainer.innerHTML = '<p style="text-align:center;color:#64748b">No word list loaded.</p>';
+        return;
+      }
+      ids.forEach(function (unitId) {
+        var unit = vocabByUnit[unitId];
+        var section = document.createElement("div");
+        section.className = "unit-block";
+        var header = document.createElement("h3");
+        header.textContent = unit.name;
+        section.appendChild(header);
+        var grid = document.createElement("div");
+        grid.className = "words-grid";
+        (unit.words || []).forEach(function (word, index) {
+          var card = document.createElement("div");
+          card.className = "word-card";
+          var removeBtn = document.createElement("button");
+          removeBtn.type = "button";
+          removeBtn.className = "remove-word-btn";
+          removeBtn.innerHTML = "&times;";
+          removeBtn.title = "Remove Word";
+          removeBtn.dataset.unitId = unitId;
+          removeBtn.dataset.wordIndex = String(index);
+          var imageEl = document.createElement("div");
+          imageEl.className = "word-card-image-trigger";
+          imageEl.dataset.wordEn = word.en;
+          var imageUrl = imageCache[String(word.en).toLowerCase()];
+          if (imageUrl) {
+            var img = document.createElement("img");
+            img.src = imageUrl;
+            img.alt = word.en;
+            imageEl.appendChild(img);
+          } else {
+            imageEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
+          }
+          var enInput = document.createElement("input");
+          enInput.type = "text";
+          enInput.className = "edit-en-input";
+          enInput.value = word.en;
+          enInput.dataset.unitId = unitId;
+          enInput.dataset.wordIndex = String(index);
+          var koInput = document.createElement("input");
+          koInput.type = "text";
+          koInput.className = "edit-ko-input";
+          koInput.value = word.ko;
+          koInput.dataset.unitId = unitId;
+          koInput.dataset.wordIndex = String(index);
+          card.appendChild(removeBtn);
+          card.appendChild(imageEl);
+          card.appendChild(enInput);
+          card.appendChild(koInput);
+          grid.appendChild(card);
+        });
+        var addCard = document.createElement("div");
+        addCard.className = "add-word-btn";
+        addCard.dataset.unitId = unitId;
+        addCard.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg><span>Add Word</span>';
+        grid.appendChild(addCard);
+        section.appendChild(grid);
+        els.wordListContainer.appendChild(section);
+      });
+    }
+
+    function setupEventListeners() {
+      els.scoreboardContainer.addEventListener("click", function (e) {
+        var index = e.target.dataset.index;
+        if (index === undefined) return;
+        if (e.target.classList.contains("add-point-btn")) teams[index].score += 1;
+        else if (e.target.classList.contains("minus-point-btn") && teams[index].score > 0) teams[index].score -= 1;
+        updateScores();
+      });
+      els.scoreboardContainer.addEventListener("input", function (e) {
+        var index = e.target.dataset.index;
+        if (index !== undefined && e.target.classList.contains("team-name-input")) {
+          teams[index].name = e.target.value;
+        }
+      });
+      els.addTeamBtn.addEventListener("click", function () {
+        if (teams.length < 6) {
+          teams.push({ name: "Team " + (teams.length + 1), score: 0 });
+          renderScoreboard();
+        }
+      });
+      els.removeTeamBtn.addEventListener("click", function () {
+        if (teams.length > 1) {
+          teams.pop();
+          renderScoreboard();
+        }
+      });
+      els.resetScoresBtn.addEventListener("click", function () {
+        showConfirmationModal("Reset Scores?", "Are you sure you want to reset all team scores to 0?", function () {
+          teams.forEach(function (team) { team.score = 0; });
+          updateScores();
+        });
+      });
+      els.unitSelect.addEventListener("change", function (e) {
+        currentUnit = e.target.value;
+        els.wordDisplayText.textContent = "Click 'Next Word'!";
+        els.translationDisplay.classList.add("hidden");
+        els.wordContainer.classList.remove("flipped");
+        handleResetTimer();
+      });
+      els.nextWordBtn.addEventListener("click", function () {
+        displayNewWord();
+        handleResetTimer();
+      });
+      els.startPauseBtn.addEventListener("click", handleStartPause);
+      els.resetTimerBtn.addEventListener("click", handleResetTimer);
+      els.timerSetting.addEventListener("input", function () {
+        if (!isTimerRunning && !isPaused) {
+          timeLeft = parseInt(els.timerSetting.value, 10) || 60;
+          updateTimerDisplay();
+        }
+      });
+      els.uploadImagesBtn.addEventListener("click", function () { els.imageUploadInput.click(); });
+      els.imageUploadInput.addEventListener("change", handleBulkImageUpload);
+      els.clearImagesBtn.addEventListener("click", clearAllImages);
+      els.wordContainer.addEventListener("click", function () {
+        if (lastWord.en) els.wordContainer.classList.toggle("flipped");
+      });
+      function handleToggleChange(event) {
+        var toggles = [els.englishToggle, els.koreanToggle, els.imageToggle];
+        var checkedCount = toggles.filter(function (t) { return t.checked; }).length;
+        if (checkedCount === 0) {
+          event.target.checked = true;
+          return;
+        }
+        updateWordCardDisplay();
+      }
+      els.englishToggle.addEventListener("change", handleToggleChange);
+      els.koreanToggle.addEventListener("change", handleToggleChange);
+      els.imageToggle.addEventListener("change", handleToggleChange);
+      els.viewWordsBtn.addEventListener("click", function () {
+        els.gameView.classList.add("hidden");
+        renderWordListPage();
+        els.wordListView.classList.remove("hidden");
+      });
+      els.backToGameBtn.addEventListener("click", function () {
+        els.wordListView.classList.add("hidden");
+        els.gameView.classList.remove("hidden");
+      });
+      els.wordListContainer.addEventListener("click", function (e) {
+        var addBtn = e.target.closest(".add-word-btn");
+        if (addBtn) {
+          vocabByUnit[addBtn.dataset.unitId].words.push({ en: "New Word", ko: "새 단어" });
+          renderWordListPage();
+          return;
+        }
+        var removeBtn = e.target.closest(".remove-word-btn");
+        if (removeBtn) {
+          var unitId = removeBtn.dataset.unitId;
+          var wordIndex = removeBtn.dataset.wordIndex;
+          var wordEn = vocabByUnit[unitId].words[wordIndex].en;
+          showConfirmationModal("Remove Word?", 'Are you sure you want to remove "' + wordEn + '"?', function () {
+            vocabByUnit[unitId].words.splice(wordIndex, 1);
+            renderWordListPage();
+          });
+          return;
+        }
+        var trigger = e.target.closest(".word-card-image-trigger");
+        if (trigger) {
+          wordToUploadFor = trigger.dataset.wordEn;
+          els.wordListImageUpload.click();
+        }
+      });
+      els.wordListImageUpload.addEventListener("change", function (event) {
+        var file = event.target.files[0];
+        if (!file || !wordToUploadFor) return;
+        processAndSaveImage(file, wordToUploadFor);
+        wordToUploadFor = null;
+        event.target.value = "";
+      });
+      els.wordListContainer.addEventListener("dragover", function (e) {
+        e.preventDefault();
+        var target = e.target.closest(".word-card-image-trigger");
+        if (target) {
+          if (lastDragTarget && lastDragTarget !== target) lastDragTarget.classList.remove("drag-over-highlight");
+          target.classList.add("drag-over-highlight");
+          lastDragTarget = target;
+        }
+      });
+      els.wordListContainer.addEventListener("dragleave", function () {
+        if (lastDragTarget) {
+          lastDragTarget.classList.remove("drag-over-highlight");
+          lastDragTarget = null;
+        }
+      });
+      els.wordListContainer.addEventListener("drop", function (e) {
+        e.preventDefault();
+        if (lastDragTarget) lastDragTarget.classList.remove("drag-over-highlight");
+        var target = e.target.closest(".word-card-image-trigger");
+        var files = e.dataTransfer.files;
+        if (target && files.length > 0) processAndSaveImage(files[0], target.dataset.wordEn);
+        lastDragTarget = null;
+      });
+      els.wordListContainer.addEventListener("paste", function (e) {
+        var items = e.clipboardData.items;
+        var found = false;
+        for (var i = 0; i < items.length; i++) {
+          if (items[i].type.indexOf("image") !== -1) {
+            var file = items[i].getAsFile();
+            var wordKey = file.name.split(".").slice(0, -1).join(".");
+            if (wordKey) {
+              processAndSaveImage(file, wordKey);
+              found = true;
+            }
+          }
+        }
+        if (found) alert("Pasted image(s) are being processed based on their filename.");
+      });
+      els.wordListContainer.addEventListener("change", function (e) {
+        if (e.target.classList.contains("edit-en-input")) {
+          var unitId = e.target.dataset.unitId;
+          var wordIndex = e.target.dataset.wordIndex;
+          var oldEn = vocabByUnit[unitId].words[wordIndex].en;
+          var newEn = e.target.value.trim();
+          if (newEn && oldEn !== newEn) {
+            vocabByUnit[unitId].words[wordIndex].en = newEn;
+            var oldKey = oldEn.toLowerCase();
+            var newKey = newEn.toLowerCase();
+            if (imageCache[oldKey]) {
+              imageCache[newKey] = imageCache[oldKey];
+              delete imageCache[oldKey];
+              try {
+                localStorage.setItem(imageKey(newKey), imageCache[newKey]);
+                localStorage.removeItem(imageKey(oldKey));
+              } catch (err) {}
+            }
+            var trigger = e.target.closest(".word-card").querySelector(".word-card-image-trigger");
+            if (trigger) trigger.dataset.wordEn = newEn;
+          }
+        }
+        if (e.target.classList.contains("edit-ko-input")) {
+          vocabByUnit[e.target.dataset.unitId].words[e.target.dataset.wordIndex].ko = e.target.value.trim();
+        }
+      });
+      els.modalCancelBtn.addEventListener("click", hideConfirmationModal);
+      els.modalConfirmBtn.addEventListener("click", function () {
+        if (modalConfirmCallback) modalConfirmCallback();
+        hideConfirmationModal();
+      });
+    }
+
+    els.gameTitle.value = GAME_TITLE;
+    document.title = GAME_TITLE;
+    setupEventListeners();
+    populateUnits();
+    renderScoreboard();
+    handleResetTimer();
+    loadImagesFromLocalStorage();
+    hideLoading();
+  </script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+{
+  "bookId": "early-writers-1",
+  "activityId": "jumpingOx",
+  "cefr": "A1",
+  "title": "Early Writers 1 Jumping OX",
+  "units": {
+    "1": {
+      "title": "Unit 1: About Me",
+      "description": "have / has, am / is / are",
+      "questions": [
+        { "text": "I have a goldfish.", "correct": true, "explanation": "Good! I/you/we/they use 'have'." },
+        { "text": "I has a rabbit.", "correct": false, "explanation": "Incorrect. Use 'have' with I: 'I have a rabbit.'" },
+        { "text": "I am ten years old.", "correct": true, "explanation": "Good! Use 'am' with I." },
+        { "text": "My name is Minho.", "correct": true, "explanation": "Good!" },
+        { "text": "She have a cat.", "correct": false, "explanation": "Incorrect. 'She has a cat.'" },
+        { "text": "I like soccer.", "correct": true, "explanation": "Good!" },
+        { "text": "I is a student.", "correct": false, "explanation": "Incorrect. 'I am a student.'" },
+        { "text": "This is my pet.", "correct": true, "explanation": "Good!" },
+        { "text": "He have brown hair.", "correct": false, "explanation": "Incorrect. 'He has brown hair.'" },
+        { "text": "I live in Seoul.", "correct": true, "explanation": "Good!" }
+      ]
+    },
+    "2": {
+      "title": "Unit 2: My Family",
+      "description": "Family words, is / are",
+      "questions": [
+        { "text": "This is my grandma.", "correct": true, "explanation": "Good!" },
+        { "text": "My dad are brave.", "correct": false, "explanation": "Incorrect. One person: 'My dad is brave.'" },
+        { "text": "My brother is shy.", "correct": true, "explanation": "Good!" },
+        { "text": "My parents are kind.", "correct": true, "explanation": "Good! Use 'are' with two people." },
+        { "text": "My mom have long hair.", "correct": false, "explanation": "Incorrect. 'My mom has long hair.'" },
+        { "text": "I love my family.", "correct": true, "explanation": "Good!" },
+        { "text": "My sister are funny.", "correct": false, "explanation": "Incorrect. 'My sister is funny.'" },
+        { "text": "We are a happy family.", "correct": true, "explanation": "Good!" },
+        { "text": "He is my uncle.", "correct": true, "explanation": "Good!" },
+        { "text": "They is my cousins.", "correct": false, "explanation": "Incorrect. 'They are my cousins.'" }
+      ]
+    },
+    "3": {
+      "title": "Unit 3: My Monster",
+      "description": "has + body parts, 3rd person -s",
+      "questions": [
+        { "text": "She has four arms.", "correct": true, "explanation": "Good!" },
+        { "text": "The monster dance.", "correct": false, "explanation": "Incorrect. Add -s: 'The monster dances.'" },
+        { "text": "He eats candy.", "correct": true, "explanation": "Good! He/she/it + -s." },
+        { "text": "My monster is green.", "correct": true, "explanation": "Good!" },
+        { "text": "It have three eyes.", "correct": false, "explanation": "Incorrect. 'It has three eyes.'" },
+        { "text": "She has big teeth.", "correct": true, "explanation": "Good!" },
+        { "text": "The monster run fast.", "correct": false, "explanation": "Incorrect. 'The monster runs fast.'" },
+        { "text": "He likes ice cream.", "correct": true, "explanation": "Good!" },
+        { "text": "It have a long tail.", "correct": false, "explanation": "Incorrect. 'It has a long tail.'" },
+        { "text": "My monster is not scary.", "correct": true, "explanation": "Good!" }
+      ]
+    },
+    "4": {
+      "title": "Unit 4: Wanted",
+      "description": "has + adjectives, word order",
+      "questions": [
+        { "text": "She has long black hair.", "correct": true, "explanation": "Good! Adjective order: long + black + hair." },
+        { "text": "He has a mustache small.", "correct": false, "explanation": "Incorrect. Adjective before the noun: 'He has a small mustache.'" },
+        { "text": "Someone took my headphones!", "correct": true, "explanation": "Good!" },
+        { "text": "He has a big nose.", "correct": true, "explanation": "Good!" },
+        { "text": "She has eyes blue.", "correct": false, "explanation": "Incorrect. 'She has blue eyes.'" },
+        { "text": "The man is tall and thin.", "correct": true, "explanation": "Good!" },
+        { "text": "He have a beard.", "correct": false, "explanation": "Incorrect. 'He has a beard.'" },
+        { "text": "She wears a red hat.", "correct": true, "explanation": "Good!" },
+        { "text": "He has hair short.", "correct": false, "explanation": "Incorrect. 'He has short hair.'" },
+        { "text": "I saw him at the park.", "correct": true, "explanation": "Good!" }
+      ]
+    },
+    "5": {
+      "title": "Unit 5: My Room",
+      "description": "there is / there are, prepositions",
+      "questions": [
+        { "text": "There is a clock above my desk.", "correct": true, "explanation": "Good!" },
+        { "text": "My shoes is under the bed.", "correct": false, "explanation": "Incorrect. 'My shoes are under the bed.'" },
+        { "text": "My clothes go there.", "correct": true, "explanation": "Good!" },
+        { "text": "There are posters on the wall.", "correct": true, "explanation": "Good! 'There are' for plural." },
+        { "text": "There is two chairs in my room.", "correct": false, "explanation": "Incorrect. 'There are two chairs in my room.'" },
+        { "text": "The lamp is next to the bed.", "correct": true, "explanation": "Good!" },
+        { "text": "There are a window near my desk.", "correct": false, "explanation": "Incorrect. One window: 'There is a window near my desk.'" },
+        { "text": "My books are on the shelf.", "correct": true, "explanation": "Good!" },
+        { "text": "The pillow are on the bed.", "correct": false, "explanation": "Incorrect. One pillow: 'The pillow is on the bed.'" },
+        { "text": "I like my room.", "correct": true, "explanation": "Good!" }
+      ]
+    },
+    "6": {
+      "title": "Unit 6: My Friend and I",
+      "description": "like + -ing, both",
+      "questions": [
+        { "text": "I like making videos.", "correct": true, "explanation": "Good! like + -ing." },
+        { "text": "I don't like listen to music.", "correct": false, "explanation": "Incorrect. Use -ing: 'I don't like listening to music.'" },
+        { "text": "We enjoy hiking together.", "correct": true, "explanation": "Good!" },
+        { "text": "My friend likes drawing.", "correct": true, "explanation": "Good!" },
+        { "text": "She like play soccer.", "correct": false, "explanation": "Incorrect. 'She likes playing soccer.'" },
+        { "text": "We both like pizza.", "correct": true, "explanation": "Good!" },
+        { "text": "He don't like homework.", "correct": false, "explanation": "Incorrect. 'He doesn't like homework.'" },
+        { "text": "I like reading books.", "correct": true, "explanation": "Good!" },
+        { "text": "We both likes games.", "correct": false, "explanation": "Incorrect. After we, no -s: 'We both like games.'" },
+        { "text": "My friend and I are happy.", "correct": true, "explanation": "Good!" }
+      ]
+    },
+    "7": {
+      "title": "Unit 7: My Favorite Season",
+      "description": "because, like + -ing",
+      "questions": [
+        { "text": "I play in the leaves.", "correct": true, "explanation": "Good!" },
+        { "text": "I like fall because I like eat pumpkin pie.", "correct": false, "explanation": "Incorrect. like + -ing: 'I like eating pumpkin pie.'" },
+        { "text": "I like summer because I like playing baseball.", "correct": true, "explanation": "Good!" },
+        { "text": "Winter is cold.", "correct": true, "explanation": "Good!" },
+        { "text": "I like spring because I like see flowers.", "correct": false, "explanation": "Incorrect. 'I like seeing flowers.'" },
+        { "text": "Fall is my favorite season.", "correct": true, "explanation": "Good!" },
+        { "text": "I like swim in summer.", "correct": false, "explanation": "Incorrect. 'I like swimming in summer.'" },
+        { "text": "We make a snowman in winter.", "correct": true, "explanation": "Good!" },
+        { "text": "She like winter because it is snowy.", "correct": false, "explanation": "Incorrect. 'She likes winter because it is snowy.'" },
+        { "text": "I wear a coat in winter.", "correct": true, "explanation": "Good!" }
+      ]
+    },
+    "8": {
+      "title": "Unit 8: Everyday Life",
+      "description": "can / can't + base verb",
+      "questions": [
+        { "text": "I can juggle.", "correct": true, "explanation": "Good! can + base verb." },
+        { "text": "Can you swim fast?", "correct": true, "explanation": "Good!" },
+        { "text": "I can't speaks Spanish.", "correct": false, "explanation": "Incorrect. After can/can't, use the base verb: 'I can't speak Spanish.'" },
+        { "text": "She can ride a bike.", "correct": true, "explanation": "Good!" },
+        { "text": "He can to cook dinner.", "correct": false, "explanation": "Incorrect. No 'to' after can: 'He can cook dinner.'" },
+        { "text": "I can't dance well.", "correct": true, "explanation": "Good!" },
+        { "text": "They can plays soccer.", "correct": false, "explanation": "Incorrect. 'They can play soccer.'" },
+        { "text": "Can she sing?", "correct": true, "explanation": "Good!" },
+        { "text": "I can cooking.", "correct": false, "explanation": "Incorrect. Use the base verb: 'I can cook.'" },
+        { "text": "We can help our teacher.", "correct": true, "explanation": "Good!" }
+      ]
+    }
+  }
+}

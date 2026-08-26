@@ -1,0 +1,23 @@
+# Dependencies and Electron packaging (not part of the website)
+node_modules/
+dist/
+*.exe
+*.blockmap
+*.nsis.7z
+
+# Local OS / editor noise
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.log
+.vscode/
+.idea/
+
+# Secrets and local-only files — never commit API keys
+.env
+.env.*
+*.pem
+credentials.json
+API Key.txt
+*API Key*
+*.lnk

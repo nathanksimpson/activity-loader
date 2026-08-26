@@ -1,0 +1,136 @@
+{
+  "bookId": "write-now-2",
+  "activityId": "jumpingOx",
+  "cefr": "A1",
+  "title": "Write Now 2 Jumping OX",
+  "units": {
+    "1": {
+      "title": "Unit 1: I Can Do It by Myself",
+      "description": "can / can't + chores",
+      "questions": [
+        { "text": "I can make my bed.", "correct": true, "explanation": "Good! can + base verb." },
+        { "text": "I can cooking dinner.", "correct": false, "explanation": "Incorrect. After can, use the base verb: 'I can cook dinner.'" },
+        { "text": "She can pack her backpack.", "correct": true, "explanation": "Good!" },
+        { "text": "He can washes the dishes.", "correct": false, "explanation": "Incorrect. No -s after can: 'He can wash the dishes.'" },
+        { "text": "I can't mop the floor.", "correct": true, "explanation": "Good! can't + base verb." },
+        { "text": "I can to walk to school.", "correct": false, "explanation": "Incorrect. Do not use 'to' after can: 'I can walk to school.'" },
+        { "text": "They can fold towels.", "correct": true, "explanation": "Good!" },
+        { "text": "She cans set the table.", "correct": false, "explanation": "Incorrect. Never add -s to can: 'She can set the table.'" },
+        { "text": "Can you brush your teeth?", "correct": true, "explanation": "Good! Questions: Can + subject + base verb?" },
+        { "text": "I can't doing the laundry.", "correct": false, "explanation": "Incorrect. 'I can't do the laundry.'" }
+      ]
+    },
+    "2": {
+      "title": "Unit 2: We're on a Picnic",
+      "description": "Present continuous: am/is/are + -ing",
+      "questions": [
+        { "text": "We are playing frisbee.", "correct": true, "explanation": "Good! are + -ing for now." },
+        { "text": "She is take pictures.", "correct": false, "explanation": "Incorrect. Use -ing: 'She is taking pictures.'" },
+        { "text": "He is riding a bike.", "correct": true, "explanation": "Good!" },
+        { "text": "They is blowing bubbles.", "correct": false, "explanation": "Incorrect. They uses 'are': 'They are blowing bubbles.'" },
+        { "text": "I am lying in the sun.", "correct": true, "explanation": "Good! I + am + -ing." },
+        { "text": "We are enjoy the picnic.", "correct": false, "explanation": "Incorrect. Add -ing: 'We are enjoying the picnic.'" },
+        { "text": "Dad is making a campfire.", "correct": true, "explanation": "Good!" },
+        { "text": "She are writing a letter.", "correct": false, "explanation": "Incorrect. She uses 'is': 'She is writing a letter.'" },
+        { "text": "The sun is shining.", "correct": true, "explanation": "Good!" },
+        { "text": "I am play volleyball now.", "correct": false, "explanation": "Incorrect. 'I am playing volleyball now.'" }
+      ]
+    },
+    "3": {
+      "title": "Unit 3: What Do You Do After School?",
+      "description": "Frequency adverbs: always, usually, often, sometimes",
+      "questions": [
+        { "text": "I usually play catch after school.", "correct": true, "explanation": "Good! Adverb before the main verb." },
+        { "text": "I play often chess.", "correct": false, "explanation": "Incorrect. Put the adverb before the verb: 'I often play chess.'" },
+        { "text": "She always takes lessons.", "correct": true, "explanation": "Good!" },
+        { "text": "He sometimes go rollerblading.", "correct": false, "explanation": "Incorrect. He/she + -s: 'He sometimes goes rollerblading.'" },
+        { "text": "We often practice dancing.", "correct": true, "explanation": "Good!" },
+        { "text": "Always I do housework.", "correct": false, "explanation": "Incorrect. Put 'always' after I: 'I always do housework.'" },
+        { "text": "They usually have fun after school.", "correct": true, "explanation": "Good!" },
+        { "text": "She don't often play catch.", "correct": false, "explanation": "Incorrect. 'She doesn't often play catch.'" },
+        { "text": "I sometimes water the plants.", "correct": true, "explanation": "Good!" },
+        { "text": "He usually eats breakfast.", "correct": true, "explanation": "Good! Frequency adverb before the verb." }
+      ]
+    },
+    "4": {
+      "title": "Unit 4: When I Grow Up",
+      "description": "want to be, will + base verb",
+      "questions": [
+        { "text": "I want to be a teacher.", "correct": true, "explanation": "Good! want to + base verb." },
+        { "text": "She want to be a singer.", "correct": false, "explanation": "Incorrect. 'She wants to be a singer.'" },
+        { "text": "He will work hard.", "correct": true, "explanation": "Good! will + base verb." },
+        { "text": "I will be a astronaut.", "correct": false, "explanation": "Incorrect. Use 'an' before a vowel sound: 'I will be an astronaut.'" },
+        { "text": "When I grow up, I will save people.", "correct": true, "explanation": "Good!" },
+        { "text": "He will performs on stage.", "correct": false, "explanation": "Incorrect. After will, no -s: 'He will perform on stage.'" },
+        { "text": "I want to be a firefighter.", "correct": true, "explanation": "Good!" },
+        { "text": "She will to be famous.", "correct": false, "explanation": "Incorrect. No 'to' after will: 'She will be famous.'" },
+        { "text": "They want to share their food.", "correct": true, "explanation": "Good!" },
+        { "text": "I wants to be a chef.", "correct": false, "explanation": "Incorrect. I uses 'want': 'I want to be a chef.'" }
+      ]
+    },
+    "5": {
+      "title": "Unit 5: My Secret Closet",
+      "description": "there is / there are, in / on / under",
+      "questions": [
+        { "text": "There is a trophy on the top shelf.", "correct": true, "explanation": "Good! 'There is' for one thing." },
+        { "text": "There are a T-shirt in the closet.", "correct": false, "explanation": "Incorrect. One T-shirt: 'There is a T-shirt in the closet.'" },
+        { "text": "My cap is on the shelf.", "correct": true, "explanation": "Good!" },
+        { "text": "There is many game cards in the box.", "correct": false, "explanation": "Incorrect. Plural: 'There are many game cards in the box.'" },
+        { "text": "The gloves are under the travel bag.", "correct": true, "explanation": "Good!" },
+        { "text": "My racket are in the closet.", "correct": false, "explanation": "Incorrect. One racket: 'My racket is in the closet.'" },
+        { "text": "There is a drone next to the trophy.", "correct": true, "explanation": "Good!" },
+        { "text": "The clothes is on the shelf.", "correct": false, "explanation": "Incorrect. Clothes are plural: 'The clothes are on the shelf.'" },
+        { "text": "This is my secret closet.", "correct": true, "explanation": "Good!" },
+        { "text": "There are two caps on the top.", "correct": true, "explanation": "Good! 'There are' for two." }
+      ]
+    },
+    "6": {
+      "title": "Unit 6: My Favorite Food",
+      "description": "like / don't like, taste adjectives",
+      "questions": [
+        { "text": "I like yogurt because it is sour.", "correct": true, "explanation": "Good!" },
+        { "text": "Popcorn are crunchy.", "correct": false, "explanation": "Incorrect. Popcorn is usually uncountable here: 'Popcorn is crunchy.'" },
+        { "text": "The berries taste sweet.", "correct": true, "explanation": "Good!" },
+        { "text": "I don't likes soda.", "correct": false, "explanation": "Incorrect. After don't, use the base verb: 'I don't like soda.'" },
+        { "text": "Cheese smells delicious.", "correct": true, "explanation": "Good!" },
+        { "text": "Nachos is spicy.", "correct": false, "explanation": "Incorrect. Nachos are plural: 'Nachos are spicy.'" },
+        { "text": "This dessert is fresh and sweet.", "correct": true, "explanation": "Good!" },
+        { "text": "She like salty popcorn.", "correct": false, "explanation": "Incorrect. 'She likes salty popcorn.'" },
+        { "text": "I don't like spicy food.", "correct": true, "explanation": "Good!" },
+        { "text": "The yogurt taste sour.", "correct": false, "explanation": "Incorrect. It/the yogurt + -s: 'The yogurt tastes sour.'" }
+      ]
+    },
+    "7": {
+      "title": "Unit 7: Drawing My Feelings",
+      "description": "I feel + adjective, because",
+      "questions": [
+        { "text": "I feel glad because my classmate is kind.", "correct": true, "explanation": "Good! feel + adjective." },
+        { "text": "I feel sadly today.", "correct": false, "explanation": "Incorrect. Use an adjective, not an adverb: 'I feel sad today.'" },
+        { "text": "She is scared of the noisy dog.", "correct": true, "explanation": "Good!" },
+        { "text": "He feel nervous before the exam.", "correct": false, "explanation": "Incorrect. 'He feels nervous before the exam.'" },
+        { "text": "I am excited about the party.", "correct": true, "explanation": "Good!" },
+        { "text": "The room is gloomy and dark.", "correct": true, "explanation": "Good!" },
+        { "text": "I feel angrily at my neighbor.", "correct": false, "explanation": "Incorrect. Use the adjective: 'I feel angry at my neighbor.'" },
+        { "text": "She feels sad because her toy is missing.", "correct": true, "explanation": "Good!" },
+        { "text": "They is glad today.", "correct": false, "explanation": "Incorrect. 'They are glad today.'" },
+        { "text": "I feel nervous, but I can do it.", "correct": true, "explanation": "Good!" }
+      ]
+    },
+    "8": {
+      "title": "Unit 8: My Robot Friend",
+      "description": "can + chores, put away / turn off",
+      "questions": [
+        { "text": "The robot can write a letter.", "correct": true, "explanation": "Good!" },
+        { "text": "It can turning off the light.", "correct": false, "explanation": "Incorrect. After can, use the base verb: 'It can turn off the light.'" },
+        { "text": "Please put away the boxes.", "correct": true, "explanation": "Good! Phrasal verb 'put away'." },
+        { "text": "Don't shout in the hallway.", "correct": true, "explanation": "Good!" },
+        { "text": "The robot can solves a math problem.", "correct": false, "explanation": "Incorrect. No -s after can: 'The robot can solve a math problem.'" },
+        { "text": "Please take out the cans.", "correct": true, "explanation": "Good!" },
+        { "text": "It can to recycle cans.", "correct": false, "explanation": "Incorrect. No 'to' after can: 'It can recycle cans.'" },
+        { "text": "Don't throw away the paper.", "correct": true, "explanation": "Good!" },
+        { "text": "The robot play a song.", "correct": false, "explanation": "Incorrect. Add -s, or use can: 'The robot plays a song' / 'The robot can play a song.'" },
+        { "text": "I can help my robot friend.", "correct": true, "explanation": "Good!" }
+      ]
+    }
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "bookId": "write-now-1",
+  "activityId": "jumpingOx",
+  "cefr": "A1",
+  "title": "Write Now 1 Jumping OX",
+  "units": {
+    "1": {
+      "title": "Unit 1: My Family and I",
+      "description": "am / is / are, have / has",
+      "questions": [
+        { "text": "He is tall.", "correct": true, "explanation": "Good! Use 'is' with he/she/it." },
+        { "text": "She have curly hair.", "correct": false, "explanation": "Incorrect. She/he/it uses 'has': 'She has curly hair.'" },
+        { "text": "They are students.", "correct": true, "explanation": "Good! Use 'are' with they/we/you." },
+        { "text": "I am ten years old.", "correct": true, "explanation": "Good! Use 'am' with I." },
+        { "text": "My sister are kind.", "correct": false, "explanation": "Incorrect. 'sister' is singular: 'My sister is kind.'" },
+        { "text": "We has a big family.", "correct": false, "explanation": "Incorrect. We/they/I use 'have': 'We have a big family.'" },
+        { "text": "My dad has short hair.", "correct": true, "explanation": "Good! 'has' is correct with he." },
+        { "text": "I is happy.", "correct": false, "explanation": "Incorrect. Use 'am' with I: 'I am happy.'" },
+        { "text": "You are my brother.", "correct": true, "explanation": "Good! Use 'are' with you." },
+        { "text": "She is not tall.", "correct": true, "explanation": "Good! Negative of is: 'is not'." }
+      ]
+    },
+    "2": {
+      "title": "Unit 2: My Friend Daisy",
+      "description": "Adjectives and 3rd person -s",
+      "questions": [
+        { "text": "My friend is kind.", "correct": true, "explanation": "Good!" },
+        { "text": "He is not funny.", "correct": true, "explanation": "Good! 'is not' is the negative." },
+        { "text": "She play the piano.", "correct": false, "explanation": "Incorrect. Add -s for he/she/it: 'She plays the piano.'" },
+        { "text": "I help people.", "correct": true, "explanation": "Good! No -s after I." },
+        { "text": "Daisy like cats.", "correct": false, "explanation": "Incorrect. 'Daisy likes cats.'" },
+        { "text": "He is smart and funny.", "correct": true, "explanation": "Good! Two adjectives with 'and'." },
+        { "text": "She don't like soccer.", "correct": false, "explanation": "Incorrect. He/she/it uses 'doesn't': 'She doesn't like soccer.'" },
+        { "text": "They are good friends.", "correct": true, "explanation": "Good!" },
+        { "text": "He help his mom.", "correct": false, "explanation": "Incorrect. 'He helps his mom.'" },
+        { "text": "My friend is shy.", "correct": true, "explanation": "Good!" }
+      ]
+    },
+    "3": {
+      "title": "Unit 3: School Market Day",
+      "description": "this / these, have, 3rd person -s",
+      "questions": [
+        { "text": "I have a teddy bear.", "correct": true, "explanation": "Good!" },
+        { "text": "She sell old things.", "correct": false, "explanation": "Incorrect. 'She sells old things.'" },
+        { "text": "This is a soccer ball.", "correct": true, "explanation": "Good! 'This is' for one thing." },
+        { "text": "I buy a jacket.", "correct": true, "explanation": "Good!" },
+        { "text": "These is my books.", "correct": false, "explanation": "Incorrect. 'These are my books.'" },
+        { "text": "He has a toy car.", "correct": true, "explanation": "Good!" },
+        { "text": "This are my pencils.", "correct": false, "explanation": "Incorrect. Use 'These are' for plural." },
+        { "text": "We sell cookies at the market.", "correct": true, "explanation": "Good!" },
+        { "text": "She have a backpack.", "correct": false, "explanation": "Incorrect. 'She has a backpack.'" },
+        { "text": "I want this jacket.", "correct": true, "explanation": "Good! 'this' + singular noun." }
+      ]
+    },
+    "4": {
+      "title": "Unit 4: What a Messy Room!",
+      "description": "there is / there are, prepositions",
+      "questions": [
+        { "text": "The room is messy.", "correct": true, "explanation": "Good!" },
+        { "text": "My shoes is under the bed.", "correct": false, "explanation": "Incorrect. Shoes are plural: 'My shoes are under the bed.'" },
+        { "text": "There is a chair next to the bed.", "correct": true, "explanation": "Good! 'There is' for one thing." },
+        { "text": "Please clean your room.", "correct": true, "explanation": "Good! Imperative (command) is correct." },
+        { "text": "There are a book on the desk.", "correct": false, "explanation": "Incorrect. One book: 'There is a book on the desk.'" },
+        { "text": "The lamp is on the table.", "correct": true, "explanation": "Good! Preposition 'on'." },
+        { "text": "There is many toys on the floor.", "correct": false, "explanation": "Incorrect. Plural: 'There are many toys on the floor.'" },
+        { "text": "My bag is under the chair.", "correct": true, "explanation": "Good!" },
+        { "text": "The clothes is in the closet.", "correct": false, "explanation": "Incorrect. Clothes are plural: 'The clothes are in the closet.'" },
+        { "text": "There are two pillows on the bed.", "correct": true, "explanation": "Good! 'There are' for two or more." }
+      ]
+    },
+    "5": {
+      "title": "Unit 5: My Favorite Thing",
+      "description": "have / has, this is, parts of things",
+      "questions": [
+        { "text": "I have a toy truck.", "correct": true, "explanation": "Good!" },
+        { "text": "The bike have two wheels.", "correct": false, "explanation": "Incorrect. It/the bike uses 'has': 'The bike has two wheels.'" },
+        { "text": "This is my favorite thing.", "correct": true, "explanation": "Good!" },
+        { "text": "The robot has two arms.", "correct": true, "explanation": "Good!" },
+        { "text": "It have four legs.", "correct": false, "explanation": "Incorrect. 'It has four legs.'" },
+        { "text": "My doll has long hair.", "correct": true, "explanation": "Good!" },
+        { "text": "This are my favorite toys.", "correct": false, "explanation": "Incorrect. 'These are my favorite toys.'" },
+        { "text": "The car has a red door.", "correct": true, "explanation": "Good!" },
+        { "text": "She have a new kite.", "correct": false, "explanation": "Incorrect. 'She has a new kite.'" },
+        { "text": "I like this robot.", "correct": true, "explanation": "Good!" }
+      ]
+    },
+    "6": {
+      "title": "Unit 6: Welcome to My Town!",
+      "description": "there is / there are + places",
+      "questions": [
+        { "text": "There is a library in my town.", "correct": true, "explanation": "Good! 'There is' for one place." },
+        { "text": "The fire station are big.", "correct": false, "explanation": "Incorrect. One station: 'The fire station is big.'" },
+        { "text": "I look around the museum.", "correct": true, "explanation": "Good!" },
+        { "text": "We go to the playground.", "correct": true, "explanation": "Good!" },
+        { "text": "There are a park near my house.", "correct": false, "explanation": "Incorrect. One park: 'There is a park near my house.'" },
+        { "text": "There are many stores on this street.", "correct": true, "explanation": "Good! 'There are' for many stores." },
+        { "text": "The museum have old pictures.", "correct": false, "explanation": "Incorrect. 'The museum has old pictures.'" },
+        { "text": "My town is small and quiet.", "correct": true, "explanation": "Good!" },
+        { "text": "There is two schools in my town.", "correct": false, "explanation": "Incorrect. Two schools: 'There are two schools in my town.'" },
+        { "text": "We can play at the playground.", "correct": true, "explanation": "Good! 'can' + base verb." }
+      ]
+    },
+    "7": {
+      "title": "Unit 7: Different but Together",
+      "description": "like + -ing, don't / doesn't",
+      "questions": [
+        { "text": "I like painting pictures.", "correct": true, "explanation": "Good! like + -ing." },
+        { "text": "She don't like coffee.", "correct": false, "explanation": "Incorrect. She/he/it uses 'doesn't': 'She doesn't like coffee.'" },
+        { "text": "We both ride a bike.", "correct": true, "explanation": "Good!" },
+        { "text": "He likes watching TV.", "correct": true, "explanation": "Good! He likes + -ing." },
+        { "text": "I like swim in the pool.", "correct": false, "explanation": "Incorrect. Use -ing: 'I like swimming in the pool.'" },
+        { "text": "They like playing soccer.", "correct": true, "explanation": "Good!" },
+        { "text": "He like read books.", "correct": false, "explanation": "Incorrect. 'He likes reading books.'" },
+        { "text": "I don't like rainy days.", "correct": true, "explanation": "Good! I/we/they use 'don't'." },
+        { "text": "We both likes music.", "correct": false, "explanation": "Incorrect. After 'we', no -s: 'We both like music.'" },
+        { "text": "She likes drawing pictures.", "correct": true, "explanation": "Good!" }
+      ]
+    },
+    "8": {
+      "title": "Unit 8: My Busy Day",
+      "description": "Daily routines, then, 3rd person -s",
+      "questions": [
+        { "text": "I get up at seven.", "correct": true, "explanation": "Good!" },
+        { "text": "I eat dinner in the evening.", "correct": true, "explanation": "Good!" },
+        { "text": "She do her homework.", "correct": false, "explanation": "Incorrect. 'She does her homework.'" },
+        { "text": "Then I take a shower.", "correct": true, "explanation": "Good! 'Then' starts the next step." },
+        { "text": "He get up at eight.", "correct": false, "explanation": "Incorrect. 'He gets up at eight.'" },
+        { "text": "I brush my teeth every morning.", "correct": true, "explanation": "Good!" },
+        { "text": "She go to school at eight.", "correct": false, "explanation": "Incorrect. 'She goes to school at eight.'" },
+        { "text": "First, I eat breakfast.", "correct": true, "explanation": "Good! Comma after 'First'." },
+        { "text": "Then she take a bus.", "correct": false, "explanation": "Incorrect. 'Then she takes a bus.'" },
+        { "text": "I go to bed at nine.", "correct": true, "explanation": "Good!" }
+      ]
+    }
+  }
+}

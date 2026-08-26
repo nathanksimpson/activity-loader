@@ -1,0 +1,168 @@
+{
+  "version": 1,
+  "levels": [
+    { "id": "Red", "name": "Red", "band": "elementary", "levelGroup": "redOrangeYellow", "programTrack": "juniorRainbow", "color": "#dc2626" },
+    { "id": "Orange", "name": "Orange", "band": "elementary", "levelGroup": "redOrangeYellow", "programTrack": "juniorRainbow", "color": "#ea580c" },
+    { "id": "Yellow", "name": "Yellow", "band": "elementary", "levelGroup": "redOrangeYellow", "programTrack": "juniorRainbow", "color": "#facc15" },
+    { "id": "Green", "name": "Green", "band": "elementary", "levelGroup": "greenBlueNavy", "programTrack": "juniorRainbow", "color": "#16a34a" },
+    { "id": "Blue", "name": "Blue", "band": "elementary", "levelGroup": "greenBlueNavy", "programTrack": "juniorRainbow", "color": "#2563eb" },
+    { "id": "Navy", "name": "Navy", "band": "elementary", "levelGroup": "greenBlueNavy", "programTrack": "juniorRainbow", "color": "#1e3a8a" },
+    { "id": "Purple", "name": "Purple", "band": "elementary", "levelGroup": "purple", "programTrack": "juniorRainbow", "color": "#9333ea" },
+    { "id": "Yeoul", "name": "Yeoul", "band": "elementary", "levelGroup": "yeoulSaemmul", "programTrack": "seniorWaterflow", "color": "#e8b8c4" },
+    { "id": "Saemmul", "name": "Saemmul", "band": "elementary", "levelGroup": "yeoulSaemmul", "programTrack": "seniorWaterflow", "color": "#d9a3a3" },
+    { "id": "Garam", "name": "Garam", "band": "elementary", "levelGroup": "badaGaram", "programTrack": "seniorWaterflow", "color": "#16a34a" },
+    { "id": "Bada", "name": "Bada", "band": "elementary", "levelGroup": "badaGaram", "programTrack": "seniorWaterflow", "color": "#16a34a" },
+    { "id": "Byeolmaru", "name": "Byeolmaru", "band": "elementary", "levelGroup": "mirinaeByeolmaru", "programTrack": "seniorWaterflow", "color": "#2563eb" },
+    { "id": "Mirinae", "name": "Mirinae", "band": "elementary", "levelGroup": "mirinaeByeolmaru", "programTrack": "seniorWaterflow", "color": "#2563eb" },
+    { "id": "유마", "name": "유마", "band": "middle", "grade": "중1", "levelGroup": "middleSchool", "programTrack": "seniorWaterflow", "color": "#fef08a" },
+    { "id": "레오", "name": "레오", "band": "middle", "grade": "중1", "levelGroup": "middleSchool", "programTrack": "seniorWaterflow", "color": "#fef08a" },
+    { "id": "파보", "name": "파보", "band": "middle", "grade": "중1", "levelGroup": "middleSchool", "programTrack": "seniorWaterflow", "color": "#fef08a" },
+    { "id": "폴라", "name": "폴라", "band": "middle", "grade": "중1", "levelGroup": "middleSchool", "programTrack": "seniorWaterflow", "color": "#fef08a" },
+    { "id": "힉스", "name": "힉스", "band": "middle", "grade": "중2", "levelGroup": "middleSchool", "programTrack": "seniorWaterflow", "color": "#bbf7d0" },
+    { "id": "티카", "name": "티카", "band": "middle", "grade": "중2", "levelGroup": "middleSchool", "programTrack": "seniorWaterflow", "color": "#bbf7d0" },
+    { "id": "빅티", "name": "빅티", "band": "middle", "grade": "중2", "levelGroup": "middleSchool", "programTrack": "seniorWaterflow", "color": "#bbf7d0" },
+    { "id": "바이클", "name": "바이클", "band": "middle", "grade": "중2", "levelGroup": "middleSchool", "programTrack": "seniorWaterflow", "color": "#bbf7d0" },
+    { "id": "안나", "name": "안나", "band": "middle", "grade": "중3", "levelGroup": "middleSchool", "programTrack": "seniorWaterflow", "color": "#bfdbfe" },
+    { "id": "낭가", "name": "낭가", "band": "middle", "grade": "중3", "levelGroup": "middleSchool", "programTrack": "seniorWaterflow", "color": "#bfdbfe" },
+    { "id": "로체", "name": "로체", "band": "middle", "grade": "중3", "levelGroup": "middleSchool", "programTrack": "seniorWaterflow", "color": "#bfdbfe" },
+    { "id": "칡춘", "name": "칡춘", "band": "middle", "grade": "중3", "levelGroup": "middleSchool", "programTrack": "seniorWaterflow", "color": "#bfdbfe" }
+  ],
+  "books": [
+    {
+      "id": "write-now-1",
+      "title": "Write Now 1",
+      "series": "write-now",
+      "levelIds": ["Green"],
+      "unitsHint": 8,
+      "cefr": "A1"
+    },
+    {
+      "id": "early-writers-1",
+      "title": "Early Writers 1",
+      "series": "early-writers",
+      "levelIds": ["Green"],
+      "unitsHint": 8,
+      "cefr": "A1"
+    },
+    {
+      "id": "write-right-1",
+      "title": "Write Right 1",
+      "series": "write-right",
+      "levelIds": ["Green"],
+      "unitsHint": 8,
+      "cefr": "A1"
+    },
+    {
+      "id": "best-writing-starter-1",
+      "title": "The Best Writing Starter 1",
+      "series": "best-writing-starter",
+      "levelIds": ["Green"],
+      "unitsHint": 8,
+      "cefr": "A1"
+    },
+    {
+      "id": "write-now-2",
+      "title": "Write Now 2",
+      "series": "write-now",
+      "levelIds": ["Blue"],
+      "unitsHint": 8,
+      "cefr": "A1"
+    },
+    {
+      "id": "early-writers-2",
+      "title": "Early Writers 2",
+      "series": "early-writers",
+      "levelIds": ["Blue"],
+      "unitsHint": 8,
+      "cefr": "A1"
+    }
+  ],
+  "activities": [
+    {
+      "id": "wn1-vocabulary",
+      "bookId": "write-now-1",
+      "type": "vocabulary",
+      "title": "Write Now 1 Vocabulary Game",
+      "entryHtml": "activities/green/write-now-1/vocabulary/Green - Write Now 1 - Vocabulary.html",
+      "unitFilter": null,
+      "status": "ready",
+      "cefr": "A1"
+    },
+    {
+      "id": "wn1-charades",
+      "bookId": "write-now-1",
+      "type": "charades",
+      "title": "Write Now 1 Charades",
+      "entryHtml": "activities/green/write-now-1/charades/Green - Write Now 1 - Charades.html",
+      "unitFilter": null,
+      "status": "ready"
+    },
+    {
+      "id": "wn1-vocab-matching",
+      "bookId": "write-now-1",
+      "type": "teamMatch",
+      "title": "Write Now 1 Team Match",
+      "entryHtml": "activities/green/write-now-1/team-match/Green - Write Now 1 - Team Match.html",
+      "unitFilter": null,
+      "status": "ready"
+    },
+    {
+      "id": "wn1-jumping-ox",
+      "bookId": "write-now-1",
+      "type": "jumpingOx",
+      "title": "Write Now 1 Jumping OX",
+      "entryHtml": "activities/green/write-now-1/jumping-ox/Green - Write Now 1 - Jumping OX.html",
+      "unitFilter": null,
+      "status": "ready",
+      "cefr": "A1"
+    },
+    {
+      "id": "wn1-jeopardy",
+      "bookId": "write-now-1",
+      "type": "jeopardy",
+      "title": "Write Now 1 Jeopardy",
+      "entryHtml": "activities/green/write-now-1/jeopardy/Green - Write Now 1 - Jeopardy.html",
+      "unitFilter": null,
+      "status": "ready",
+      "cefr": "A1"
+    },
+    {
+      "id": "ew1-jumping-ox",
+      "bookId": "early-writers-1",
+      "type": "jumpingOx",
+      "title": "Early Writers 1 Jumping OX",
+      "entryHtml": "activities/green/early-writers-1/jumping-ox/Green - Early Writers 1 - Jumping OX.html",
+      "unitFilter": null,
+      "status": "ready",
+      "cefr": "A1"
+    },
+    {
+      "id": "wn2-jumping-ox",
+      "bookId": "write-now-2",
+      "type": "jumpingOx",
+      "title": "Write Now 2 Jumping OX",
+      "entryHtml": "activities/blue/write-now-2/jumping-ox/Blue - Write Now 2 - Jumping OX.html",
+      "unitFilter": null,
+      "status": "ready",
+      "cefr": "A1"
+    },
+    {
+      "id": "ew2-jumping-ox",
+      "bookId": "early-writers-2",
+      "type": "jumpingOx",
+      "title": "Early Writers 2 Jumping OX",
+      "entryHtml": "activities/blue/early-writers-2/jumping-ox/Blue - Early Writers 2 - Jumping OX.html",
+      "unitFilter": null,
+      "status": "ready",
+      "cefr": "A1"
+    }
+  ],
+  "activityTypes": [
+    { "id": "vocabulary", "label": "Vocabulary" },
+    { "id": "teamMatch", "label": "Team Match" },
+    { "id": "charades", "label": "Charades" },
+    { "id": "jeopardy", "label": "Jeopardy" },
+    { "id": "jumpingOx", "label": "Jumping OX" },
+    { "id": "lexiQuest", "label": "LexiQuest" }
+  ]
+}

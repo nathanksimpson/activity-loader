@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "cefrOptions": ["Pre-A1", "A1", "A2", "B1", "B2", "C1", "C2"],
+  "books": [
+    {
+      "id": "write-now-1",
+      "title": "Write Now 1",
+      "series": "write-now",
+      "levelIds": ["Green"],
+      "cefr": "A1",
+      "units": [
+        "Unit 1: My Family and I",
+        "Unit 2: My Friend Daisy",
+        "Unit 3: School Market Day",
+        "Unit 4: What a Messy Room!",
+        "Unit 5: My Favorite Thing",
+        "Unit 6: Welcome to My Town!",
+        "Unit 7: Different but Together",
+        "Unit 8: My Busy Day"
+      ],
+      "sources": [
+        "Write Now 1 vocab lists",
+        "Write Now 1 SB answer key",
+        "Write Now 1 WB answer key"
+      ]
+    },
+    {
+      "id": "early-writers-1",
+      "title": "Early Writers 1",
+      "series": "early-writers",
+      "levelIds": ["Green"],
+      "cefr": "A1",
+      "units": [
+        "Unit 1: About Me",
+        "Unit 2: My Family",
+        "Unit 3: My Monster",
+        "Unit 4: Wanted",
+        "Unit 5: My Room",
+        "Unit 6: My Friend and I",
+        "Unit 7: My Favorite Season",
+        "Unit 8: Everyday Life"
+      ],
+      "sources": [
+        "Early Writers 1 offline Jumping OX sentence bank"
+      ]
+    },
+    {
+      "id": "write-right-1",
+      "title": "Write Right 1",
+      "series": "write-right",
+      "levelIds": ["Green"],
+      "cefr": "A1",
+      "units": [],
+      "sources": []
+    },
+    {
+      "id": "best-writing-starter-1",
+      "title": "The Best Writing Starter 1",
+      "series": "best-writing-starter",
+      "levelIds": ["Green"],
+      "cefr": "A1",
+      "units": [],
+      "sources": []
+    },
+    {
+      "id": "write-now-2",
+      "title": "Write Now 2",
+      "series": "write-now",
+      "levelIds": ["Blue"],
+      "cefr": "A1",
+      "units": [
+        "Unit 1: I Can Do It by Myself",
+        "Unit 2: We're on a Picnic",
+        "Unit 3: What Do You Do After School?",
+        "Unit 4: When I Grow Up",
+        "Unit 5: My Secret Closet",
+        "Unit 6: My Favorite Food",
+        "Unit 7: Drawing My Feelings",
+        "Unit 8: My Robot Friend"
+      ],
+      "sources": [
+        "Write Now 2 vocab lists"
+      ]
+    },
+    {
+      "id": "early-writers-2",
+      "title": "Early Writers 2",
+      "series": "early-writers",
+      "levelIds": ["Blue"],
+      "cefr": "A1",
+      "units": [
+        "Unit 1: My School",
+        "Unit 2: My Style",
+        "Unit 3: My Special Recipe",
+        "Unit 4: My Birthday",
+        "Unit 5: At the Park",
+        "Unit 6: Last Winter",
+        "Unit 7: My Dream",
+        "Unit 8: How to Get There"
+      ],
+      "sources": [
+        "Early Writers 2 OX sentence bank"
+      ]
+    }
+  ]
+}

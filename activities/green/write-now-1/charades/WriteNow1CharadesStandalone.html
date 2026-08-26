@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write Now 1 Vocabulary Quiz Game (Standalone)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+        }
+        .word-display-text {
+            animation: pop-in 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        @keyframes pop-in {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .timer-urgent {
+            color: #ef4444; /* red-500 */
+            animation: pulse-red 1s infinite;
+        }
+        @keyframes pulse-red {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        /* Hide number input arrows */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        /* Custom Toggle Switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #4f46e5;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #4f46e5;
+        }
+        /* Drag-over highlight */
+        .drag-over-highlight {
+            outline: 3px dashed #4f46e5;
+            outline-offset: 4px;
+            background-color: #e0e7ff; /* indigo-100 */
+        }
+        /* Modal styles */
+        .modal-backdrop {
+            background-color: rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 flex items-center justify-center min-h-screen p-4">
+    
+    <div class="w-full max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 text-center relative">
+        
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center rounded-2xl z-50 hidden">
+            <div class="text-center">
+                <svg class="animate-spin h-8 w-8 text-indigo-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <p id="loading-text" class="mt-2 text-slate-600 font-semibold">Initializing...</p>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <div class="flex justify-center items-center relative mb-2">
+            <h1 class="text-3xl md:text-4xl font-black text-indigo-700">Write Now 1 Vocabulary Quiz Game</h1>
+            <button id="view-words-btn" class="absolute right-0 top-1/2 -translate-y-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 p-2 rounded-full transition" title="View Word Lists">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            </button>
+        </div>
+        <p class="text-slate-500 mb-6">Guess the word before the timer runs out!</p>
+
+        <!-- Main Game View -->
+        <div id="game-view">
+            <!-- Scoreboard Container -->
+            <div id="scoreboard-container" class="grid gap-4 mb-2"></div>
+            <div class="flex justify-center items-center gap-4 mb-2">
+                <button id="add-team-btn" class="text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 px-4 rounded-md transition">+ Add Team</button>
+                <button id="remove-team-btn" class="text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 px-4 rounded-md transition">- Remove Team</button>
+            </div>
+            <div class="text-center mb-6">
+                 <button id="reset-scores-btn" class="text-sm text-slate-500 hover:text-indigo-600">Reset All Scores</button>
+            </div>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+                <select id="unit-select" class="w-full sm:w-auto bg-slate-100 border-2 border-slate-200 text-slate-700 font-bold py-2 px-4 rounded-lg focus:outline-none focus:border-indigo-500 transition"></select>
+                <div class="flex items-center gap-2 bg-slate-800 text-white font-bold p-2 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <span id="timer-display" class="text-lg w-16 text-center">01:00</span>
+                    <div class="flex items-center gap-1 border-l border-slate-600 pl-2">
+                        <input type="number" id="timer-setting" value="60" min="10" max="300" step="5" class="bg-slate-700 w-12 text-center font-bold rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" title="Set timer in seconds">
+                        <span class="text-slate-400 text-sm">sec</span>
+                    </div>
+                </div>
+                <div class="flex items-center justify-center gap-x-4">
+                    <div class="flex items-center">
+                        <span class="mr-2 text-sm font-bold text-slate-600">English</span>
+                        <div class="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
+                            <input type="checkbox" name="toggle-en" id="english-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                            <label for="english-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="mr-2 text-sm font-bold text-slate-600">Korean</span>
+                        <div class="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
+                            <input type="checkbox" name="toggle-ko" id="korean-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                            <label for="korean-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                        </div>
+                    </div>
+                     <div class="flex items-center">
+                        <span class="mr-2 text-sm font-bold text-slate-600">Images</span>
+                        <div class="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
+                            <input type="checkbox" name="toggle-img" id="image-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                            <label for="image-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="word-container" class="bg-indigo-600 text-white rounded-xl min-h-[350px] flex flex-col items-center justify-center p-6 mb-6 shadow-inner">
+                <div id="image-display" class="w-48 h-48 mb-4 flex items-center justify-center"></div>
+                <p id="word-display-text" class="text-4xl md:text-5xl font-black">Click 'Next Word' to Start!</p>
+                <p id="translation-display" class="text-2xl md:text-3xl font-bold text-indigo-200 mt-2 hidden"></p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button id="next-word-btn" class="w-full bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition-transform transform hover:scale-105 shadow-lg">Next Word</button>
+                <button id="start-pause-btn" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg transition-transform transform hover:scale-105 shadow-lg">Start</button>
+                <button id="reset-timer-btn" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-lg transition-transform transform hover:scale-105 shadow-lg">Reset Timer</button>
+            </div>
+            <div class="mt-6 border-t pt-4 flex items-center justify-center gap-4">
+                <button id="upload-images-btn" class="text-sm bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md transition">Upload Custom Images</button>
+                <button id="clear-images-btn" class="text-sm bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition hidden">Clear Images</button>
+                <input type="file" id="image-upload-input" multiple accept="image/*" class="hidden">
+            </div>
+        </div>
+
+        <!-- Word List View -->
+        <div id="word-list-view" class="hidden">
+            <div class="flex justify-between items-center mb-4">
+                 <h2 class="text-2xl font-bold text-slate-700">Vocabulary Word Lists</h2>
+                 <button id="back-to-game-btn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg transition">Back to Game</button>
+            </div>
+            <div class="text-sm text-slate-500 mb-4">Click a card to upload, or drag & drop an image onto a card. You can also paste an image (must be named correctly, e.g., 'tall.jpg').</div>
+            <div id="word-list-container" class="max-h-[70vh] overflow-y-auto space-y-6 text-left p-4 bg-slate-50 rounded-lg"></div>
+            <input type="file" id="word-list-image-upload" accept="image/*" class="hidden">
+        </div>
+
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="fixed inset-0 z-50 hidden items-center justify-center modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
+            <h3 id="modal-title" class="text-lg font-bold text-slate-800 mb-2">Are you sure?</h3>
+            <p id="modal-message" class="text-slate-600 mb-6">This action cannot be undone.</p>
+            <div class="flex justify-end gap-3">
+                <button id="modal-cancel-btn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 px-4 rounded-lg">Cancel</button>
+                <button id="modal-confirm-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // --- Vocabulary Data (from Write Now 1 PDF) ---
+        const vocabByUnit = {
+            1: { name: "Unit 1: My Family and I", words: [ { en: 'curly', ko: '곱슬곱슬한' }, { en: 'tall', ko: '키가 큰' }, { en: 'chubby', ko: '통통한' }, { en: 'thin', ko: '마른' }, { en: 'straight', ko: '곧은, 곱슬거리지 않는' }, { en: 'short', ko: '키가 작은' }, { en: 'student', ko: '학생' }, { en: 'brother', ko: '남자 형제' }, { en: 'sister', ko: '여자 형제' }, { en: 'strong', ko: '힘이 센' }, { en: 'pretty', ko: '예쁜' }, { en: 'friend', ko: '친구' }, { en: 'age', ko: '나이' }, { en: 'body', ko: '몸' }, { en: 'hair', ko: '머리카락' } ] },
+            2: { name: "Unit 2: My Friend Daisy", words: [ { en: 'smart', ko: '똑똑한' }, { en: 'kind', ko: '친절한' }, { en: 'brave', ko: '용감한' }, { en: 'funny', ko: '재미있는' }, { en: 'shy', ko: '수줍은' }, { en: 'quiet', ko: '조용한' }, { en: 'weak', ko: '약한' }, { en: 'introduce', ko: '소개하다' }, { en: 'tell', ko: '말하다' }, { en: 'story', ko: '이야기' }, { en: 'favorite', ko: '가장 좋아하는' }, { en: 'color', ko: '색깔' }, { en: 'help people', ko: '사람들을 도와주다' }, { en: 'play the piano', ko: '피아노를 치다' }, { en: 'do homework', ko: '숙제를 하다' } ] },
+            3: { name: "Unit 3: School Market Day", words: [ { en: 'umbrella', ko: '우산' }, { en: 'soccer ball', ko: '축구공' }, { en: 'teddy bear', ko: '곰 인형' }, { en: 'sneakers', ko: '운동화' }, { en: 'hairband', ko: '머리띠' }, { en: 'marble', ko: '구슬' }, { en: 'sell', ko: '팔다' }, { en: 'dish', ko: '접시' }, { en: 'toy', ko: '장난감' }, { en: 'shoes', ko: '신발' }, { en: 'jacket', ko: '재킷' }, { en: 'market', ko: '시장' }, { en: 'buy', ko: '사다' }, { en: 'old things', ko: '오래된 물건들' }, { en: 'sweater', ko: '스웨터' } ] },
+            4: { name: "Unit 4: What a Messy Room!", words: [ { en: 'chair', ko: '의자' }, { en: 'dresser', ko: '서랍장' }, { en: 'rug', ko: '깔개, 양탄자' }, { en: 'wardrobe', ko: '옷장' }, { en: 'bed', ko: '침대' }, { en: 'curtain', ko: '커튼' }, { en: 'slippers', ko: '슬리퍼' }, { en: 'door', ko: '문' }, { en: 'table', ko: '탁자, 테이블' }, { en: 'basket', ko: '바구니' }, { en: 'messy', ko: '지저분한' }, { en: 'mess', ko: '엉망진창' }, { en: 'backpack', ko: '배낭' }, { en: 'favorite', ko: '가장 좋아하는' }, { en: 'clean', ko: '청소하다' } ] },
+            5: { name: "Unit 5: My Favorite Thing", words: [ { en: 'toy truck', ko: '장난감 트럭' }, { en: 'bike', ko: '자전거' }, { en: 'robot', ko: '로봇' }, { en: 'seat', ko: '안장, 좌석' }, { en: 'wheel', ko: '바퀴' }, { en: 'basket', ko: '바구니' }, { en: 'pencil', ko: '연필' }, { en: 'have', ko: '가지고 있다' }, { en: 'skateboard', ko: '스케이트보드' }, { en: 'door', ko: '문' }, { en: 'favorite', ko: '가장 좋아하는' }, { en: 'thing', ko: '물건, 것' }, { en: 'driver', ko: '운전자, 기사' }, { en: 'arm', ko: '팔' }, { en: 'leg', ko: '다리' } ] },
+            6: { name: "Unit 6: Welcome to My Town!", words: [ { en: 'toy store', ko: '장난감 가게' }, { en: 'library', ko: '도서관' }, { en: 'fire station', ko: '소방서' }, { en: 'supermarket', ko: '슈퍼마켓' }, { en: 'playground', ko: '놀이터' }, { en: 'restaurant', ko: '레스토랑, 식당' }, { en: 'train station', ko: '기차역' }, { en: 'museum', ko: '박물관' }, { en: 'building', ko: '빌딩, 건물' }, { en: 'town', ko: '동네, 마을' }, { en: 'look around', ko: '둘러보다' }, { en: 'firefighter', ko: '소방관' }, { en: 'painting', ko: '그림' }, { en: 'statue', ko: '조각상' }, { en: 'vegetable', ko: '채소' } ] },
+            7: { name: "Unit 7: Different but Together", words: [ { en: 'eat ice cream', ko: '아이스크림을 먹다' }, { en: 'paint pictures', ko: '그림을 그리다' }, { en: 'ride a bike', ko: '자전거를 타다' }, { en: 'play with blocks', ko: '블록을 가지고 놀다' }, { en: 'grow plants', ko: '식물을 기르다' }, { en: 'watch TV', ko: 'TV를 보다' }, { en: 'drink coffee', ko: '커피를 마시다' }, { en: 'fly kites', ko: '연을 날리다' }, { en: 'listen to music', ko: '음악을 듣다' }, { en: 'drive a car', ko: '차를 운전하다' }, { en: 'cousin', ko: '사촌' }, { en: 'different', ko: '다른' }, { en: 'walk', ko: '걷다' }, { en: 'both', ko: '둘다' }, { en: 'read comics', ko: '만화책을 읽다' } ] },
+            8: { name: "Unit 8: My Busy Day", words: [ { en: 'have violin lessons', ko: '바이올린 수업을 받다' }, { en: 'feed my dog', ko: '(내) 개에게 먹이를 주다' }, { en: 'get up', ko: '일어나다' }, { en: 'jog with my dad', ko: '아빠와 함께 조깅을 하다' }, { en: 'study math', ko: '수학을 공부하다' }, { en: 'eat dinner', ko: '저녁을 먹다' }, { en: 'busy', ko: '바쁜' }, { en: 'do my homework', ko: '(내) 숙제를 하다' }, { en: 'take a shower', ko: '샤워를 하다' }, { en: 'water my plant', ko: '(내) 식물에 물을 주다' }, { en: 'eat breakfast', ko: '아침을 먹다' }, { en: 'evening', ko: '저녁' }, { en: 'then', ko: '그 다음에' }, { en: 'pack my backpack', ko: '(내) 배낭을 싸다' }, { en: 'ready', ko: '준비가 된' } ] }
+        };
+
+        // --- DOM Elements ---
+        const allDOMElements = {
+            loadingOverlay: document.getElementById('loading-overlay'),
+            loadingText: document.getElementById('loading-text'),
+            gameView: document.getElementById('game-view'),
+            wordListView: document.getElementById('word-list-view'),
+            viewWordsBtn: document.getElementById('view-words-btn'),
+            backToGameBtn: document.getElementById('back-to-game-btn'),
+            wordListContainer: document.getElementById('word-list-container'),
+            wordListImageUpload: document.getElementById('word-list-image-upload'),
+            scoreboardContainer: document.getElementById('scoreboard-container'),
+            addTeamBtn: document.getElementById('add-team-btn'),
+            removeTeamBtn: document.getElementById('remove-team-btn'),
+            resetScoresBtn: document.getElementById('reset-scores-btn'),
+            unitSelect: document.getElementById('unit-select'),
+            timerDisplay: document.getElementById('timer-display'),
+            timerSetting: document.getElementById('timer-setting'),
+            imageDisplay: document.getElementById('image-display'),
+            wordDisplayText: document.getElementById('word-display-text'),
+            translationDisplay: document.getElementById('translation-display'),
+            englishToggle: document.getElementById('english-toggle'),
+            koreanToggle: document.getElementById('korean-toggle'),
+            imageToggle: document.getElementById('image-toggle'),
+            nextWordBtn: document.getElementById('next-word-btn'),
+            startPauseBtn: document.getElementById('start-pause-btn'),
+            resetTimerBtn: document.getElementById('reset-timer-btn'),
+            uploadImagesBtn: document.getElementById('upload-images-btn'),
+            clearImagesBtn: document.getElementById('clear-images-btn'),
+            imageUploadInput: document.getElementById('image-upload-input'),
+            modal: document.getElementById('confirmation-modal'),
+            modalTitle: document.getElementById('modal-title'),
+            modalMessage: document.getElementById('modal-message'),
+            modalConfirmBtn: document.getElementById('modal-confirm-btn'),
+            modalCancelBtn: document.getElementById('modal-cancel-btn'),
+        };
+
+        // --- Game State ---
+        let teams = [ { name: 'Team 1', score: 0 }, { name: 'Team 2', score: 0 } ];
+        const teamColors = [
+            { bg: 'bg-blue-100', text: 'text-blue-800', ring: 'focus:ring-blue-500', addBtn: 'bg-blue-500 hover:bg-blue-600', scoreText: 'text-blue-600', minusBtn: 'bg-blue-700 hover:bg-blue-800' },
+            { bg: 'bg-rose-100', text: 'text-rose-800', ring: 'focus:ring-rose-500', addBtn: 'bg-rose-500 hover:bg-rose-600', scoreText: 'text-rose-600', minusBtn: 'bg-rose-700 hover:bg-rose-800' },
+            { bg: 'bg-amber-100', text: 'text-amber-800', ring: 'focus:ring-amber-500', addBtn: 'bg-amber-500 hover:bg-amber-600', scoreText: 'text-amber-600', minusBtn: 'bg-amber-700 hover:bg-amber-800' },
+            { bg: 'bg-teal-100', text: 'text-teal-800', ring: 'focus:ring-teal-500', addBtn: 'bg-teal-500 hover:bg-teal-600', scoreText: 'text-teal-600', minusBtn: 'bg-teal-700 hover:bg-teal-800' },
+            { bg: 'bg-violet-100', text: 'text-violet-800', ring: 'focus:ring-violet-500', addBtn: 'bg-violet-500 hover:bg-violet-600', scoreText: 'text-violet-600', minusBtn: 'bg-violet-700 hover:bg-violet-800' },
+            { bg: 'bg-lime-100', text: 'text-lime-800', ring: 'focus:ring-lime-500', addBtn: 'bg-lime-500 hover:bg-lime-600', scoreText: 'text-lime-600', minusBtn: 'bg-lime-700 hover:bg-lime-800' }
+        ];
+        let currentUnit = 'all';
+        let lastWord = {};
+        let shownWords = {}; // Keeps track of shown words per unit to avoid repeats
+        let timer;
+        let timeLeft;
+        let isTimerRunning = false;
+        let isPaused = false;
+        let imageCache = {};
+        let wordToUploadFor = null;
+        let lastDragTarget = null;
+        let modalConfirmCallback = null;
+
+        // --- IndexedDB Helper for Local Storage ---
+        const dbHelper = {
+            db: null,
+            DB_NAME: 'VocabCharadesDB',
+            STORE_NAME: 'images',
+
+            open() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.DB_NAME, 1);
+                    request.onerror = (event) => reject("Error opening IndexedDB.");
+                    request.onsuccess = (event) => {
+                        this.db = event.target.result;
+                        resolve();
+                    };
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+                        if (!db.objectStoreNames.contains(this.STORE_NAME)) {
+                            db.createObjectStore(this.STORE_NAME, { keyPath: 'id' });
+                        }
+                    };
+                });
+            },
+
+            saveImage(id, data) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction([this.STORE_NAME], 'readwrite');
+                    const store = transaction.objectStore(this.STORE_NAME);
+                    const request = store.put({ id: id, data: data });
+                    request.onsuccess = () => resolve();
+                    request.onerror = (event) => reject("Error saving image to IndexedDB.");
+                });
+            },
+
+            loadAllImages() {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction([this.STORE_NAME], 'readonly');
+                    const store = transaction.objectStore(this.STORE_NAME);
+                    const request = store.getAll();
+                    request.onsuccess = (event) => {
+                        const result = {};
+                        event.target.result.forEach(item => {
+                            result[item.id] = item.data;
+                        });
+                        resolve(result);
+                    };
+                    request.onerror = (event) => reject("Error loading images from IndexedDB.");
+                });
+            },
+
+            clearAll() {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction([this.STORE_NAME], 'readwrite');
+                    const store = transaction.objectStore(this.STORE_NAME);
+                    const request = store.clear();
+                    request.onsuccess = () => resolve();
+                    request.onerror = (event) => reject("Error clearing IndexedDB store.");
+                });
+            }
+        };
+
+        // --- UI Functions ---
+        function showLoading(message) {
+            allDOMElements.loadingText.textContent = message;
+            allDOMElements.loadingOverlay.classList.remove('hidden');
+            allDOMElements.loadingOverlay.classList.add('flex');
+        }
+
+        function hideLoading() {
+            allDOMElements.loadingOverlay.classList.add('hidden');
+            allDOMElements.loadingOverlay.classList.remove('flex');
+        }
+
+        function showConfirmationModal(title, message, onConfirm) {
+            allDOMElements.modalTitle.textContent = title;
+            allDOMElements.modalMessage.textContent = message;
+            modalConfirmCallback = onConfirm;
+            allDOMElements.modal.classList.remove('hidden');
+            allDOMElements.modal.classList.add('flex');
+        }
+
+        function hideConfirmationModal() {
+            allDOMElements.modal.classList.add('hidden');
+            allDOMElements.modal.classList.remove('flex');
+            modalConfirmCallback = null;
+        }
+
+        // --- Core Game Functions ---
+        function updateScores() {
+            document.querySelectorAll('.team-score').forEach((el, index) => {
+                if (teams[index]) el.textContent = teams[index].score;
+            });
+        }
+
+        function renderScoreboard() {
+            const teamCount = teams.length;
+            let gridClasses = 'grid gap-4 mb-2 ';
+            switch (teamCount) {
+                case 1: gridClasses += 'grid-cols-1'; break;
+                case 2: gridClasses += 'grid-cols-2'; break;
+                case 3: gridClasses += 'grid-cols-3'; break;
+                case 4: gridClasses += 'grid-cols-2 md:grid-cols-4'; break;
+                case 5: gridClasses += 'grid-cols-2 md:grid-cols-3 lg:grid-cols-5'; break;
+                case 6: gridClasses += 'grid-cols-2 md:grid-cols-3'; break;
+                default: gridClasses += 'grid-cols-2 md:grid-cols-3';
+            }
+            allDOMElements.scoreboardContainer.className = gridClasses;
+            const nameSizeClass = teamCount > 4 ? 'text-lg' : 'text-xl';
+            const scoreSizeClass = teamCount > 4 ? 'text-3xl' : 'text-4xl';
+            allDOMElements.scoreboardContainer.innerHTML = '';
+            teams.forEach((team, index) => {
+                const color = teamColors[index % teamColors.length];
+                const teamCard = document.createElement('div');
+                teamCard.className = `${color.bg} p-4 rounded-lg`;
+                teamCard.innerHTML = `<input type="text" value="${team.name}" data-index="${index}" class="team-name-input ${nameSizeClass} font-bold ${color.text} bg-transparent w-full text-center mb-2 p-1 focus:outline-none focus:ring-2 ${color.ring} rounded-md"><p class="team-score ${scoreSizeClass} font-black ${color.scoreText} my-2">${team.score}</p><div class="flex gap-2"><button data-index="${index}" class="add-point-btn w-full ${color.addBtn} text-white font-bold py-2 px-4 rounded-md transition">+1</button><button data-index="${index}" class="minus-point-btn w-full ${color.minusBtn} text-white font-bold py-2 px-4 rounded-md transition">-1</button></div>`;
+                allDOMElements.scoreboardContainer.appendChild(teamCard);
+            });
+        }
+
+        function populateUnits() {
+            const allOption = document.createElement('option');
+            allOption.value = 'all';
+            allOption.textContent = 'All Units';
+            allDOMElements.unitSelect.appendChild(allOption);
+
+            for (const unitId in vocabByUnit) {
+                const option = document.createElement('option');
+                option.value = unitId;
+                option.textContent = vocabByUnit[unitId].name;
+                allDOMElements.unitSelect.appendChild(option);
+            }
+        }
+
+        function updateWordCardDisplay() {
+            if (!lastWord.en) return;
+
+            const { englishToggle, koreanToggle, imageToggle, wordDisplayText, translationDisplay, imageDisplay } = allDOMElements;
+            
+            const showEn = englishToggle.checked;
+            const showKo = koreanToggle.checked;
+            const showImg = imageToggle.checked;
+            const imageUrl = imageCache[lastWord.en?.toLowerCase()];
+
+            // Reset visibility
+            wordDisplayText.classList.add('hidden');
+            translationDisplay.classList.add('hidden');
+            imageDisplay.classList.add('hidden');
+            imageDisplay.innerHTML = '';
+
+            // English
+            if (showEn) {
+                wordDisplayText.classList.remove('hidden');
+            }
+
+            // Korean
+            if (showKo) {
+                translationDisplay.classList.remove('hidden');
+            }
+
+            // Image
+            if (showImg) {
+                if (imageUrl) {
+                    imageDisplay.innerHTML = `<img src="${imageUrl}" alt="${lastWord.en}" class="w-full h-full object-contain rounded-lg">`;
+                    imageDisplay.classList.remove('hidden');
+                } else {
+                    // Fallback: if image is toggled but not available, show English text.
+                    wordDisplayText.classList.remove('hidden');
+                }
+            }
+        }
+
+        function displayNewWord() {
+            let allWordsInUnit;
+            if (currentUnit === 'all') {
+                allWordsInUnit = Object.values(vocabByUnit).flatMap(unit => unit.words);
+            } else {
+                allWordsInUnit = vocabByUnit[currentUnit].words;
+            }
+
+            if (!shownWords[currentUnit]) {
+                shownWords[currentUnit] = [];
+            }
+            let availableWords = allWordsInUnit.filter(word => !shownWords[currentUnit].includes(word.en));
+            
+            // Check if we need to reshuffle the deck
+            if (availableWords.length === 0 && shownWords[currentUnit].length > 0) {
+                // Display a reshuffle message on the card
+                allDOMElements.wordDisplayText.textContent = "Reshuffling Deck!";
+                allDOMElements.translationDisplay.textContent = "You've seen all the words.";
+                allDOMElements.wordDisplayText.classList.remove('hidden');
+                allDOMElements.translationDisplay.classList.remove('hidden');
+                allDOMElements.imageDisplay.innerHTML = '';
+                allDOMElements.imageDisplay.classList.add('hidden');
+
+                // Reset the shown words list for the current unit
+                shownWords[currentUnit] = [];
+                availableWords = allWordsInUnit; // Repopulate the available words
+                
+                // After a short delay, display the first word of the new round
+                setTimeout(() => {
+                    const newWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+                    shownWords[currentUnit].push(newWord.en);
+                    
+                    lastWord = newWord;
+                    allDOMElements.wordDisplayText.textContent = newWord.en;
+                    allDOMElements.translationDisplay.textContent = newWord.ko;
+                    
+                    updateWordCardDisplay();
+
+                    // Trigger pop-in animation
+                    allDOMElements.wordDisplayText.classList.remove('word-display-text');
+                    void allDOMElements.wordDisplayText.offsetWidth; // Reflow to restart animation
+                    allDOMElements.wordDisplayText.classList.add('word-display-text');
+                }, 1500); // 1.5 second delay for the message
+                return; // Stop execution to wait for the timeout
+            }
+
+            // If no words are available at all (e.g., empty unit, though unlikely), show a message.
+            if (availableWords.length === 0) {
+                allDOMElements.wordDisplayText.textContent = "No words in this unit!";
+                allDOMElements.translationDisplay.textContent = "";
+                lastWord = {};
+                return;
+            }
+
+            // Normal operation: pick a new word from the available list
+            const newWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+            shownWords[currentUnit].push(newWord.en);
+            
+            lastWord = newWord;
+            allDOMElements.wordDisplayText.textContent = newWord.en;
+            allDOMElements.translationDisplay.textContent = newWord.ko;
+            
+            updateWordCardDisplay();
+
+            // Trigger pop-in animation
+            allDOMElements.wordDisplayText.classList.remove('word-display-text');
+            void allDOMElements.wordDisplayText.offsetWidth; // Reflow to restart animation
+            allDOMElements.wordDisplayText.classList.add('word-display-text');
+        }
+
+        function handleResetTimer() {
+            clearInterval(timer);
+            isTimerRunning = false;
+            isPaused = false;
+            timeLeft = parseInt(allDOMElements.timerSetting.value, 10) || 60;
+            allDOMElements.timerSetting.disabled = false;
+            updateTimerDisplay();
+            allDOMElements.startPauseBtn.textContent = 'Start';
+            allDOMElements.startPauseBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
+            allDOMElements.startPauseBtn.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+            const seconds = (timeLeft % 60).toString().padStart(2, '0');
+            allDOMElements.timerDisplay.textContent = `${minutes}:${seconds}`;
+            if (timeLeft <= 10 && timeLeft > 0) {
+                allDOMElements.timerDisplay.classList.add('timer-urgent');
+            } else {
+                allDOMElements.timerDisplay.classList.remove('timer-urgent');
+            }
+        }
+
+        function handleStartPause() {
+            if (isTimerRunning) {
+                clearInterval(timer);
+                isTimerRunning = false;
+                isPaused = true;
+                allDOMElements.startPauseBtn.textContent = 'Resume';
+                allDOMElements.startPauseBtn.classList.remove('bg-emerald-500', 'hover:bg-emerald-600');
+                allDOMElements.startPauseBtn.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
+            } else {
+                if (!isPaused) {
+                    timeLeft = parseInt(allDOMElements.timerSetting.value, 10) || 60;
+                }
+                allDOMElements.timerSetting.disabled = true;
+                isTimerRunning = true;
+                isPaused = false;
+                allDOMElements.startPauseBtn.textContent = 'Pause';
+                allDOMElements.startPauseBtn.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
+                allDOMElements.startPauseBtn.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
+                timer = setInterval(() => {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    if (timeLeft <= 0) {
+                        handleResetTimer();
+                        allDOMElements.wordDisplayText.textContent = "Time's Up!";
+                        const synth = new Tone.Synth().toDestination();
+                        synth.triggerAttackRelease("C4", "8n", Tone.now());
+                        synth.triggerAttackRelease("G3", "8n", Tone.now() + 0.2);
+                    }
+                }, 1000);
+            }
+        }
+        
+        // --- IndexedDB & Image Handling ---
+        async function processAndSaveImage(file, wordKey) {
+            if (!file || !file.type.startsWith('image/') || !wordKey) return;
+            const wordId = wordKey.toLowerCase();
+            
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const base64Image = e.target.result;
+                imageCache[wordId] = base64Image;
+                if (!allDOMElements.wordListView.classList.contains('hidden')) {
+                    renderWordListPage();
+                }
+                try {
+                    await dbHelper.saveImage(wordId, base64Image);
+                    allDOMElements.clearImagesBtn.classList.remove('hidden');
+                } catch (error) {
+                    console.error("Error saving image to local database:", error);
+                    alert("Could not save image. Please try again.");
+                    delete imageCache[wordId];
+                    if (!allDOMElements.wordListView.classList.contains('hidden')) {
+                        renderWordListPage();
+                    }
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function loadImagesFromDB() {
+            showLoading("Loading saved images from your browser...");
+            try {
+                imageCache = await dbHelper.loadAllImages();
+                if (Object.keys(imageCache).length > 0) {
+                    allDOMElements.clearImagesBtn.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error("Error loading images from local database:", error);
+                alert("Could not load saved images.");
+            }
+        }
+        
+        async function clearAllImages() {
+            showLoading("Deleting all local images...");
+            try {
+                await dbHelper.clearAll();
+                imageCache = {};
+                allDOMElements.imageDisplay.innerHTML = '';
+                allDOMElements.imageDisplay.classList.add('hidden');
+                allDOMElements.clearImagesBtn.classList.add('hidden');
+                if (!allDOMElements.wordListView.classList.contains('hidden')) {
+                    renderWordListPage();
+                }
+            } catch (error) {
+                console.error("Error deleting images from local database:", error);
+                alert("Could not delete images. Please try again.");
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function handleBulkImageUpload(event) {
+            const files = event.target.files;
+            if (!files.length) return;
+            for (const file of files) {
+                const wordKey = file.name.split('.').slice(0, -1).join('.');
+                processAndSaveImage(file, wordKey);
+            }
+            alert(`${files.length} image(s) are being processed.`);
+        }
+
+        function renderWordListPage() {
+            allDOMElements.wordListContainer.innerHTML = '';
+            for (const unitId in vocabByUnit) {
+                const unit = vocabByUnit[unitId];
+                const unitSection = document.createElement('div');
+                const unitHeader = document.createElement('h3');
+                unitHeader.className = 'text-xl font-bold text-indigo-700 mb-3 sticky top-0 bg-slate-50 py-2';
+                unitHeader.textContent = unit.name;
+                unitSection.appendChild(unitHeader);
+                const wordsGrid = document.createElement('div');
+                wordsGrid.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4';
+                unit.words.forEach(word => {
+                    const wordCard = document.createElement('div');
+                    wordCard.className = 'bg-white p-3 rounded-lg shadow flex flex-col items-center text-center';
+                    const imageUrl = imageCache[word.en.toLowerCase()];
+                    const imageEl = document.createElement('div');
+                    imageEl.className = 'word-card-image-trigger w-24 h-24 bg-slate-200 rounded-md mb-2 flex items-center justify-center cursor-pointer hover:bg-slate-300 transition-colors';
+                    imageEl.dataset.wordEn = word.en;
+                    if (imageUrl) {
+                        imageEl.innerHTML = `<img src="${imageUrl}" alt="${word.en}" class="w-full h-full object-cover rounded-md pointer-events-none">`;
+                    } else {
+                        imageEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400 pointer-events-none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`;
+                    }
+                    const enText = document.createElement('p');
+                    enText.className = 'font-bold text-slate-800';
+                    enText.textContent = word.en;
+                    const koText = document.createElement('p');
+                    koText.className = 'text-sm text-slate-500';
+                    koText.textContent = word.ko;
+                    wordCard.appendChild(imageEl);
+                    wordCard.appendChild(enText);
+                    wordCard.appendChild(koText);
+                    wordsGrid.appendChild(wordCard);
+                });
+                unitSection.appendChild(wordsGrid);
+                allDOMElements.wordListContainer.appendChild(unitSection);
+            }
+        }
+
+        // --- Event Listeners Setup ---
+        function setupEventListeners() {
+            allDOMElements.scoreboardContainer.addEventListener('click', (e) => {
+                const index = e.target.dataset.index;
+                if (index === undefined) return;
+                if (e.target.classList.contains('add-point-btn')) teams[index].score++;
+                else if (e.target.classList.contains('minus-point-btn') && teams[index].score > 0) teams[index].score--;
+                updateScores();
+            });
+            allDOMElements.scoreboardContainer.addEventListener('input', (e) => {
+                const index = e.target.dataset.index;
+                if (index !== undefined && e.target.classList.contains('team-name-input')) teams[index].name = e.target.value;
+            });
+            allDOMElements.addTeamBtn.addEventListener('click', () => {
+                if (teams.length < 6) {
+                    teams.push({ name: `Team ${teams.length + 1}`, score: 0 });
+                    renderScoreboard();
+                }
+            });
+            allDOMElements.removeTeamBtn.addEventListener('click', () => {
+                if (teams.length > 1) {
+                    teams.pop();
+                    renderScoreboard();
+                }
+            });
+            allDOMElements.resetScoresBtn.addEventListener('click', () => {
+                showConfirmationModal('Reset Scores?', 'Are you sure you want to reset all team scores to 0?', () => {
+                    teams.forEach(team => team.score = 0);
+                    updateScores();
+                });
+            });
+            allDOMElements.unitSelect.addEventListener('change', (e) => {
+                currentUnit = e.target.value;
+                allDOMElements.wordDisplayText.textContent = "Click 'Next Word'!";
+                allDOMElements.translationDisplay.classList.add('hidden');
+                handleResetTimer();
+            });
+            allDOMElements.nextWordBtn.addEventListener('click', () => {
+                displayNewWord();
+                handleResetTimer();
+            });
+            allDOMElements.startPauseBtn.addEventListener('click', handleStartPause);
+            allDOMElements.resetTimerBtn.addEventListener('click', handleResetTimer);
+            allDOMElements.timerSetting.addEventListener('input', () => {
+                if (!isTimerRunning && !isPaused) {
+                    timeLeft = parseInt(allDOMElements.timerSetting.value, 10) || 60;
+                    updateTimerDisplay();
+                }
+            });
+            allDOMElements.uploadImagesBtn.addEventListener('click', () => allDOMElements.imageUploadInput.click());
+            allDOMElements.imageUploadInput.addEventListener('change', handleBulkImageUpload);
+            allDOMElements.clearImagesBtn.addEventListener('click', () => {
+                showConfirmationModal('Delete All Images?', 'This will permanently delete all your uploaded images from this browser. This action cannot be undone.', clearAllImages);
+            });
+
+            function handleToggleChange(event) {
+                const { englishToggle, koreanToggle, imageToggle } = allDOMElements;
+                const toggles = [englishToggle, koreanToggle, imageToggle];
+                const checkedCount = toggles.filter(t => t.checked).length;
+
+                if (checkedCount === 0) {
+                    event.target.checked = true; // Prevent unchecking the last one
+                    return; 
+                }
+                updateWordCardDisplay();
+            }
+
+            allDOMElements.englishToggle.addEventListener('change', handleToggleChange);
+            allDOMElements.koreanToggle.addEventListener('change', handleToggleChange);
+            allDOMElements.imageToggle.addEventListener('change', handleToggleChange);
+
+            allDOMElements.viewWordsBtn.addEventListener('click', () => {
+                allDOMElements.gameView.classList.add('hidden');
+                renderWordListPage();
+                allDOMElements.wordListView.classList.remove('hidden');
+            });
+            allDOMElements.backToGameBtn.addEventListener('click', () => {
+                allDOMElements.wordListView.classList.add('hidden');
+                allDOMElements.gameView.classList.remove('hidden');
+            });
+            allDOMElements.wordListContainer.addEventListener('click', (e) => {
+                const trigger = e.target.closest('.word-card-image-trigger');
+                if (trigger) {
+                    wordToUploadFor = trigger.dataset.wordEn;
+                    allDOMElements.wordListImageUpload.click();
+                }
+            });
+            allDOMElements.wordListImageUpload.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (!file || !wordToUploadFor) return;
+                processAndSaveImage(file, wordToUploadFor);
+                wordToUploadFor = null;
+                event.target.value = '';
+            });
+            allDOMElements.wordListContainer.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const target = e.target.closest('.word-card-image-trigger');
+                if (target) {
+                    if (lastDragTarget && lastDragTarget !== target) lastDragTarget.classList.remove('drag-over-highlight');
+                    target.classList.add('drag-over-highlight');
+                    lastDragTarget = target;
+                }
+            });
+            allDOMElements.wordListContainer.addEventListener('dragleave', (e) => {
+                if (lastDragTarget) {
+                    lastDragTarget.classList.remove('drag-over-highlight');
+                    lastDragTarget = null;
+                }
+            });
+            allDOMElements.wordListContainer.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (lastDragTarget) lastDragTarget.classList.remove('drag-over-highlight');
+                const target = e.target.closest('.word-card-image-trigger');
+                const files = e.dataTransfer.files;
+                if (target && files.length > 0) {
+                    processAndSaveImage(files[0], target.dataset.wordEn);
+                }
+                lastDragTarget = null;
+            });
+            allDOMElements.wordListContainer.addEventListener('paste', (e) => {
+                const items = e.clipboardData.items;
+                let found = false;
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf('image') !== -1) {
+                        const file = items[i].getAsFile();
+                        const wordKey = file.name.split('.').slice(0, -1).join('.');
+                        if (wordKey) {
+                            processAndSaveImage(file, wordKey);
+                            found = true;
+                        }
+                    }
+                }
+                if (found) alert("Pasted image(s) are being processed based on their filename.");
+            });
+            allDOMElements.modalCancelBtn.addEventListener('click', hideConfirmationModal);
+            allDOMElements.modalConfirmBtn.addEventListener('click', () => {
+                if (modalConfirmCallback) modalConfirmCallback();
+                hideConfirmationModal();
+            });
+        }
+
+        // --- App Initialization ---
+        async function main() {
+            showLoading("Initializing Game...");
+            setupEventListeners();
+            populateUnits();
+            renderScoreboard();
+            handleResetTimer();
+            allDOMElements.imageDisplay.classList.add('hidden');
+
+            try {
+                await dbHelper.open();
+            } catch (error) {
+                console.error(error);
+                alert("Your browser does not support local storage for images. You can still play, but images won't be saved.");
+                hideLoading();
+                return;
+            }
+
+            await loadImagesFromDB();
+            
+            hideLoading();
+        }
+
+        document.addEventListener('DOMContentLoaded', main);
+    </script>
+</body>
+</html>

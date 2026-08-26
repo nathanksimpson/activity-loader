@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Write Now 1 Jumping OX</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap");
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body { font-family: Nunito, "Segoe UI", sans-serif; background: #f1f5f9; color: #1e293b; }
+    svg { display: block; flex-shrink: 0; }
+    .shell { min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 0; }
+    .card { width: 100%; max-width: 42rem; background: #fff; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    .hdr { background: #2563eb; color: #fff; text-align: center; padding: 1.1rem 1rem; flex-shrink: 0; }
+    .hdr h1 { margin: 0; font-size: 1.55rem; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: .45rem; }
+    .hdr p { margin: .25rem 0 0; font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; opacity: .85; }
+    #bookLabel { font-size: 12px; letter-spacing: .08em; opacity: 1; }
+    .body { flex: 1; overflow: auto; display: flex; flex-direction: column; min-height: 0; }
+    .pad { padding: 1.25rem; display: flex; flex-direction: column; gap: 1.1rem; flex: 1; min-height: 0; }
+    .row { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+    .unit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; flex: 1; }
+    .unit-btn { text-align: left; border: 2px solid #f1f5f9; background: #fff; border-radius: 1rem; padding: .85rem; cursor: pointer; display: flex; gap: .7rem; align-items: flex-start; font: inherit; color: inherit; }
+    .unit-btn.on { background: #eff6ff; border-color: #60a5fa; }
+    .unit-btn .t { font-weight: 800; font-size: .95rem; }
+    .unit-btn .d { font-size: 11px; color: #64748b; font-style: italic; line-height: 1.25; }
+    .ghost { border: 0; background: #eff6ff; color: #2563eb; font-weight: 800; font-size: .8rem; border-radius: .6rem; padding: .35rem .7rem; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: .3rem; }
+    .ghost.slate { background: #f1f5f9; color: #475569; }
+    .start { width: 100%; border: 0; border-radius: 1rem; padding: 1.15rem; font: inherit; font-size: 1.25rem; font-weight: 900; cursor: pointer; background: #2563eb; color: #fff; display: flex; align-items: center; justify-content: center; gap: .6rem; box-shadow: 0 10px 18px rgba(37,99,235,.25); }
+    .start:disabled { background: #e2e8f0; color: #94a3b8; cursor: default; box-shadow: none; }
+    .hint { text-align: center; color: #a16207; font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; text-decoration: underline; font-style: italic; margin: 0; }
+    .tiny { font-size: 10px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; color: #94a3b8; }
+    .exit { border: 0; background: #fef2f2; color: #ef4444; font-weight: 900; font-size: 11px; padding: .2rem .5rem; border-radius: .4rem; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: .25rem; }
+    .bar { height: 6px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+    .bar > div { height: 100%; background: #3b82f6; width: 0; transition: width .5s; }
+    .reveal { width: 100%; height: 6.5rem; border: 0; border-radius: 1rem; background: #2563eb; color: #fff; font: inherit; font-size: 1.5rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: .6rem; animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .82; } }
+    .banner { height: 6.5rem; border-radius: 1rem; border: 4px solid; display: flex; align-items: center; gap: .8rem; padding: .6rem .8rem; }
+    .banner.warn { background: #fff7ed; border-color: #fb923c; }
+    .banner.ok { background: #f0fdf4; border-color: #4ade80; }
+    .banner h4 { margin: 0 0 .2rem; font-size: .8rem; text-transform: uppercase; letter-spacing: .02em; }
+    .banner p { margin: 0; font-size: .8rem; font-weight: 700; color: #334155; }
+    .pill { width: 2.2rem; height: 2.2rem; border-radius: 999px; display: grid; place-items: center; color: #fff; flex-shrink: 0; }
+    .act { border: 0; border-radius: .75rem; padding: .7rem 1rem; font: inherit; font-weight: 900; cursor: pointer; color: #fff; white-space: nowrap; display: inline-flex; align-items: center; gap: .35rem; }
+    .quote { flex: 1; min-height: 8rem; display: flex; align-items: center; justify-content: center; text-align: center; background: #f8fafc; border: 2px solid #f1f5f9; border-radius: 1.4rem; padding: 1rem; font-size: clamp(1.35rem, 4vw, 2.4rem); font-weight: 900; color: #334155; line-height: 1.2; }
+    .floor { position: relative; height: 8.5rem; background: #f1f5f9; border: 2px solid #e2e8f0; border-radius: 1rem; overflow: hidden; flex-shrink: 0; }
+    .pad-o, .pad-x { position: absolute; bottom: 0; width: 45%; height: 2.4rem; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 1.5rem; border-radius: 1rem 1rem 0 0; }
+    .pad-o { left: .5rem; background: #22c55e; box-shadow: 0 4px 0 #15803d; }
+    .pad-x { right: .5rem; background: #ef4444; box-shadow: 0 4px 0 #b91c1c; }
+    .runner { position: absolute; bottom: 2.6rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; transition: left .5s, right .5s, transform .5s; font-size: 3.4rem; line-height: 1; }
+    .runner.left { left: 22%; right: auto; transform: none; }
+    .runner.right { right: 22%; left: auto; transform: none; }
+    .runner.up { transform: translateX(-50%) translateY(-4rem) scale(1.2); }
+    .runner.left.up, .runner.right.up { transform: translateY(-4rem) scale(1.25); }
+    .shadow { width: 3rem; height: 8px; background: rgba(0,0,0,.1); border-radius: 99px; filter: blur(1px); }
+    .result { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: .8rem; padding: 2rem; }
+    .result h2 { margin: 0; font-size: 2.4rem; font-weight: 900; color: #1e3a8a; }
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; width: 100%; }
+    .two button { border: 0; border-radius: 1rem; padding: 1.1rem; font: inherit; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: .4rem; }
+    .cfg-top { display: flex; align-items: center; gap: .7rem; border-bottom: 1px solid #e2e8f0; padding-bottom: .8rem; }
+    .cfg-item { background: #f8fafc; border: 2px solid #f1f5f9; border-radius: 1.2rem; padding: 1rem; position: relative; }
+    .cfg-item textarea, .cfg-item input, .cfg-item select { width: 100%; font: inherit; border: 2px solid #fff; border-radius: .7rem; padding: .45rem .55rem; background: #fff; }
+    .ox { border: 0; border-radius: 999px; padding: .15rem .55rem; font-size: 10px; font-weight: 900; color: #fff; cursor: pointer; }
+    .del { position: absolute; top: .7rem; right: .7rem; border: 0; background: transparent; color: #cbd5e1; cursor: pointer; }
+    select.unit-sel { flex: 1; border: 2px solid #f1f5f9; background: #f8fafc; border-radius: .75rem; padding: .45rem .6rem; font: inherit; font-weight: 800; font-size: .85rem; }
+    .add { border: 0; background: #22c55e; color: #fff; border-radius: .75rem; padding: .5rem; cursor: pointer; }
+    @media (min-width: 640px) {
+      .shell { padding: 1rem; }
+      .card { height: 95vh; border-radius: 1.5rem; border: 4px solid #bfdbfe; box-shadow: 0 25px 50px rgba(15,23,42,.18); }
+      .hdr { padding: 1.4rem 1rem; }
+      .hdr h1 { font-size: 1.9rem; }
+      .quote { font-size: 2.2rem; }
+      .runner { font-size: 4.2rem; }
+      .floor { height: 10rem; }
+    }
+    @media (max-width: 520px) { .unit-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="card">
+      <div class="hdr">
+        <h1>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#facc15"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Jumping OX Review
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#facc15"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </h1>
+        <p id="bookLabel"></p>
+        <p id="modeLabel">Classroom Presentation Mode</p>
+      </div>
+      <div class="body" id="app"></div>
+    </div>
+  </div>
+  <script>
+    const GAME_TITLE = "Write Now 1 Jumping OX";
+    const GAME_LEVEL = "Green";
+    const GAME_BOOK = "Write Now 1";
+    const DOWNLOAD_NAME = "Green - Write Now 1 - Jumping OX.html";
+    const initialUnitData = /*UNIT_DATA*/{"1":{"title":"Unit 1: My Family and I","description":"am / is / are, have / has","questions":[{"text":"He is tall.","correct":true,"explanation":"Good! Use 'is' with he/she/it."},{"text":"She have curly hair.","correct":false,"explanation":"Incorrect. She/he/it uses 'has': 'She has curly hair.'"},{"text":"They are students.","correct":true,"explanation":"Good! Use 'are' with they/we/you."},{"text":"I am ten years old.","correct":true,"explanation":"Good! Use 'am' with I."},{"text":"My sister are kind.","correct":false,"explanation":"Incorrect. 'sister' is singular: 'My sister is kind.'"},{"text":"We has a big family.","correct":false,"explanation":"Incorrect. We/they/I use 'have': 'We have a big family.'"},{"text":"My dad has short hair.","correct":true,"explanation":"Good! 'has' is correct with he."},{"text":"I is happy.","correct":false,"explanation":"Incorrect. Use 'am' with I: 'I am happy.'"},{"text":"You are my brother.","correct":true,"explanation":"Good! Use 'are' with you."},{"text":"She is not tall.","correct":true,"explanation":"Good! Negative of is: 'is not'."}]},"2":{"title":"Unit 2: My Friend Daisy","description":"Adjectives and 3rd person -s","questions":[{"text":"My friend is kind.","correct":true,"explanation":"Good!"},{"text":"He is not funny.","correct":true,"explanation":"Good! 'is not' is the negative."},{"text":"She play the piano.","correct":false,"explanation":"Incorrect. Add -s for he/she/it: 'She plays the piano.'"},{"text":"I help people.","correct":true,"explanation":"Good! No -s after I."},{"text":"Daisy like cats.","correct":false,"explanation":"Incorrect. 'Daisy likes cats.'"},{"text":"He is smart and funny.","correct":true,"explanation":"Good! Two adjectives with 'and'."},{"text":"She don't like soccer.","correct":false,"explanation":"Incorrect. He/she/it uses 'doesn't': 'She doesn't like soccer.'"},{"text":"They are good friends.","correct":true,"explanation":"Good!"},{"text":"He help his mom.","correct":false,"explanation":"Incorrect. 'He helps his mom.'"},{"text":"My friend is shy.","correct":true,"explanation":"Good!"}]},"3":{"title":"Unit 3: School Market Day","description":"this / these, have, 3rd person -s","questions":[{"text":"I have a teddy bear.","correct":true,"explanation":"Good!"},{"text":"She sell old things.","correct":false,"explanation":"Incorrect. 'She sells old things.'"},{"text":"This is a soccer ball.","correct":true,"explanation":"Good! 'This is' for one thing."},{"text":"I buy a jacket.","correct":true,"explanation":"Good!"},{"text":"These is my books.","correct":false,"explanation":"Incorrect. 'These are my books.'"},{"text":"He has a toy car.","correct":true,"explanation":"Good!"},{"text":"This are my pencils.","correct":false,"explanation":"Incorrect. Use 'These are' for plural."},{"text":"We sell cookies at the market.","correct":true,"explanation":"Good!"},{"text":"She have a backpack.","correct":false,"explanation":"Incorrect. 'She has a backpack.'"},{"text":"I want this jacket.","correct":true,"explanation":"Good! 'this' + singular noun."}]},"4":{"title":"Unit 4: What a Messy Room!","description":"there is / there are, prepositions","questions":[{"text":"The room is messy.","correct":true,"explanation":"Good!"},{"text":"My shoes is under the bed.","correct":false,"explanation":"Incorrect. Shoes are plural: 'My shoes are under the bed.'"},{"text":"There is a chair next to the bed.","correct":true,"explanation":"Good! 'There is' for one thing."},{"text":"Please clean your room.","correct":true,"explanation":"Good! Imperative (command) is correct."},{"text":"There are a book on the desk.","correct":false,"explanation":"Incorrect. One book: 'There is a book on the desk.'"},{"text":"The lamp is on the table.","correct":true,"explanation":"Good! Preposition 'on'."},{"text":"There is many toys on the floor.","correct":false,"explanation":"Incorrect. Plural: 'There are many toys on the floor.'"},{"text":"My bag is under the chair.","correct":true,"explanation":"Good!"},{"text":"The clothes is in the closet.","correct":false,"explanation":"Incorrect. Clothes are plural: 'The clothes are in the closet.'"},{"text":"There are two pillows on the bed.","correct":true,"explanation":"Good! 'There are' for two or more."}]},"5":{"title":"Unit 5: My Favorite Thing","description":"have / has, this is, parts of things","questions":[{"text":"I have a toy truck.","correct":true,"explanation":"Good!"},{"text":"The bike have two wheels.","correct":false,"explanation":"Incorrect. It/the bike uses 'has': 'The bike has two wheels.'"},{"text":"This is my favorite thing.","correct":true,"explanation":"Good!"},{"text":"The robot has two arms.","correct":true,"explanation":"Good!"},{"text":"It have four legs.","correct":false,"explanation":"Incorrect. 'It has four legs.'"},{"text":"My doll has long hair.","correct":true,"explanation":"Good!"},{"text":"This are my favorite toys.","correct":false,"explanation":"Incorrect. 'These are my favorite toys.'"},{"text":"The car has a red door.","correct":true,"explanation":"Good!"},{"text":"She have a new kite.","correct":false,"explanation":"Incorrect. 'She has a new kite.'"},{"text":"I like this robot.","correct":true,"explanation":"Good!"}]},"6":{"title":"Unit 6: Welcome to My Town!","description":"there is / there are + places","questions":[{"text":"There is a library in my town.","correct":true,"explanation":"Good! 'There is' for one place."},{"text":"The fire station are big.","correct":false,"explanation":"Incorrect. One station: 'The fire station is big.'"},{"text":"I look around the museum.","correct":true,"explanation":"Good!"},{"text":"We go to the playground.","correct":true,"explanation":"Good!"},{"text":"There are a park near my house.","correct":false,"explanation":"Incorrect. One park: 'There is a park near my house.'"},{"text":"There are many stores on this street.","correct":true,"explanation":"Good! 'There are' for many stores."},{"text":"The museum have old pictures.","correct":false,"explanation":"Incorrect. 'The museum has old pictures.'"},{"text":"My town is small and quiet.","correct":true,"explanation":"Good!"},{"text":"There is two schools in my town.","correct":false,"explanation":"Incorrect. Two schools: 'There are two schools in my town.'"},{"text":"We can play at the playground.","correct":true,"explanation":"Good! 'can' + base verb."}]},"7":{"title":"Unit 7: Different but Together","description":"like + -ing, don't / doesn't","questions":[{"text":"I like painting pictures.","correct":true,"explanation":"Good! like + -ing."},{"text":"She don't like coffee.","correct":false,"explanation":"Incorrect. She/he/it uses 'doesn't': 'She doesn't like coffee.'"},{"text":"We both ride a bike.","correct":true,"explanation":"Good!"},{"text":"He likes watching TV.","correct":true,"explanation":"Good! He likes + -ing."},{"text":"I like swim in the pool.","correct":false,"explanation":"Incorrect. Use -ing: 'I like swimming in the pool.'"},{"text":"They like playing soccer.","correct":true,"explanation":"Good!"},{"text":"He like read books.","correct":false,"explanation":"Incorrect. 'He likes reading books.'"},{"text":"I don't like rainy days.","correct":true,"explanation":"Good! I/we/they use 'don't'."},{"text":"We both likes music.","correct":false,"explanation":"Incorrect. After 'we', no -s: 'We both like music.'"},{"text":"She likes drawing pictures.","correct":true,"explanation":"Good!"}]},"8":{"title":"Unit 8: My Busy Day","description":"Daily routines, then, 3rd person -s","questions":[{"text":"I get up at seven.","correct":true,"explanation":"Good!"},{"text":"I eat dinner in the evening.","correct":true,"explanation":"Good!"},{"text":"She do her homework.","correct":false,"explanation":"Incorrect. 'She does her homework.'"},{"text":"Then I take a shower.","correct":true,"explanation":"Good! 'Then' starts the next step."},{"text":"He get up at eight.","correct":false,"explanation":"Incorrect. 'He gets up at eight.'"},{"text":"I brush my teeth every morning.","correct":true,"explanation":"Good!"},{"text":"She go to school at eight.","correct":false,"explanation":"Incorrect. 'She goes to school at eight.'"},{"text":"First, I eat breakfast.","correct":true,"explanation":"Good! Comma after 'First'."},{"text":"Then she take a bus.","correct":false,"explanation":"Incorrect. 'Then she takes a bus.'"},{"text":"I go to bed at nine.","correct":true,"explanation":"Good!"}]}};
+    let unitData = JSON.parse(JSON.stringify(initialUnitData));
+    let gameState = "menu";
+    let selected = [];
+    let questions = [];
+    let index = 0;
+    let feedback = null;
+    let jumpSide = null;
+    let jumping = false;
+    let editingId = Object.keys(unitData)[0];
+
+    document.getElementById("bookLabel").textContent =
+      [GAME_LEVEL, GAME_BOOK].filter(Boolean).join(" · ") || GAME_TITLE;
+
+    const ICONS = {
+      book: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+      gear: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+      checkSq: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
+      square: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>',
+      layers: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
+      eye: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+      search: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+      check: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>',
+      x: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+      arrow: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
+      logout: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>',
+      trophy: '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"/><path d="M12 2a6 6 0 0 1 6 6v3.5c0 3.3-2.7 6-6 6s-6-2.7-6-6V8a6 6 0 0 1 6-6z"/></svg>',
+      refresh: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>',
+      chevron: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>',
+      plus: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+      trash: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+      down: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+      save: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg>'
+    };
+
+    function ids() { return Object.keys(unitData); }
+    function $(sel, root) { return (root || document).querySelector(sel); }
+    function el(html) {
+      const d = document.createElement("div");
+      d.innerHTML = html.trim();
+      return d.firstChild;
+    }
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    }
+    function safeJson(obj) {
+      return JSON.stringify(obj).replace(/</g, "\\u003c");
+    }
+
+    function render() {
+      document.getElementById("modeLabel").textContent =
+        gameState === "config" ? "Teacher Configuration Mode" : "Classroom Presentation Mode";
+      const app = document.getElementById("app");
+      app.innerHTML = "";
+      if (gameState === "menu") app.appendChild(viewMenu());
+      else if (gameState === "playing") app.appendChild(viewPlay());
+      else if (gameState === "result") app.appendChild(viewResult());
+      else app.appendChild(viewConfig());
+    }
+
+    function viewMenu() {
+      const wrap = el('<div class="pad"></div>');
+      wrap.innerHTML =
+        '<div class="row"><h2 style="margin:0;font-size:1.15rem;color:#475569;display:flex;align-items:center;gap:.4rem">' +
+        ICONS.book + " Select Units:</h2><div style=\"display:flex;gap:.4rem\">" +
+        '<button type="button" class="ghost" id="allBtn"></button>' +
+        '<button type="button" class="ghost slate" id="cfgBtn">' + ICONS.gear + " Config</button></div></div>" +
+        '<div class="unit-grid" id="grid"></div>' +
+        '<div><button type="button" class="start" id="startBtn"></button>' +
+        '<p class="hint">Mix units to review the whole workbook!</p></div>';
+      const grid = $("#grid", wrap);
+      ids().forEach((id) => {
+        const u = unitData[id];
+        const on = selected.indexOf(id) >= 0;
+        const b = el(
+          '<button type="button" class="unit-btn' + (on ? " on" : "") + '">' +
+          (on ? ICONS.checkSq : ICONS.square) +
+          '<span><div class="t"></div><div class="d"></div></span></button>'
+        );
+        $(".t", b).textContent = u.title;
+        $(".d", b).textContent = u.description || ((u.questions || []).length + " questions");
+        b.addEventListener("click", () => {
+          selected = on ? selected.filter((x) => x !== id) : selected.concat([id]);
+          render();
+        });
+        grid.appendChild(b);
+      });
+      const all = ids();
+      $("#allBtn", wrap).textContent = selected.length === all.length ? "Deselect All" : "Select All";
+      $("#allBtn", wrap).addEventListener("click", () => {
+        selected = selected.length === all.length ? [] : all.slice();
+        render();
+      });
+      $("#cfgBtn", wrap).addEventListener("click", () => { gameState = "config"; render(); });
+      const start = $("#startBtn", wrap);
+      start.innerHTML = ICONS.layers + " START CLASS (" + selected.length + " UNITS)";
+      start.disabled = selected.length === 0;
+      start.addEventListener("click", startReview);
+      return wrap;
+    }
+
+    function startReview() {
+      if (!selected.length) return;
+      let pool = [];
+      selected.forEach((id) => { pool = pool.concat(unitData[id].questions || []); });
+      questions = shuffle(pool);
+      index = 0;
+      feedback = null;
+      jumpSide = null;
+      jumping = false;
+      gameState = "playing";
+      render();
+    }
+
+    function viewPlay() {
+      const q = questions[index];
+      const wrap = el('<div class="pad" style="overflow:hidden"></div>');
+      const pct = ((index + 1) / questions.length) * 100;
+      wrap.innerHTML =
+        '<div class="row tiny"><button type="button" class="exit" id="exitBtn">' + ICONS.logout + " Exit Game</button>" +
+        "<div>Q " + (index + 1) + " / " + questions.length +
+        ' &nbsp; <span style="background:#eff6ff;color:#2563eb;padding:.15rem .4rem;border-radius:.4rem;font-style:italic">Status: ' +
+        (feedback ? "Revealed" : "Waiting...") + "</span></div></div>" +
+        '<div class="bar"><div style="width:' + pct + '%"></div></div>' +
+        '<div id="actionSlot"></div>' +
+        '<div class="quote"></div>' +
+        '<div class="floor"><div class="pad-o">O</div><div class="pad-x">X</div>' +
+        '<div class="runner' + (jumpSide === "left" ? " left" : jumpSide === "right" ? " right" : "") +
+        (jumping ? " up" : "") + '">🏃<div class="shadow"></div></div></div>';
+      $(".quote", wrap).textContent = '"' + q.text + '"';
+      $("#exitBtn", wrap).addEventListener("click", () => { gameState = "menu"; render(); });
+      const slot = $("#actionSlot", wrap);
+      if (!feedback) {
+        const b = el('<button type="button" class="reveal">' + ICONS.eye + " REVEAL ANSWER</button>");
+        b.addEventListener("click", reveal);
+        slot.appendChild(b);
+      } else if (feedback === "mistake") {
+        slot.appendChild(el(
+          '<div class="banner warn"><div class="pill" style="background:#f97316">' + ICONS.search + "</div>" +
+          '<div style="flex:1"><h4 style="color:#9a3412">Mistake Spotted!</h4>' +
+          "<p>Identify the mistake, then click 👉</p></div>" +
+          '<button type="button" class="act" id="fixBtn" style="background:#ea580c">SHOW FIX ' + ICONS.arrow + "</button></div>"
+        ));
+        $("#fixBtn", slot).addEventListener("click", () => { feedback = "revealed"; render(); });
+      } else {
+        const ok = q.correct;
+        slot.appendChild(el(
+          '<div class="banner ok"><div class="pill" style="background:' + (ok ? "#22c55e" : "#ef4444") + '">' +
+          (ok ? ICONS.check : ICONS.x) + "</div>" +
+          "<div style=\"flex:1\"><h4 style=\"color:" + (ok ? "#15803d" : "#b91c1c") + '">' +
+          (ok ? "CORRECT (O)" : "INCORRECT (X)") + "</h4><p></p></div>" +
+          '<button type="button" class="act" id="nextBtn" style="background:#1e293b">NEXT ' + ICONS.arrow + "</button></div>"
+        ));
+        $("p", slot).textContent = q.explanation || (ok ? "Good!" : "Fix the sentence.");
+        $("#nextBtn", slot).addEventListener("click", nextQ);
+      }
+      return wrap;
+    }
+
+    function reveal() {
+      if (jumping || feedback) return;
+      const q = questions[index];
+      jumpSide = q.correct ? "left" : "right";
+      jumping = true;
+      render();
+      setTimeout(function () {
+        jumping = false;
+        feedback = q.correct ? "revealed" : "mistake";
+        render();
+      }, 600);
+    }
+
+    function nextQ() {
+      feedback = null;
+      jumpSide = null;
+      if (index < questions.length - 1) { index += 1; gameState = "playing"; }
+      else gameState = "result";
+      render();
+    }
+
+    function viewResult() {
+      const wrap = el('<div class="result"></div>');
+      wrap.innerHTML =
+        ICONS.trophy + "<h2>Great Work!</h2>" +
+        '<p style="color:#64748b;font-weight:800;font-style:italic;font-size:1.15rem">"Class, you are grammar experts!"</p>' +
+        '<div class="two"><button type="button" id="replay" style="background:#f1f5f9">' + ICONS.refresh + " REPLAY</button>" +
+        '<button type="button" id="menu" style="background:#2563eb;color:#fff">MENU</button></div>';
+      $("#replay", wrap).addEventListener("click", startReview);
+      $("#menu", wrap).addEventListener("click", () => { gameState = "menu"; render(); });
+      return wrap;
+    }
+
+    function viewConfig() {
+      const wrap = el('<div class="pad"></div>');
+      wrap.innerHTML =
+        '<div class="cfg-top"><button type="button" class="ghost slate" id="back">' + ICONS.chevron + " Back</button>" +
+        '<select class="unit-sel" id="unitSel"></select>' +
+        '<button type="button" class="add" id="add">' + ICONS.plus + "</button></div>" +
+        '<div id="list" style="flex:1;overflow:auto;display:flex;flex-direction:column;gap:1rem"></div>' +
+        '<div class="two"><button type="button" id="exp" style="background:#1e293b;color:#fff">' + ICONS.down + " Export HTML</button>" +
+        '<button type="button" id="save" style="background:#2563eb;color:#fff">' + ICONS.save + " Save & Exit</button></div>";
+      const sel = $("#unitSel", wrap);
+      ids().forEach((id) => {
+        const o = document.createElement("option");
+        o.value = id;
+        o.textContent = unitData[id].title;
+        if (id === editingId) o.selected = true;
+        sel.appendChild(o);
+      });
+      sel.addEventListener("change", () => { editingId = sel.value; render(); });
+      $("#back", wrap).addEventListener("click", () => { gameState = "menu"; render(); });
+      $("#add", wrap).addEventListener("click", () => {
+        unitData[editingId].questions.push({ text: "New sentence.", correct: true, explanation: "Fix it!" });
+        render();
+      });
+      $("#save", wrap).addEventListener("click", () => { gameState = "menu"; render(); });
+      $("#exp", wrap).addEventListener("click", exportHtml);
+      const list = $("#list", wrap);
+      (unitData[editingId].questions || []).forEach((q, i) => {
+        const item = el('<div class="cfg-item"></div>');
+        item.innerHTML =
+          '<button type="button" class="del" data-i="' + i + '">' + ICONS.trash + "</button>" +
+          '<div class="row" style="justify-content:flex-start;gap:.4rem">' +
+          '<span class="tiny">Question #' + (i + 1) + "</span>" +
+          '<button type="button" class="ox" data-toggle="' + i + '" style="background:' + (q.correct ? "#22c55e" : "#ef4444") + '">' +
+          (q.correct ? "O" : "X") + "</button></div>" +
+          '<label class="tiny">Sentence</label><textarea rows="2"></textarea>' +
+          '<label class="tiny">Explanation</label><input type="text">';
+        $("textarea", item).value = q.text;
+        $("input", item).value = q.explanation || "";
+        $("textarea", item).addEventListener("input", (e) => { q.text = e.target.value; });
+        $("input", item).addEventListener("input", (e) => { q.explanation = e.target.value; });
+        $(".ox", item).addEventListener("click", () => { q.correct = !q.correct; render(); });
+        $(".del", item).addEventListener("click", () => {
+          unitData[editingId].questions.splice(i, 1);
+          render();
+        });
+        list.appendChild(item);
+      });
+      return wrap;
+    }
+
+    function exportHtml() {
+      const html = document.documentElement.outerHTML.replace(
+        /const initialUnitData = \/\*UNIT_DATA\*\/[\s\S]*?;/,
+        "const initialUnitData = /*UNIT_DATA*/" + safeJson(unitData) + ";"
+      );
+      const blob = new Blob(["<!DOCTYPE html>\n" + html], { type: "text/html" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = DOWNLOAD_NAME || [GAME_LEVEL, GAME_BOOK, "Jumping OX"].filter(Boolean).join(" - ") + ".html";
+      a.click();
+    }
+
+    render();
+  </script>
+</body>
+</html>

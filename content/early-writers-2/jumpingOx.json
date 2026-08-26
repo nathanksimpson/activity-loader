@@ -1,0 +1,136 @@
+{
+  "bookId": "early-writers-2",
+  "activityId": "jumpingOx",
+  "cefr": "A1",
+  "title": "Early Writers 2 Jumping OX",
+  "units": {
+    "1": {
+      "title": "Unit 1: My School",
+      "description": "Capital letters, word order, school places",
+      "questions": [
+        { "text": "This is my school.", "correct": true, "explanation": "Good! Sentences start with a capital letter." },
+        { "text": "this is the gym.", "correct": false, "explanation": "Incorrect. Start with a capital: 'This is the gym.'" },
+        { "text": "Welkome to my school!", "correct": false, "explanation": "Incorrect. Spelling: 'Welcome to my school!'" },
+        { "text": "We learn new songs in the hall.", "correct": false, "explanation": "Incorrect. Songs are in the music room: 'We learn new songs in the music room.'" },
+        { "text": "We books read in the library.", "correct": false, "explanation": "Incorrect. Word order: 'We read books in the library.'" },
+        { "text": "We lunch eat in the cafeteria.", "correct": false, "explanation": "Incorrect. Word order: 'We eat lunch in the cafeteria.'" },
+        { "text": "Theese are the classrooms.", "correct": false, "explanation": "Incorrect. Spelling: 'These are the classrooms.'" },
+        { "text": "We eat lunch in the cafeteria.", "correct": true, "explanation": "Good!" },
+        { "text": "we play in the playground.", "correct": false, "explanation": "Incorrect. Capital W: 'We play in the playground.'" },
+        { "text": "This is the library.", "correct": true, "explanation": "Good!" }
+      ]
+    },
+    "2": {
+      "title": "Unit 2: My Style",
+      "description": "Frequency adverbs and clothes words",
+      "questions": [
+        { "text": "He never wears sandals.", "correct": true, "explanation": "Good! never + verb." },
+        { "text": "What's style my?", "correct": false, "explanation": "Incorrect. Word order: 'What's my style?'" },
+        { "text": "Often, I wear tank shirts.", "correct": false, "explanation": "Incorrect. The clothes word is 'tank tops'." },
+        { "text": "I wear often shorts.", "correct": false, "explanation": "Incorrect. Put the adverb before the verb: 'I often wear shorts.'" },
+        { "text": "I usually wear skirts, shirts and sandals.", "correct": false, "explanation": "Incorrect. Use a comma before 'and' in a list: 'skirts, shirts, and sandals'." },
+        { "text": "My favorite color is brown.", "correct": true, "explanation": "Good!" },
+        { "text": "I usually wear jeans.", "correct": true, "explanation": "Good!" },
+        { "text": "I wear never hats.", "correct": false, "explanation": "Incorrect. 'I never wear hats.'" },
+        { "text": "She have a red jacket.", "correct": false, "explanation": "Incorrect. 'She has a red jacket.'" },
+        { "text": "He always wears sneakers.", "correct": true, "explanation": "Good!" }
+      ]
+    },
+    "3": {
+      "title": "Unit 3: My Special Recipe",
+      "description": "Sequence words: First, Next, Then, Finally",
+      "questions": [
+        { "text": "First, get some bread.", "correct": true, "explanation": "Good! Comma after First." },
+        { "text": "Try my soup special.", "correct": false, "explanation": "Incorrect. Adjective before the noun: 'Try my special soup.'" },
+        { "text": "Next, toast the water.", "correct": false, "explanation": "Incorrect. We boil water: 'Next, boil the water.'" },
+        { "text": "finally, eat your soup.", "correct": false, "explanation": "Incorrect. Capital F: 'Finally, eat your soup.'" },
+        { "text": "Now it's to ready drink!", "correct": false, "explanation": "Incorrect. Word order: 'Now it's ready to drink!'" },
+        { "text": "Then put the strawberries on top.", "correct": true, "explanation": "Good!" },
+        { "text": "Next, cut the bananas.", "correct": true, "explanation": "Good! Comma after Next." },
+        { "text": "First mix the eggs.", "correct": false, "explanation": "Incorrect. Put a comma after First: 'First, mix the eggs.'" },
+        { "text": "Finally, enjoy your snack.", "correct": true, "explanation": "Good!" },
+        { "text": "Then you add some milk.", "correct": true, "explanation": "Good!" }
+      ]
+    },
+    "4": {
+      "title": "Unit 4: My Birthday",
+      "description": "will, on + day, party phrases",
+      "questions": [
+        { "text": "We will sing karaoke.", "correct": true, "explanation": "Good! will + base verb." },
+        { "text": "You will come to my party?", "correct": false, "explanation": "Incorrect. Questions: 'Will you come to my party?'" },
+        { "text": "It's at Friday.", "correct": false, "explanation": "Incorrect. Use 'on' with days: 'It's on Friday.'" },
+        { "text": "We will has a sleepover.", "correct": false, "explanation": "Incorrect. After will, use the base verb: 'We will have a sleepover.'" },
+        { "text": "There will be pizza.", "correct": true, "explanation": "Good!" },
+        { "text": "We'll make fun together!", "correct": false, "explanation": "Incorrect. The phrase is 'have fun': 'We'll have fun together!'" },
+        { "text": "My party is on Saturday.", "correct": true, "explanation": "Good! Capitalize the day." },
+        { "text": "We will eating cake.", "correct": false, "explanation": "Incorrect. 'We will eat cake.'" },
+        { "text": "Will you bring a gift?", "correct": true, "explanation": "Good!" },
+        { "text": "The party is on friday.", "correct": false, "explanation": "Incorrect. Capitalize Friday: 'on Friday'." }
+      ]
+    },
+    "5": {
+      "title": "Unit 5: At the Park",
+      "description": "Present continuous: is/are + -ing",
+      "questions": [
+        { "text": "She is swimming.", "correct": true, "explanation": "Good! is + -ing." },
+        { "text": "Now see I a boy.", "correct": false, "explanation": "Incorrect. Word order: 'Now, I see a boy.'" },
+        { "text": "He's fish.", "correct": false, "explanation": "Incorrect. Use -ing: 'He's fishing.'" },
+        { "text": "She's sliding on a swing.", "correct": false, "explanation": "Incorrect. On a swing we say 'She's swinging.'" },
+        { "text": "They're playing Frisbee.", "correct": true, "explanation": "Good!" },
+        { "text": "He is running in the park.", "correct": true, "explanation": "Good!" },
+        { "text": "They is riding bikes.", "correct": false, "explanation": "Incorrect. They uses 'are': 'They are riding bikes.'" },
+        { "text": "I am sitting on a bench.", "correct": true, "explanation": "Good!" },
+        { "text": "She are playing catch.", "correct": false, "explanation": "Incorrect. 'She is playing catch.'" },
+        { "text": "The children are laughing.", "correct": true, "explanation": "Good!" }
+      ]
+    },
+    "6": {
+      "title": "Unit 6: Last Winter",
+      "description": "Past simple: was/were, -ed, irregular verbs",
+      "questions": [
+        { "text": "We played in the snow.", "correct": true, "explanation": "Good! Regular past: play → played." },
+        { "text": "It is snowy last winter.", "correct": false, "explanation": "Incorrect. Past time needs 'was': 'It was snowy last winter.'" },
+        { "text": "Last wintir was fun.", "correct": false, "explanation": "Incorrect. Spelling: 'Last winter was fun.'" },
+        { "text": "I playd games with my grandma.", "correct": false, "explanation": "Incorrect. Spelling: 'I played games with my grandma.'" },
+        { "text": "We even saw a rabbit!", "correct": true, "explanation": "Good! saw is the past of see." },
+        { "text": "It was cold last winter.", "correct": true, "explanation": "Good!" },
+        { "text": "We go to the mountain last year.", "correct": false, "explanation": "Incorrect. Past of go is went: 'We went to the mountain last year.'" },
+        { "text": "I made a snowman.", "correct": true, "explanation": "Good! made is the past of make." },
+        { "text": "They was happy.", "correct": false, "explanation": "Incorrect. They uses 'were': 'They were happy.'" },
+        { "text": "We had hot chocolate.", "correct": true, "explanation": "Good! had is the past of have." }
+      ]
+    },
+    "7": {
+      "title": "Unit 7: My Dream",
+      "description": "will / I'll + jobs",
+      "questions": [
+        { "text": "I think I will be a cook.", "correct": true, "explanation": "Good! will + be + job." },
+        { "text": "I'm teach soccer classes.", "correct": false, "explanation": "Incorrect. Future: 'I'll teach soccer classes.'" },
+        { "text": "I think I will building houses.", "correct": false, "explanation": "Incorrect. After will, use the base verb: 'I think I will build houses.'" },
+        { "text": "To have a firefighter is my dream!", "correct": false, "explanation": "Incorrect. We say 'To be a firefighter is my dream!'" },
+        { "text": "i'll stop fires, too.", "correct": false, "explanation": "Incorrect. Capital I: 'I'll stop fires, too.'" },
+        { "text": "I will be a teacher.", "correct": true, "explanation": "Good!" },
+        { "text": "She will helps sick people.", "correct": false, "explanation": "Incorrect. After will, no -s: 'She will help sick people.'" },
+        { "text": "My dream is to be a singer.", "correct": true, "explanation": "Good!" },
+        { "text": "He will to fly a plane.", "correct": false, "explanation": "Incorrect. No 'to' after will: 'He will fly a plane.'" },
+        { "text": "I'll work hard every day.", "correct": true, "explanation": "Good!" }
+      ]
+    },
+    "8": {
+      "title": "Unit 8: How to Get There",
+      "description": "Directions: Walk, Turn, Go straight",
+      "questions": [
+        { "text": "Walk through the park.", "correct": true, "explanation": "Good!" },
+        { "text": "Go strait on Ox Street.", "correct": false, "explanation": "Incorrect. Spelling: 'Go straight on Ox Street.'" },
+        { "text": "Cross right on Nola Street.", "correct": false, "explanation": "Incorrect. We say 'Turn right on Nola Street.'" },
+        { "text": "Walked two blocks.", "correct": false, "explanation": "Incorrect. Directions use the base verb: 'Walk two blocks.'" },
+        { "text": "The restaurant will be on your left.", "correct": true, "explanation": "Good!" },
+        { "text": "Turn left at the library.", "correct": true, "explanation": "Good!" },
+        { "text": "Go straights two blocks.", "correct": false, "explanation": "Incorrect. 'Go straight for two blocks.'" },
+        { "text": "The store is on your right.", "correct": true, "explanation": "Good!" },
+        { "text": "Turn to left on Main Street.", "correct": false, "explanation": "Incorrect. 'Turn left on Main Street.'" },
+        { "text": "Walk two blocks, then turn right.", "correct": true, "explanation": "Good!" }
+      ]
+    }
+  }
+}

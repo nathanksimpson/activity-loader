@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity Loader</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand-block">
+        <h1>Activity Loader</h1>
+        <p>Four parts: Activity types, Curriculum books, Generate, then play in Loader.</p>
+      </div>
+      <nav class="nav-tabs" role="tablist" aria-label="Main">
+        <button type="button" class="nav-tab" id="tab-activity" role="tab" aria-selected="false" data-panel="activity">1. Activity</button>
+        <button type="button" class="nav-tab" id="tab-curriculum" role="tab" aria-selected="false" data-panel="curriculum">2. Curriculum</button>
+        <button type="button" class="nav-tab" id="tab-generate" role="tab" aria-selected="false" data-panel="generate">3. Generate</button>
+        <button type="button" class="nav-tab" id="tab-loader" role="tab" aria-selected="true" data-panel="loader">4. Loader</button>
+      </nav>
+    </header>
+
+    <main>
+      <section id="panel-activity" class="panel" role="tabpanel" aria-labelledby="tab-activity" hidden>
+        <p class="help">An <strong>Activity</strong> is the game type — Jumping OX, Jeopardy, Vocab. The rules stay the same for every book. Only the words change later in Generate. You can also add a <strong>new activity style</strong> with AI from an HTML file or a short description.</p>
+        <h2 class="section-title">Game types</h2>
+        <div id="activity-type-grid" class="card-grid"></div>
+
+        <div class="form-card" style="margin-top:1rem">
+          <h2 class="section-title">Add a new activity style</h2>
+          <p class="hint">Give either an existing HTML game file <em>or</em> a short written description. Parse with AI, check the preview, then Save. The new style appears in Generate for any saved book.</p>
+          <div class="form-grid ai-settings-grid" style="margin-bottom:0.75rem">
+            <div class="field">
+              <label for="style-ai-provider">AI provider</label>
+              <select id="style-ai-provider" class="select"></select>
+            </div>
+            <div class="field">
+              <label for="style-ai-model">Model</label>
+              <select id="style-ai-model" class="select"></select>
+            </div>
+            <div class="field" id="style-api-field">
+              <label for="style-api-key">API key (stored only in this browser)</label>
+              <input id="style-api-key" class="input" type="password" autocomplete="off" placeholder="Paste key for the selected provider">
+            </div>
+          </div>
+          <div id="style-custom-fields" class="form-grid ai-settings-grid custom-ai-fields" hidden>
+            <div class="field">
+              <label for="style-custom-url">Custom API base URL</label>
+              <input id="style-custom-url" class="input" placeholder="https://api.groq.com/openai/v1" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="style-custom-model">Custom model name</label>
+              <input id="style-custom-model" class="input" placeholder="llama-3.3-70b-versatile" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="style-custom-header-name">Optional extra header name</label>
+              <input id="style-custom-header-name" class="input" placeholder="HTTP-Referer" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="style-custom-header-value">Optional extra header value</label>
+              <input id="style-custom-header-value" class="input" placeholder="https://yoursite.example" autocomplete="off">
+            </div>
+          </div>
+          <form id="style-form" class="form-grid">
+            <div class="field">
+              <label for="style-file">HTML activity file (optional)</label>
+              <input id="style-file" class="input file-input" type="file" accept=".html,.htm">
+            </div>
+            <div class="field">
+              <label for="style-description">Or describe the game</label>
+              <textarea id="style-description" class="input" rows="4" placeholder="Example: Board race for two teams. Show a vocab card. First team to the finish wins."></textarea>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="style-parse-btn">Parse with AI</button>
+              <button type="button" class="btn" id="style-save-btn" disabled>Save style</button>
+            </div>
+          </form>
+          <div id="style-preview" class="import-preview">
+            <p class="hint">No style parsed yet.</p>
+          </div>
+          <iframe id="style-preview-frame" class="style-preview-frame" title="Activity style preview" hidden></iframe>
+          <p id="style-status" class="status-bar" aria-live="polite"></p>
+          <h2 class="section-title">Saved styles in this browser</h2>
+          <ul id="style-list" class="manage-list"></ul>
+        </div>
+      </section>
+
+      <section id="panel-curriculum" class="panel" role="tabpanel" aria-labelledby="tab-curriculum" hidden>
+        <p class="help">A <strong>Curriculum</strong> is a book: units, grammar, vocabulary, and a CEFR level. If the book or class level is missing, add it below. Then upload a PDF or photos. The app shrinks PDFs first (printed text, or small page photos) and sends that to the API once. Check the list, then Save. The PDF is not stored. A green <strong>Parsed</strong> mark means that book already has a saved word list — you can Generate without uploading again.</p>
+        <div class="add-catalog-grid">
+          <div class="form-card">
+            <h2 class="section-title">Add a book</h2>
+            <p class="hint">Use this only if the book is not already in the list. Write Right 1 and The Best Writing Starter 1 are already here — Analyze those cards instead of adding a duplicate.</p>
+            <form id="add-book-form" class="form-grid">
+              <div class="field">
+                <label for="new-book-title">Book title</label>
+                <input id="new-book-title" class="input" required placeholder="e.g. Write Now 3" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="new-book-level">Class level</label>
+                <select id="new-book-level" class="select" required></select>
+              </div>
+              <div class="field">
+                <label for="new-book-cefr">Starting CEFR</label>
+                <select id="new-book-cefr" class="select"></select>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Add book</button>
+              </div>
+            </form>
+          </div>
+          <div class="form-card">
+            <h2 class="section-title">Add a level</h2>
+            <p class="hint">Red through Purple, plus the middle-school names, are already here. Add a level only if yours is missing from Loader.</p>
+            <form id="add-level-form" class="form-grid">
+              <div class="field">
+                <label for="new-level-name">Level name</label>
+                <input id="new-level-name" class="input" required placeholder="e.g. Gold" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="new-level-band">School band</label>
+                <select id="new-level-band" class="select">
+                  <option value="elementary">Elementary</option>
+                  <option value="middle">Middle school</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="new-level-color">Chip color</label>
+                <div class="color-row">
+                  <input id="new-level-color" type="color" value="#5b8def">
+                  <span class="hint" style="margin:0">Shows on the Loader chips.</span>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Add level</button>
+              </div>
+            </form>
+            <ul id="custom-level-list" class="manage-list custom-level-list"></ul>
+          </div>
+        </div>
+        <div class="form-card" style="margin-bottom:1rem">
+          <div class="form-grid ai-settings-grid">
+            <div class="field">
+              <label for="curr-ai-provider">AI provider</label>
+              <select id="curr-ai-provider" class="select"></select>
+            </div>
+            <div class="field">
+              <label for="curr-ai-model">Model</label>
+              <select id="curr-ai-model" class="select"></select>
+            </div>
+            <div class="field" id="curr-api-field">
+              <label for="curr-api-key">API key (stored only in this browser)</label>
+              <input id="curr-api-key" class="input" type="password" autocomplete="off" placeholder="Paste key for the selected provider">
+              <p class="hint" id="curr-server-hint">Analyze needs the internet. If this page was opened as a file, run <code>node serve.js</code> in this folder, then open the localhost address printed in the terminal.</p>
+            </div>
+          </div>
+          <div id="curr-custom-fields" class="form-grid ai-settings-grid custom-ai-fields" hidden>
+            <div class="field">
+              <label for="curr-custom-url">Custom API base URL</label>
+              <input id="curr-custom-url" class="input" placeholder="https://api.groq.com/openai/v1" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="curr-custom-model">Custom model name</label>
+              <input id="curr-custom-model" class="input" placeholder="llama-3.3-70b-versatile" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="curr-custom-header-name">Optional extra header name</label>
+              <input id="curr-custom-header-name" class="input" placeholder="HTTP-Referer" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="curr-custom-header-value">Optional extra header value</label>
+              <input id="curr-custom-header-value" class="input" placeholder="https://yoursite.example" autocomplete="off">
+            </div>
+          </div>
+        </div>
+        <div id="curriculum-grid" class="curriculum-stack"></div>
+        <p id="curriculum-status" class="status-bar" aria-live="polite"></p>
+      </section>
+
+      <section id="panel-generate" class="panel" role="tabpanel" aria-labelledby="tab-generate" hidden>
+        <p class="help">
+          <strong>Generate</strong> turns a book into playable or printable HTML. Vocabulary, Team Match, Charades, Quiz-Quiz-Trade, Fan-N-Pick, Find Someone Who, Showdown, and RallyCoach use the saved word list (no extra API). Jumping OX and Jeopardy use a built-in pack or Gemini. All results play offline.
+        </p>
+        <div class="form-card">
+          <form id="generate-form" class="form-grid">
+            <div class="field">
+              <span class="field-legend">Activities</span>
+              <label class="check-line">
+                <input type="checkbox" id="gen-all"> All activities
+              </label>
+              <div id="gen-activity-list" class="check-grid"></div>
+            </div>
+            <div class="field">
+              <label for="gen-book">Curriculum book</label>
+              <select id="gen-book" class="select" required></select>
+              <p class="hint" id="gen-breakdown-hint"></p>
+            </div>
+            <div class="field">
+              <label for="gen-cefr">CEFR for this build</label>
+              <select id="gen-cefr" class="select" required></select>
+              <p class="hint">Filled from the book. Change it for this build only, or check the box below to also update the book.</p>
+            </div>
+            <div class="field">
+              <label>
+                <input type="checkbox" id="gen-save-cefr"> Also save this CEFR on the Curriculum book
+              </label>
+            </div>
+            <div class="field">
+              <label for="gen-mode">Content source</label>
+              <select id="gen-mode" class="select">
+                <option value="builtin">Built-in pack (no internet needed)</option>
+                <option value="ai">Gemini API (once, then save HTML)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="gen-ai-provider">AI provider</label>
+              <select id="gen-ai-provider" class="select"></select>
+            </div>
+            <div class="field">
+              <label for="gen-ai-model">Model</label>
+              <select id="gen-ai-model" class="select"></select>
+            </div>
+            <div class="field" id="api-key-field">
+              <label for="gen-api-key">API key (stored only in this browser)</label>
+              <input id="gen-api-key" class="input" type="password" autocomplete="off" placeholder="Paste key for the selected provider">
+              <p class="hint">Needed for Analyze and for Jumping OX / Jeopardy when there is no built-in pack. Open via <code>node serve.js</code> if the API is blocked, then use the localhost address printed in the terminal.</p>
+            </div>
+            <div id="gen-custom-fields" class="form-grid ai-settings-grid custom-ai-fields" hidden>
+              <div class="field">
+                <label for="gen-custom-url">Custom API base URL</label>
+                <input id="gen-custom-url" class="input" placeholder="https://api.groq.com/openai/v1" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="gen-custom-model">Custom model name</label>
+                <input id="gen-custom-model" class="input" placeholder="llama-3.3-70b-versatile" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="gen-custom-header-name">Optional extra header name</label>
+                <input id="gen-custom-header-name" class="input" placeholder="HTTP-Referer" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="gen-custom-header-value">Optional extra header value</label>
+                <input id="gen-custom-header-value" class="input" placeholder="https://yoursite.example" autocomplete="off">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="generate-btn">Generate</button>
+              <button type="button" class="btn" id="open-generated-btn">Open last result</button>
+            </div>
+          </form>
+          <p id="generate-status" class="status-bar" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section id="panel-loader" class="panel is-active" role="tabpanel" aria-labelledby="tab-loader">
+        <p class="help">In class: pick <strong>level → book → activity</strong>, then Open.</p>
+        <div class="field" style="margin-bottom: 0.75rem;">
+          <label for="band-filter">Show levels</label>
+          <select id="band-filter" class="select">
+            <option value="all">All levels</option>
+            <option value="elementary">Elementary</option>
+            <option value="middle">Middle school</option>
+            <option value="juniorRainbow">Junior Rainbow books (elem. colors)</option>
+          </select>
+        </div>
+
+        <div class="level-chips" id="level-chips" aria-label="Class levels"></div>
+
+        <div class="filters">
+          <div class="field">
+            <label for="level-select">Level</label>
+            <select id="level-select" class="select"></select>
+          </div>
+          <div class="field">
+            <label for="book-select">Book</label>
+            <select id="book-select" class="select"></select>
+          </div>
+        </div>
+
+        <h2 class="section-title">Activities</h2>
+        <div id="activity-grid" class="card-grid"></div>
+        <p id="browse-status" class="status-bar" aria-live="polite"></p>
+
+        <div class="form-card backup-card">
+          <h2 class="section-title">Backup this browser</h2>
+          <p class="hint">Downloads one JSON file with books, levels, breakdowns, generated packs, imported templates, and settings from this browser. Restore replaces those same items. The file can include API keys, so keep it private.</p>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" id="backup-export-btn">Download backup</button>
+            <label class="btn" for="backup-import-file">Restore backup</label>
+            <input id="backup-import-file" class="visually-hidden" type="file" accept=".json,application/json">
+          </div>
+          <p id="backup-status" class="status-bar" aria-live="polite"></p>
+        </div>
+
+        <details class="manage-fold">
+          <summary>Register an HTML file by hand</summary>
+          <div class="manage-layout" style="margin-top:1rem;">
+            <div class="form-card">
+              <h2 class="section-title">Import activity as template</h2>
+              <p class="hint">Pick an existing HTML activity. The app tries to strip out the content locally first. If it is not sure, you can use the AI helper to map it into a current schema.</p>
+              <form id="import-form" class="form-grid" style="margin-bottom:1rem;">
+                <div class="field">
+                  <label for="import-file">Existing HTML activity</label>
+                  <input id="import-file" class="input file-input" type="file" accept=".html,.htm">
+                </div>
+                <div class="field">
+                  <label for="import-book">Book for the sample import</label>
+                  <select id="import-book" class="select"></select>
+                </div>
+                <div class="field">
+                  <label for="import-type">Target activity type</label>
+                  <select id="import-type" class="select"></select>
+                </div>
+                <div class="field">
+                  <label for="import-title">Imported title</label>
+                  <input id="import-title" class="input" placeholder="Filled after inspection">
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary" id="import-inspect-btn">Inspect HTML</button>
+                  <button type="button" class="btn" id="import-ai-btn">Use AI helper</button>
+                  <button type="button" class="btn" id="import-save-btn">Save imported template</button>
+                </div>
+              </form>
+              <div id="import-preview" class="import-preview">
+                <p class="hint">No file inspected yet.</p>
+              </div>
+              <p id="import-status" class="status-bar" aria-live="polite"></p>
+
+              <h2 class="section-title" id="manage-form-title">Add activity</h2>
+              <form id="activity-form" class="form-grid">
+                <input type="hidden" id="edit-mode" value="add">
+                <div class="field">
+                  <label for="act-id">Activity ID</label>
+                  <input id="act-id" class="input" required placeholder="e.g. wn1-vocabulary" autocomplete="off">
+                </div>
+                <div class="field">
+                  <label for="act-title">Title</label>
+                  <input id="act-title" class="input" required placeholder="Write Now 1 Vocabulary Game">
+                </div>
+                <div class="field">
+                  <label for="act-book">Book</label>
+                  <select id="act-book" class="select" required></select>
+                </div>
+                <div class="field">
+                  <label for="act-type">Type</label>
+                  <select id="act-type" class="select" required></select>
+                </div>
+                <div class="field">
+                  <label for="act-path">File path (relative to this folder)</label>
+                  <input id="act-path" class="input" required placeholder="activities/green/write-now-1/jumping-ox/Green - Write Now 1 - Jumping OX.html">
+                </div>
+                <div class="field">
+                  <label for="act-status">Status</label>
+                  <select id="act-status" class="select">
+                    <option value="ready">ready</option>
+                    <option value="draft">draft</option>
+                    <option value="missing">missing</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="act-unit">Unit filter (optional)</label>
+                  <input id="act-unit" class="input" placeholder="Leave blank for all units">
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary" id="save-activity-btn">Save activity</button>
+                  <button type="button" class="btn" id="reset-form-btn">Clear form</button>
+                  <button type="button" class="btn btn-danger" id="reset-overlay-btn">Reset my catalog changes</button>
+                </div>
+              </form>
+              <p id="manage-status" class="status-bar" aria-live="polite"></p>
+            </div>
+            <div class="list-card">
+              <h2 class="section-title">Registered activities</h2>
+              <ul id="manage-list" class="manage-list"></ul>
+            </div>
+          </div>
+        </details>
+      </section>
+    </main>
+  </div>
+
+  <script src="vendor/pdfjs/pdf.min.js"></script>
+  <script src="js/embedded.js"></script>
+  <script src="js/catalog.js"></script>
+  <script src="js/domain.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/analyze.js"></script>
+  <script src="js/generate.js"></script>
+  <script src="js/importer.js"></script>
+  <script src="js/styles.js"></script>
+  <script src="js/app.js"></script>
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="false"></div>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>__TITLE__</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap");
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Nunito, "Segoe UI", "Malgun Gothic", sans-serif; background: #f1f5f9; color: #0f172a; padding: 1.5rem; }
+    .controls { max-width: 56rem; margin: 0 auto 1.5rem; display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; background: #fff; border-radius: 1rem; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.12); padding: 1.5rem 1.75rem; }
+    h1 { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 900; color: #4338ca; width: 100%; margin-bottom: .25rem; }
+    .hint { color: #64748b; font-size: .95rem; width: 100%; margin-bottom: .5rem; }
+    select, button { font: inherit; font-weight: 800; padding: .5rem .9rem; border-radius: 8px; border: 2px solid #e2e8f0; background: #fff; cursor: pointer; }
+    .primary { background: #6366f1; color: #fff; border-color: #6366f1; }
+    .how-to { max-width: 56rem; margin: 0 auto 1.5rem; background: #eef2ff; border-radius: 1rem; padding: 1rem 1.25rem; font-size: .95rem; line-height: 1.6; }
+    .how-to strong { display: block; margin-bottom: .25rem; }
+    .how-to ol { padding-left: 1.25rem; }
+
+    .cards { max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+    .card { border: 1px dashed #94a3b8; padding: 1.25rem; min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; }
+    .card-q { background: #fff; }
+    .card-a { background: #f1f5f9; border-top: 2px dashed #475569; }
+    .card .label { position: absolute; top: 6px; left: 10px; font-size: .65rem; color: #94a3b8; text-transform: uppercase; }
+    .card .main { font-size: 1.3rem; font-weight: 700; }
+    .card .sub { font-size: 1rem; color: #475569; margin-top: .25rem; }
+
+    @media print {
+      .controls, .how-to { display: none !important; }
+      body { padding: 0; background: #fff; }
+      .cards { page-break-inside: avoid; }
+      .card { border: 1px dashed #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .card-a { background: #f5f5f5 !important; }
+      @page { size: A4 portrait; margin: 10mm; }
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <h1 id="title">__TITLE__</h1>
+    <p class="hint">Print, cut along dashed lines, fold each pair in half. Question on front, answer on back.</p>
+    <label>Unit <select id="unitSelect"></select></label>
+    <label>Direction <select id="dirSelect"><option value="en2ko">English → Korean</option><option value="ko2en">Korean → English</option></select></label>
+    <button type="button" class="primary" onclick="window.print()">Print</button>
+  </div>
+  <div class="how-to">
+    <strong>How to play Quiz-Quiz-Trade</strong>
+    <ol>
+      <li>Each student gets one folded card.</li>
+      <li>Stand up, hand up, pair up with a classmate.</li>
+      <li>Partner A reads their question. Partner B answers.</li>
+      <li>Partner B reads their question. Partner A answers.</li>
+      <li>Trade cards and find a new partner.</li>
+    </ol>
+  </div>
+  <div class="cards" id="cards"></div>
+
+  <script>
+    var TITLE = __TITLE_JSON__;
+    var VOCAB = __VOCAB_BY_UNIT__;
+    document.getElementById("title").textContent = TITLE;
+    var unitSelect = document.getElementById("unitSelect");
+    var dirSelect = document.getElementById("dirSelect");
+    var cardsEl = document.getElementById("cards");
+    var keys = Object.keys(VOCAB);
+
+    var allOpt = document.createElement("option");
+    allOpt.value = "all"; allOpt.textContent = "All units";
+    unitSelect.appendChild(allOpt);
+    keys.forEach(function(k) {
+      var o = document.createElement("option");
+      o.value = k; o.textContent = VOCAB[k].name;
+      unitSelect.appendChild(o);
+    });
+
+    function getWords(unitId) {
+      if (unitId === "all") return keys.reduce(function(a, k) { return a.concat(VOCAB[k].words || []); }, []);
+      return (VOCAB[unitId] && VOCAB[unitId].words) || [];
+    }
+
+    function render() {
+      var words = getWords(unitSelect.value);
+      var dir = dirSelect.value;
+      cardsEl.innerHTML = "";
+      words.forEach(function(w, i) {
+        var q = dir === "en2ko" ? w.en : (w.ko || w.en);
+        var a = dir === "en2ko" ? (w.ko || "—") : w.en;
+        cardsEl.innerHTML +=
+          '<div class="card card-q"><span class="label">Q ' + (i+1) + '</span><span class="main">' + q + '</span></div>' +
+          '<div class="card card-a"><span class="label">A ' + (i+1) + '</span><span class="main">' + a + '</span></div>';
+      });
+    }
+
+    unitSelect.addEventListener("change", render);
+    dirSelect.addEventListener("change", render);
+    render();
+  </script>
+</body>
+</html>

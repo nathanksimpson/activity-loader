@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write Now 1 Vocab Memory Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            perspective: 1000px;
+        }
+        .card {
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+        .card.is-flipped {
+            transform: rotateY(180deg);
+        }
+        .card-face {
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        .card-face-back {
+            transform: rotateY(180deg);
+        }
+        .card.is-matched {
+            transform: rotateY(180deg) scale(0.95);
+            opacity: 0.5;
+            box-shadow: none;
+        }
+        .score-btn {
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        .score-btn:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+<body class="bg-slate-200 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-5xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 text-center">
+        <!-- Header -->
+        <h1 class="text-3xl md:text-4xl font-black text-teal-700 mb-2">Write Now 1 Vocab Memory Game</h1>
+        <p class="text-slate-500 mb-6">Find the matching English and Korean words!</p>
+
+        <!-- Controls & Stats -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 bg-slate-100 p-4 rounded-lg">
+            <div class="flex items-center gap-4">
+                <select id="unit-select" class="w-full sm:w-auto bg-white border-2 border-slate-200 text-slate-700 font-bold py-2 px-4 rounded-lg focus:outline-none focus:border-teal-500 transition">
+                    <!-- Options populated by JS -->
+                </select>
+                <button id="start-game-btn" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg transition-transform transform hover:scale-105 shadow-lg">
+                    New Game
+                </button>
+            </div>
+            <div class="flex items-center gap-6 text-slate-600 font-bold">
+                <div>Turns: <span id="turns-count" class="text-teal-600 text-xl">0</span></div>
+                <div>Matches: <span id="matches-count" class="text-teal-600 text-xl">0</span> / <span id="total-matches" class="text-teal-600 text-xl">0</span></div>
+            </div>
+        </div>
+
+        <!-- Scoreboard Section -->
+        <div id="scoreboard" class="mb-6 bg-slate-50 p-4 rounded-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-black text-slate-700">Scoreboard</h2>
+                <div class="flex gap-2">
+                    <button id="add-team-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded-lg shadow-md transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500 disabled:scale-100">Add Team</button>
+                    <button id="remove-team-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-lg shadow-md transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-500 disabled:scale-100">Remove Team</button>
+                </div>
+            </div>
+            <div id="teams-container">
+                <!-- Team cards will be dynamically inserted here -->
+            </div>
+        </div>
+
+
+        <!-- Game Board -->
+        <div id="game-board" class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3 md:gap-4">
+            <!-- Cards will be dynamically inserted here -->
+        </div>
+
+        <!-- Win Modal -->
+        <div id="win-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+            <div class="bg-white rounded-2xl shadow-2xl p-8 text-center transform transition-all scale-95 opacity-0" id="win-modal-content">
+                <h2 class="text-4xl font-black text-yellow-500 mb-4">You Win!</h2>
+                <p class="text-slate-600 text-lg mb-2">Excellent memory!</p>
+                <p id="win-stats" class="text-slate-600 text-lg mb-6">You completed the level in X turns.</p>
+                <button id="play-again-btn" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-8 rounded-lg text-lg transition-transform transform hover:scale-105 shadow-lg">
+                    Play Again
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Vocabulary Data (Write Now 1) ---
+        const vocabByUnit = {
+            1: { name: "Unit 1: My Family and I", words: [
+                { en: 'curly', ko: '곱슬곱슬한' }, { en: 'tall', ko: '키가 큰' }, { en: 'chubby', ko: '통통한' }, { en: 'thin', ko: '마른' }, { en: 'straight', ko: '곧은, 곱슬거리지 않는' }, { en: 'short', ko: '키가 작은' }, { en: 'student', ko: '학생' }, { en: 'brother', ko: '남자 형제' }, { en: 'sister', ko: '여자 형제' }, { en: 'strong', ko: '힘이 센' }, { en: 'pretty', ko: '예쁜' }, { en: 'friend', ko: '친구' }, { en: 'age', ko: '나이' }, { en: 'body', ko: '몸' }, { en: 'hair', ko: '머리카락' }
+            ]},
+            2: { name: "Unit 2: My Friend Daisy", words: [
+                { en: 'smart', ko: '똑똑한' }, { en: 'kind', ko: '친절한' }, { en: 'brave', ko: '용감한' }, { en: 'funny', ko: '재미있는' }, { en: 'shy', ko: '수줍은' }, { en: 'quiet', ko: '조용한' }, { en: 'weak', ko: '약한' }, { en: 'introduce', ko: '소개하다' }, { en: 'tell', ko: '말하다' }, { en: 'story', ko: '이야기' }, { en: 'favorite', ko: '가장 좋아하는' }, { en: 'color', ko: '색깔' }, { en: 'help people', ko: '사람들을 도와주다' }, { en: 'play the piano', ko: '피아노를 치다' }, { en: 'do homework', ko: '숙제를 하다' }
+            ]},
+            3: { name: "Unit 3: School Market Day", words: [
+                { en: 'umbrella', ko: '우산' }, { en: 'soccer ball', ko: '축구공' }, { en: 'teddy bear', ko: '곰 인형' }, { en: 'sneakers', ko: '운동화' }, { en: 'hairband', ko: '머리띠' }, { en: 'marble', ko: '구슬' }, { en: 'sell', ko: '팔다' }, { en: 'dish', ko: '접시' }, { en: 'toy', ko: '장난감' }, { en: 'shoes', ko: '신발' }, { en: 'jacket', ko: '재킷' }, { en: 'market', ko: '시장' }, { en: 'buy', ko: '사다' }, { en: 'old things', ko: '오래된 물건들' }, { en: 'sweater', ko: '스웨터' }
+            ]},
+            4: { name: "Unit 4: What a Messy Room!", words: [
+                { en: 'chair', ko: '의자' }, { en: 'dresser', ko: '서랍장' }, { en: 'rug', ko: '깔개, 양탄자' }, { en: 'wardrobe', ko: '옷장' }, { en: 'bed', ko: '침대' }, { en: 'curtain', ko: '커튼' }, { en: 'slippers', ko: '슬리퍼' }, { en: 'door', ko: '문' }, { en: 'table', ko: '탁자, 테이블' }, { en: 'basket', ko: '바구니' }, { en: 'messy', ko: '지저분한' }, { en: 'mess', ko: '엉망진창' }, { en: 'backpack', ko: '배낭' }, { en: 'favorite', ko: '가장 좋아하는' }, { en: 'clean', ko: '청소하다' }
+            ]},
+            5: { name: "Unit 5: My Favorite Thing", words: [
+                { en: 'toy truck', ko: '장난감 트럭' }, { en: 'bike', ko: '자전거' }, { en: 'robot', ko: '로봇' }, { en: 'seat', ko: '안장, 좌석' }, { en: 'wheel', ko: '바퀴' }, { en: 'basket', ko: '바구니' }, { en: 'pencil', ko: '연필' }, { en: 'have', ko: '가지고 있다' }, { en: 'skateboard', ko: '스케이트보드' }, { en: 'door', ko: '문' }, { en: 'favorite', ko: '가장 좋아하는' }, { en: 'thing', ko: '물건, 것' }, { en: 'driver', ko: '운전자, 기사' }, { en: 'arm', ko: '팔' }, { en: 'leg', ko: '다리' }
+            ]},
+            6: { name: "Unit 6: Welcome to My Town!", words: [
+                { en: 'toy store', ko: '장난감 가게' }, { en: 'library', ko: '도서관' }, { en: 'fire station', ko: '소방서' }, { en: 'supermarket', ko: '슈퍼마켓' }, { en: 'playground', ko: '놀이터' }, { en: 'restaurant', ko: '레스토랑, 식당' }, { en: 'train station', ko: '기차역' }, { en: 'museum', ko: '박물관' }, { en: 'building', ko: '빌딩, 건물' }, { en: 'town', ko: '동네, 마을' }, { en: 'look around', ko: '둘러보다' }, { en: 'firefighter', ko: '소방관' }, { en: 'painting', ko: '그림' }, { en: 'statue', ko: '조각상' }, { en: 'vegetable', ko: '채소' }
+            ]},
+            7: { name: "Unit 7: Different but Together", words: [
+                { en: 'eat ice cream', ko: '아이스크림을 먹다' }, { en: 'paint pictures', ko: '그림을 그리다' }, { en: 'ride a bike', ko: '자전거를 타다' }, { en: 'play with blocks', ko: '블록을 가지고 놀다' }, { en: 'grow plants', ko: '식물을 기르다' }, { en: 'watch TV', ko: 'TV를 보다' }, { en: 'drink coffee', ko: '커피를 마시다' }, { en: 'fly kites', ko: '연을 날리다' }, { en: 'listen to music', ko: '음악을 듣다' }, { en: 'drive a car', ko: '차를 운전하다' }, { en: 'cousin', ko: '사촌' }, { en: 'different', ko: '다른' }, { en: 'walk', ko: '걷다' }, { en: 'both', ko: '둘다' }, { en: 'read comics', ko: '만화책을 읽다' }
+            ]},
+            8: { name: "Unit 8: My Busy Day", words: [
+                { en: 'have violin lessons', ko: '바이올린 수업을 받다' }, { en: 'feed my dog', ko: '(내) 개에게 먹이를 주다' }, { en: 'get up', ko: '일어나다' }, { en: 'jog with my dad', ko: '아빠와 함께 조깅을 하다' }, { en: 'study math', ko: '수학을 공부하다' }, { en: 'eat dinner', ko: '저녁을 먹다' }, { en: 'busy', ko: '바쁜' }, { en: 'do my homework', ko: '(내) 숙제를 하다' }, { en: 'take a shower', ko: '샤워를 하다' }, { en: 'water my plant', ko: '(내) 식물에 물을 주다' }, { en: 'eat breakfast', ko: '아침을 먹다' }, { en: 'evening', ko: '저녁' }, { en: 'then', ko: '그 다음에' }, { en: 'pack my backpack', ko: '(내) 배낭을 싸다' }, { en: 'ready', ko: '준비가 된' }
+            ]}
+        };
+        
+        // --- Create "All Units" data ---
+        const allWords = Object.values(vocabByUnit).reduce((acc, unit) => acc.concat(unit.words), []);
+        vocabByUnit['all'] = { name: "All Units (Random)", words: allWords };
+
+        // --- DOM Elements ---
+        const unitSelect = document.getElementById('unit-select');
+        const startGameBtn = document.getElementById('start-game-btn');
+        const gameBoard = document.getElementById('game-board');
+        const turnsCountEl = document.getElementById('turns-count');
+        const matchesCountEl = document.getElementById('matches-count');
+        const totalMatchesEl = document.getElementById('total-matches');
+        const winModal = document.getElementById('win-modal');
+        const winModalContent = document.getElementById('win-modal-content');
+        const winStats = document.getElementById('win-stats');
+        const playAgainBtn = document.getElementById('play-again-btn');
+        const teamsContainer = document.getElementById('teams-container');
+        const addTeamBtn = document.getElementById('add-team-btn');
+        const removeTeamBtn = document.getElementById('remove-team-btn');
+
+
+        // --- Game State ---
+        let currentUnit = 'all'; // Default to all units
+        let hasFlippedCard = false;
+        let lockBoard = false;
+        let firstCard, secondCard;
+        let turns = 0;
+        let matchesFound = 0;
+        let totalMatches = 0;
+
+        // --- Scoreboard State ---
+        let teams = [];
+        const MAX_TEAMS = 4;
+        const MIN_TEAMS = 2;
+
+        // --- Functions ---
+
+        // SCOREBOARD FUNCTIONS
+        function initializeTeams() {
+            teams = [
+                { id: 1, name: 'Team 1', score: 0 },
+                { id: 2, name: 'Team 2', score: 0 }
+            ];
+            renderScoreboard();
+        }
+
+        function renderScoreboard() {
+            teamsContainer.innerHTML = '';
+            
+            // Dynamically set grid classes based on the number of teams for a responsive layout.
+            let gridClasses = 'grid gap-4 ';
+            switch (teams.length) {
+                case 2:
+                    gridClasses += 'grid-cols-2';
+                    break;
+                case 3:
+                    // Use 3 columns on all screen sizes for an even look.
+                    gridClasses += 'grid-cols-3';
+                    break;
+                case 4:
+                    // Use 2 columns on mobile and 4 on larger screens.
+                    gridClasses += 'grid-cols-2 md:grid-cols-4';
+                    break;
+                default:
+                     // Fallback for any other number (e.g., if MIN_TEAMS is changed to 1).
+                     gridClasses += 'grid-cols-1';
+            }
+            teamsContainer.className = gridClasses;
+
+            teams.forEach(team => {
+                const teamCard = document.createElement('div');
+                teamCard.className = 'bg-white p-3 rounded-lg shadow-md flex flex-col items-center gap-2';
+                teamCard.innerHTML = `
+                    <input type="text" value="${team.name}" class="w-full text-center font-bold text-slate-700 bg-slate-100 rounded p-1 border-2 border-transparent focus:border-teal-500 outline-none" data-id="${team.id}">
+                    <div class="text-4xl font-black text-teal-600">${team.score}</div>
+                    <div class="flex gap-2 w-full">
+                        <button class="score-btn w-full bg-red-200 hover:bg-red-300 text-red-800 font-bold text-2xl rounded" data-id="${team.id}" data-action="subtract">-</button>
+                        <button class="score-btn w-full bg-green-200 hover:bg-green-300 text-green-800 font-bold text-2xl rounded" data-id="${team.id}" data-action="add">+</button>
+                    </div>
+                `;
+                teamsContainer.appendChild(teamCard);
+            });
+            updateTeamButtonStates();
+            addScoreboardEventListeners();
+        }
+        
+        function addScoreboardEventListeners() {
+            // Name change
+            teamsContainer.querySelectorAll('input[type="text"]').forEach(input => {
+                input.addEventListener('change', (e) => {
+                    const teamId = parseInt(e.target.dataset.id);
+                    const newName = e.target.value;
+                    const team = teams.find(t => t.id === teamId);
+                    if (team) {
+                        team.name = newName;
+                    }
+                });
+            });
+
+            // Score buttons
+            teamsContainer.querySelectorAll('.score-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const teamId = parseInt(e.target.dataset.id);
+                    const action = e.target.dataset.action;
+                    const team = teams.find(t => t.id === teamId);
+                    if (team) {
+                        if (action === 'add') {
+                            team.score++;
+                        } else if (action === 'subtract' && team.score > 0) {
+                            team.score--;
+                        }
+                        // Re-render is simple enough for this
+                        renderScoreboard();
+                    }
+                });
+            });
+        }
+
+        function addTeam() {
+            if (teams.length < MAX_TEAMS) {
+                const newId = teams.length > 0 ? Math.max(...teams.map(t => t.id)) + 1 : 1;
+                teams.push({ id: newId, name: `Team ${newId}`, score: 0 });
+                renderScoreboard();
+            }
+        }
+
+        function removeTeam() {
+            if (teams.length > MIN_TEAMS) {
+                teams.pop();
+                renderScoreboard();
+            }
+        }
+
+        function updateTeamButtonStates() {
+            addTeamBtn.disabled = teams.length >= MAX_TEAMS;
+            removeTeamBtn.disabled = teams.length <= MIN_TEAMS;
+        }
+
+        // GAME FUNCTIONS
+        function populateUnits() {
+            unitSelect.innerHTML = ''; // Clear previous options
+            const unitOrder = ['all', '1', '2', '3', '4', '5', '6', '7', '8'];
+            
+            unitOrder.forEach(unitId => {
+                if (vocabByUnit[unitId]) {
+                    const option = document.createElement('option');
+                    option.value = unitId;
+                    option.textContent = vocabByUnit[unitId].name;
+                    unitSelect.appendChild(option);
+                }
+            });
+            unitSelect.value = currentUnit;
+        }
+
+        function createBoard() {
+            // Reset state
+            gameBoard.innerHTML = '';
+            turns = 0;
+            matchesFound = 0;
+            lockBoard = false;
+            hasFlippedCard = false;
+
+            // Determine which words to use
+            let wordsForGame;
+            const allUnitWords = vocabByUnit[currentUnit].words;
+
+            if (currentUnit === 'all') {
+                // For "All Units", shuffle the master list and pick 15 random pairs
+                const shuffled = allUnitWords.sort(() => 0.5 - Math.random());
+                wordsForGame = shuffled.slice(0, 15);
+            } else {
+                // For a specific unit, use all its words
+                wordsForGame = allUnitWords;
+            }
+            
+            totalMatches = wordsForGame.length;
+
+            // Create card data from the selected words
+            let cardData = [];
+            wordsForGame.forEach((word, index) => {
+                cardData.push({ lang: 'en', text: word.en, pairId: index });
+                cardData.push({ lang: 'ko', text: word.ko, pairId: index });
+            });
+            
+            // Shuffle cards for display
+            cardData.sort(() => 0.5 - Math.random());
+
+            // Create card elements
+            cardData.forEach(data => {
+                const card = document.createElement('div');
+                card.classList.add('card', 'relative', 'h-24', 'md:h-28', 'cursor-pointer');
+                card.dataset.pairId = data.pairId;
+
+                const koClass = data.lang === 'ko' ? 'text-lg' : 'text-xl';
+
+                card.innerHTML = `
+                    <div class="card-face card-face-front w-full h-full flex items-center justify-center bg-teal-500 rounded-lg shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.5v-15m0 0l-6.5 6.5m6.5-6.5l6.5 6.5"/></svg>
+                    </div>
+                    <div class="card-face card-face-back w-full h-full flex items-center justify-center p-2 bg-slate-50 rounded-lg shadow-md text-center font-bold text-slate-800 ${koClass}">
+                        ${data.text}
+                    </div>
+                `;
+                card.addEventListener('click', flipCard);
+                gameBoard.appendChild(card);
+            });
+            updateStats();
+        }
+        
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return;
+
+            this.classList.add('is-flipped');
+
+            if (!hasFlippedCard) {
+                hasFlippedCard = true;
+                firstCard = this;
+                return;
+            }
+            
+            secondCard = this;
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            turns++;
+            lockBoard = true;
+            
+            let isMatch = firstCard.dataset.pairId === secondCard.dataset.pairId;
+            isMatch ? disableCards() : unflipCards();
+            updateStats();
+        }
+
+        function disableCards() {
+            matchesFound++;
+            firstCard.removeEventListener('click', flipCard);
+            secondCard.removeEventListener('click', flipCard);
+            
+            setTimeout(() => {
+                firstCard.classList.add('is-matched');
+                secondCard.classList.add('is-matched');
+                resetBoard();
+                if (matchesFound === totalMatches) {
+                    showWinModal();
+                }
+            }, 1500);
+        }
+
+        function unflipCards() {
+            setTimeout(() => {
+                firstCard.classList.remove('is-flipped');
+                secondCard.classList.remove('is-flipped');
+                resetBoard();
+            }, 1500);
+        }
+
+        function resetBoard() {
+            [hasFlippedCard, lockBoard] = [false, false];
+            [firstCard, secondCard] = [null, null];
+        }
+
+        function updateStats() {
+            turnsCountEl.textContent = turns;
+            matchesCountEl.textContent = matchesFound;
+            totalMatchesEl.textContent = totalMatches;
+        }
+        
+        function showWinModal() {
+            winStats.textContent = `You found all ${totalMatches} pairs in ${turns} turns.`;
+            winModal.classList.remove('hidden');
+            setTimeout(() => {
+                winModalContent.classList.remove('scale-95', 'opacity-0');
+                winModalContent.classList.add('scale-100', 'opacity-100');
+            }, 100);
+        }
+
+        function hideWinModal() {
+            winModalContent.classList.add('scale-95', 'opacity-0');
+            winModalContent.classList.remove('scale-100', 'opacity-100');
+            setTimeout(() => {
+                winModal.classList.add('hidden');
+            }, 200);
+        }
+
+        // --- Event Listeners ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateUnits();
+            createBoard();
+            initializeTeams();
+        });
+        
+        unitSelect.addEventListener('change', (e) => {
+            currentUnit = e.target.value;
+            createBoard();
+        });
+
+        startGameBtn.addEventListener('click', createBoard);
+        playAgainBtn.addEventListener('click', () => {
+            hideWinModal();
+            setTimeout(createBoard, 300);
+        });
+
+        addTeamBtn.addEventListener('click', addTeam);
+        removeTeamBtn.addEventListener('click', removeTeam);
+
+    </script>
+</body>
+</html>
