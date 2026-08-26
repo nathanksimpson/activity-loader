@@ -1,0 +1,7 @@
+node_modules
+dist
+.git
+*.exe
+API Key.txt
+*.lnk
+package-lock.json
