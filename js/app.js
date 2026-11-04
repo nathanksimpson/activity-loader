@@ -177,7 +177,14 @@
       ? 'curr-api-key'
       : (source === 'style' ? 'style-api-key' : 'gen-api-key');
     fillModelSelect(modelId, providerId);
-    if (els[keyId]) els[keyId].value = Domain.getApiKey(providerId);
+    const isSite = !!Domain.getAiProvider(providerId).site;
+    if (els[keyId]) {
+      els[keyId].value = isSite ? '' : Domain.getApiKey(providerId);
+      const keyField = els[keyId].closest('.field');
+      if (keyField) keyField.hidden = isSite;
+    }
+    const modelField = els[modelId] && els[modelId].closest('.field');
+    if (modelField) modelField.hidden = isSite;
     syncCustomFields(source);
   }
 
@@ -1197,7 +1204,7 @@
   }
 
   function toggleApiField() {
-    if (els['api-key-field']) els['api-key-field'].hidden = false;
+    if (els['api-key-field']) els['api-key-field'].hidden = !!Domain.getAiProvider(currentProvider('generate')).site;
   }
 
   function sleep(ms) {
@@ -1215,7 +1222,7 @@
     const modelId = providerId === 'custom'
       ? Domain.getCustomAiSettings().model
       : els['gen-ai-model'].value;
-    const apiKey = els['gen-api-key'].value.trim();
+    const apiKey = Domain.getAiProvider(providerId).site ? Domain.getApiKey(providerId) : els['gen-api-key'].value.trim();
     if (!activityIds.length) {
       setStatus(els['generate-status'], 'Tick at least one activity.', { isError: true, toast: true, toastType: 'error' });
       return;
@@ -1791,7 +1798,18 @@
     });
   }
 
+  /** Called by js/sync.js after a teammate's changes arrive or the workspace changes. */
+  function refreshFromSync() {
+    restoreAfterBackup();
+  }
+
   async function main() {
+    if (window.ActivitySync) {
+      // Signs in, picks the workspace and loads its saved data into this browser
+      // before anything reads it. Resolves immediately when running offline.
+      await window.ActivitySync.ready();
+      window.ActivitySync.onRemoteChange = refreshFromSync;
+    }
     cacheEls();
     await Catalog.init();
     await Domain.init();

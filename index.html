@@ -283,8 +283,8 @@
         <p id="browse-status" class="status-bar" aria-live="polite"></p>
 
         <div class="form-card backup-card">
-          <h2 class="section-title">Backup this browser</h2>
-          <p class="hint">Downloads one JSON file with books, levels, breakdowns, generated packs, imported templates, custom activity styles, and settings from this browser. Restore replaces those same items. The file can include API keys, so keep it private.</p>
+          <h2 class="section-title">Backup</h2>
+          <p class="hint">Downloads one JSON file with books, levels, breakdowns, generated packs, imported templates, custom activity styles, and settings. Restore replaces those same items. When you are signed in, restoring also saves them to the workspace you have open — an easy way to copy books into a team. The file can include API keys, so keep it private.</p>
           <div class="form-actions">
             <button type="button" class="btn btn-primary" id="backup-export-btn">Download backup</button>
             <label class="btn" for="backup-import-file">Restore backup</label>
@@ -382,6 +382,7 @@
 
   <script src="vendor/pdfjs/pdf.min.js"></script>
   <script src="js/embedded.js"></script>
+  <script src="js/sync.js"></script>
   <script src="js/catalog.js"></script>
   <script src="js/domain.js"></script>
   <script src="js/ai.js"></script>

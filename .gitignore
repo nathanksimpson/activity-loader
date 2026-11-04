@@ -21,3 +21,7 @@ credentials.json
 API Key.txt
 *API Key*
 *.lnk
+
+# Wrangler local state
+.wrangler/
+.dev.vars

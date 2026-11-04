@@ -13,6 +13,26 @@
   const STORAGE_STYLES = 'activityLoader.activityStyles.v1';
   const GENERATABLE_IDS = ['jumpingOx', 'jeopardy', 'vocabulary', 'teamMatch', 'charades', 'quizQuizTrade', 'fanNPick', 'findSomeoneWho', 'showdown', 'rallyCoach'];
   const CONTENT_SCHEMAS = ['vocabByUnit', 'matchPairs', 'unitQuestions', 'unitClues', 'genericPack'];
+  // 'site' = Included AI: runs on the Activity Loader server with the site's key
+  // and counts against the workspace's monthly limit. Only offered when signed in
+  // to a workspace whose plan includes AI (see js/sync.js).
+  const SITE_PROVIDER = {
+    id: 'site',
+    label: 'Included AI (no key needed)',
+    analyzeSupportsPdf: true,
+    site: true,
+    models: [{ id: 'standard', label: 'Standard' }]
+  };
+
+  function siteAiAvailable() {
+    const Sync = global.ActivitySync;
+    return !!(Sync && Sync.siteAiAvailable && Sync.siteAiAvailable());
+  }
+
+  function activeProviders() {
+    return siteAiAvailable() ? [SITE_PROVIDER].concat(AI_PROVIDERS) : AI_PROVIDERS;
+  }
+
   const AI_PROVIDERS = [
     {
       id: 'gemini',
@@ -110,7 +130,7 @@
 
   function defaultAiSettings() {
     return {
-      provider: 'gemini',
+      provider: siteAiAvailable() ? 'site' : 'gemini',
       modelByProvider: {
         gemini: 'gemini-2.0-flash',
         openai: 'gpt-4o-mini',
@@ -498,12 +518,13 @@
     },
 
     getAiProviders() {
-      return clone(AI_PROVIDERS);
+      return clone(activeProviders());
     },
 
     getAiProvider(providerId) {
-      const id = String(providerId || '').trim() || 'gemini';
-      return AI_PROVIDERS.find((provider) => provider.id === id) || AI_PROVIDERS[0];
+      const list = activeProviders();
+      const id = String(providerId || '').trim() || list[0].id;
+      return list.find((provider) => provider.id === id) || list[0];
     },
 
     getAiSettings() {
@@ -593,12 +614,14 @@
 
     getApiKey(providerId) {
       const provider = this.getAiProvider(providerId);
+      if (provider.site) return 'included';
       const settings = this.getAiSettings();
       return String((settings.apiKeys && settings.apiKeys[provider.id]) || '').trim();
     },
 
     setApiKey(providerId, key) {
       const provider = this.getAiProvider(providerId);
+      if (provider.site) return this.getAiSettings();
       const patch = {};
       patch[provider.id] = String(key || '').trim();
       return this.saveAiSettings({ apiKeys: patch });

@@ -78,6 +78,7 @@
   }
 
   function assertReady(resolved) {
+    if (resolved.provider === 'site') return;
     requireHttps();
     if (!resolved.apiKey) throw new Error('Paste an API key first.');
     if (resolved.provider === 'custom') {
@@ -277,13 +278,22 @@
     return callOpenAiChat(resolved, prompt, imageParts, baseUrl, headers);
   }
 
+  /** Included AI: the Activity Loader server calls the model with the site key. */
+  async function callSite(resolved, prompt, imageParts) {
+    const Sync = global.ActivitySync;
+    if (!Sync || !Sync.callSiteAi) throw new Error('Included AI needs you to be signed in.');
+    const parts = (imageParts || []).filter((p) => p && (p.inline_data || typeof p.text === 'string'));
+    return Sync.callSiteAi({ prompt: String(prompt || ''), parts: parts, temperature: resolved.temperature });
+  }
+
   async function generateText(opts) {
     const resolved = resolveOptions(opts || {});
     assertReady(resolved);
     const prompt = (opts && opts.prompt) || '';
     const imageParts = (opts && opts.imageParts) || (opts && opts.parts) || [];
     let text;
-    if (resolved.provider === 'openai') text = await callOpenAiResponses(resolved, prompt, imageParts);
+    if (resolved.provider === 'site') text = await callSite(resolved, prompt, imageParts);
+    else if (resolved.provider === 'openai') text = await callOpenAiResponses(resolved, prompt, imageParts);
     else if (resolved.provider === 'anthropic') text = await callAnthropic(resolved, prompt, imageParts);
     else if (resolved.provider === 'custom') text = await callCustom(resolved, prompt, imageParts);
     else text = await callGemini(resolved, prompt, imageParts);

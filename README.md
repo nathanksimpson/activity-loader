@@ -142,9 +142,58 @@ To put a backup back into this browser:
 
 Edit it on the **Curriculum** tab for each book. Generate copies that value, and you can override it for one build.
 
+## Live site (accounts, teams, Included AI)
+
+On the live site, everyone signs in with Google. Opened from the folder (`index.html` or `node serve.js`) the app works offline exactly as described above, with no accounts.
+
+- **Workspaces.** Your first sign-in creates **My workspace**. Books, word lists, styles, imported templates and generated games are saved to the workspace, so they appear on every device you sign in on. The **Saved / Saving…** chip in the account bar shows whether the latest change has reached the server.
+- **Teams.** Click **Teams** → **Make a new team** (for example an academy). In the team, click **Team** → **Make invite link** and send the link to one teacher. Each link works once and lasts 14 days. Everyone in a team shares the same books and games. Switch between your workspace and teams with the drop-down on the left of the account bar.
+- **Copying books between workspaces.** Download a backup in one workspace, switch, then Restore it in the other.
+- **Included AI.** Choose **Included AI (no key needed)** as the AI provider. It runs with the site's key and counts toward the workspace's monthly allowance (the **AI 3 / 50** chip). When it runs out, pick Gemini, OpenAI or Claude and paste your own key — own keys stay in your browser and are never sent to the Activity Loader server.
+- **Data from before accounts.** If a browser already had saved books from the old version of the site, the first sign-in asks whether to copy them into your workspace.
+- **Admin.** Emails in `ADMIN_EMAILS` see an **Admin** button: every workspace with its owner, members and AI use this month. Set a workspace to **Included** or **Own key**, and change its monthly limit (blank = site default).
+
+### Setting up the live site (owner)
+
+The site is a Cloudflare Worker (`src/worker.js`) serving this folder, with a D1 database.
+
+| Environment | Worker | Database | Branch |
+|---|---|---|---|
+| Production | `activity-loader` | `activity-loader-db` | `main` |
+| Staging | `activity-loader-staging` | `activity-loader-staging-db` | `staging` |
+
+1. **Google sign-in.** In Google Cloud Console → APIs & Services → Credentials, create an **OAuth client ID** (type: Web application). Add an **Authorized redirect URI** for each site address, ending in `/auth/google/callback` — for example `https://activity-loader-staging.<your-subdomain>.workers.dev/auth/google/callback`.
+2. **Secrets.** In Cloudflare → Workers → the Worker → Settings → Variables and Secrets, add `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` and `GEMINI_API_KEY` (the key Included AI uses). Do this for staging and production separately.
+3. **Settings** (in `wrangler.jsonc`): `AI_MONTHLY_LIMIT` (default allowance per workspace), `SITE_AI_MODEL`, `ADMIN_EMAILS`.
+4. **Database changes** go in `schema.sql` **and** a new `migrations/000N_*.sql`.
+
+### Testing locally
+
+Wrangler is optional. `tests/dev-server.mjs` runs the Worker on Node with SQLite in place of D1; it needs a `.dev.vars` file (not committed):
+
+```text
+DEV_LOGIN=1
+GEMINI_API_KEY=test-key
+GEMINI_API_BASE=http://127.0.0.1:8799
+AI_MONTHLY_LIMIT=3
+```
+
+```text
+node tests/mock-gemini.mjs        (fake AI on port 8799)
+node tests/dev-server.mjs 8787    (the site on http://localhost:8787)
+node tests/api-check.mjs          (33 API checks)
+node tests/browser-check.mjs      (29 browser checks; needs Google Chrome)
+```
+
+Sign in locally at `http://localhost:8787/auth/dev?email=you@example.com`. That address works only on localhost and only when `DEV_LOGIN=1`.
+
 ## Folder map
 
 ```text
+src/worker.js        Live site server: sign-in, workspaces, sync, Included AI
+js/sync.js           Accounts in the browser: sign-in screen, account bar, sync
+migrations/          Database changes (D1)
+tests/               Local test server and checks
 templates/           Activity shells (no API)
 content/{book}/      Curriculum packs (JSON)
 activities/{level}/  Playable HTML for Loader

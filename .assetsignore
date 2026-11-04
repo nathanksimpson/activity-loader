@@ -1,7 +1,23 @@
 node_modules
 dist
 .git
+.github
+.wrangler
+.dev.vars
 *.exe
 API Key.txt
 *.lnk
+package.json
 package-lock.json
+wrangler.jsonc
+src
+migrations
+schema.sql
+scripts
+tests
+serve.js
+bake.js
+embed.js
+electron-main.js
+start-app.bat
+CLAUDE.md
