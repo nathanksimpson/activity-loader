@@ -7,7 +7,7 @@ const known = fs.readFileSync('.github/scripts/known-paths.txt', 'utf8').split('
 const report = { ok: [], missing: [], discovered: [] };
 
 async function get(p) {
-  const res = await fetch(BASE + '/' + p.split('/').map(encodeURIComponent).join('/'), { redirect: 'manual' });
+  const res = await fetch(BASE + '/' + p.split('/').map(encodeURIComponent).join('/'), { redirect: 'follow' });
   if (res.status !== 200) return null;
   return Buffer.from(await res.arrayBuffer());
 }
