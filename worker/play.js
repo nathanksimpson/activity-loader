@@ -52,7 +52,8 @@ function messagePage(title, body, status) {
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const html =
     '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">' +
-    '<title>' + esc(title) + '</title><style>body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#f4f6fb;color:#1c2333;' +
+    '<title>' + esc(title) + '</title><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="icon" href="/favicon.svg" type="image/svg+xml">' +
+    '<link rel="apple-touch-icon" href="/apple-touch-icon.png"><style>body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#f4f6fb;color:#1c2333;' +
     'display:grid;place-items:center;min-height:100vh;margin:0;padding:16px}main{max-width:26rem;background:#fff;border:1px solid #dfe3ec;' +
     'border-radius:14px;padding:1.75rem}h1{font-size:1.3rem;margin:0 0 .6rem}p{line-height:1.55;margin:.4rem 0}a{color:#3b6fe0}' +
     '@media (prefers-color-scheme:dark){body{background:#12151c;color:#e7eaf1}main{background:#1b2030;border-color:#2c3346}a{color:#8fb0ff}}</style></head>' +
