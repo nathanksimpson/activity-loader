@@ -6,6 +6,10 @@
   'use strict';
 
   const STORAGE_PACKS = 'activityLoader.generatedPacks.v1';
+  const STORAGE_OUTPUT_FOLDER_NAME = 'activityLoader.generateOutputFolderName.v1';
+  const IDB_NAME = 'activityLoader.generateOutput.v1';
+  const IDB_STORE = 'handles';
+  const IDB_KEY = 'outputDir';
   const PACK_PATHS = {
     'early-writers-1:jumpingOx': 'content/early-writers-1/jumpingOx.json',
     'write-now-1:jumpingOx': 'content/write-now-1/jumpingOx.json',
@@ -39,6 +43,145 @@
 
   function writePacks(packs) {
     localStorage.setItem(STORAGE_PACKS, JSON.stringify(packs));
+  }
+
+  function supportsDirectoryPicker() {
+    return typeof window !== 'undefined' && typeof window.showDirectoryPicker === 'function';
+  }
+
+  function getStoredFolderName() {
+    try {
+      return String(localStorage.getItem(STORAGE_OUTPUT_FOLDER_NAME) || '').trim();
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function setStoredFolderName(name) {
+    try {
+      const clean = String(name || '').trim();
+      if (!clean) localStorage.removeItem(STORAGE_OUTPUT_FOLDER_NAME);
+      else localStorage.setItem(STORAGE_OUTPUT_FOLDER_NAME, clean);
+    } catch (e) { /* ignore */ }
+  }
+
+  function openOutputIdb() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(IDB_NAME, 1);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains(IDB_STORE)) db.createObjectStore(IDB_STORE);
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error || new Error('Could not open folder storage.'));
+    });
+  }
+
+  async function idbGetHandle() {
+    const db = await openOutputIdb();
+    try {
+      return await new Promise((resolve, reject) => {
+        const tx = db.transaction(IDB_STORE, 'readonly');
+        const req = tx.objectStore(IDB_STORE).get(IDB_KEY);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => reject(req.error || new Error('Could not read saved folder.'));
+      });
+    } finally {
+      db.close();
+    }
+  }
+
+  async function idbSetHandle(handle) {
+    const db = await openOutputIdb();
+    try {
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(IDB_STORE, 'readwrite');
+        tx.objectStore(IDB_STORE).put(handle, IDB_KEY);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error || new Error('Could not save folder.'));
+      });
+    } finally {
+      db.close();
+    }
+  }
+
+  async function idbClearHandle() {
+    const db = await openOutputIdb();
+    try {
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(IDB_STORE, 'readwrite');
+        tx.objectStore(IDB_STORE).delete(IDB_KEY);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error || new Error('Could not clear folder.'));
+      });
+    } finally {
+      db.close();
+    }
+  }
+
+  async function ensureDirPermission(handle, { interactive }) {
+    if (!handle) return false;
+    const opts = { mode: 'readwrite' };
+    try {
+      if (typeof handle.queryPermission === 'function') {
+        const state = await handle.queryPermission(opts);
+        if (state === 'granted') return true;
+      }
+      if (interactive && typeof handle.requestPermission === 'function') {
+        const next = await handle.requestPermission(opts);
+        return next === 'granted';
+      }
+    } catch (e) {
+      return false;
+    }
+    return false;
+  }
+
+  async function pickAndStoreOutputFolder() {
+    if (!supportsDirectoryPicker()) {
+      throw new Error('This browser cannot pick a save folder. Files will download the usual way.');
+    }
+    let handle;
+    try {
+      handle = await window.showDirectoryPicker({ mode: 'readwrite' });
+    } catch (e) {
+      if (e && (e.name === 'AbortError' || e.name === 'NotAllowedError')) {
+        throw new Error('Folder pick cancelled.');
+      }
+      throw e;
+    }
+    const ok = await ensureDirPermission(handle, { interactive: true });
+    if (!ok) throw new Error('Permission to write in that folder was denied.');
+    await idbSetHandle(handle);
+    setStoredFolderName(handle.name || 'Selected folder');
+    return handle;
+  }
+
+  async function getWritableOutputDir({ pickIfMissing }) {
+    if (!supportsDirectoryPicker()) return null;
+    let handle = null;
+    try {
+      handle = await idbGetHandle();
+    } catch (e) {
+      handle = null;
+    }
+    if (handle) {
+      const ok = await ensureDirPermission(handle, { interactive: true });
+      if (ok) return handle;
+      throw new Error('Permission to write in the saved output folder was denied. Use Change folder.');
+    }
+    if (!pickIfMissing) return null;
+    return pickAndStoreOutputFolder();
+  }
+
+  async function writeHtmlToDirectory(dirHandle, filename, html) {
+    const fileHandle = await dirHandle.getFileHandle(filename, { create: true });
+    const writable = await fileHandle.createWritable();
+    try {
+      await writable.write(html);
+    } finally {
+      await writable.close();
+    }
   }
 
   async function fetchText(path) {
@@ -646,7 +789,35 @@
         savedAt: Date.now()
       };
       writePacks(packs);
-      return packs[packKey(bookId, activityId)];
+      const saved = packs[packKey(bookId, activityId)];
+      const Library = global.ActivityLibrary;
+      const Auth = global.ActivityAuth;
+      if (Library && Library.isServerAvailable && Library.isServerAvailable() && Auth && Auth.isLoggedIn()) {
+        Library.saveGeneratedToServer(bookId, activityId, {
+          title: (pack && pack.title) || (bookId + ' ' + activityId),
+          cefr: cefr,
+          source: source,
+          pack: pack,
+          html: html
+        }).catch(function (err) {
+          console.warn('Cloud save of generated activity failed:', err);
+        });
+      }
+      return saved;
+    },
+
+    mergeServerPacks(serverPacks) {
+      if (!serverPacks || typeof serverPacks !== 'object') return 0;
+      const packs = readPacks();
+      let n = 0;
+      Object.keys(serverPacks).forEach(function (key) {
+        const server = serverPacks[key];
+        if (!server || !server.html) return;
+        packs[key] = server;
+        n += 1;
+      });
+      writePacks(packs);
+      return n;
     },
 
     renderHtml(activityId, pack, bookId) {
@@ -738,6 +909,58 @@
       a.click();
       a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 1500);
+      return { method: 'download', filename: filename };
+    },
+
+    getOutputFolderInfo() {
+      const supported = supportsDirectoryPicker();
+      return {
+        supported: supported,
+        name: supported ? getStoredFolderName() : ''
+      };
+    },
+
+    async pickOutputFolder() {
+      const handle = await pickAndStoreOutputFolder();
+      return {
+        supported: true,
+        name: (handle && handle.name) || getStoredFolderName()
+      };
+    },
+
+    async clearOutputFolder() {
+      try { await idbClearHandle(); } catch (e) { /* ignore */ }
+      setStoredFolderName('');
+      return this.getOutputFolderInfo();
+    },
+
+    async saveHtml(filename, html, opts) {
+      const options = opts || {};
+      const pickIfMissing = options.pickIfMissing !== false;
+      if (!supportsDirectoryPicker()) {
+        return this.downloadHtml(filename, html);
+      }
+      let dir;
+      try {
+        dir = await getWritableOutputDir({ pickIfMissing: pickIfMissing });
+      } catch (e) {
+        const msg = String(e && e.message || e);
+        if (msg.indexOf('cancelled') !== -1 || msg.indexOf('Permission') !== -1) throw e;
+        return this.downloadHtml(filename, html);
+      }
+      if (!dir) {
+        return this.downloadHtml(filename, html);
+      }
+      try {
+        await writeHtmlToDirectory(dir, filename, html);
+        return {
+          method: 'folder',
+          filename: filename,
+          folderName: dir.name || getStoredFolderName()
+        };
+      } catch (e) {
+        return this.downloadHtml(filename, html);
+      }
     },
 
     openHtml(html) {
