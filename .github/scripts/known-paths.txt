@@ -1,0 +1,61 @@
+.assetsignore
+.gitignore
+.nojekyll
+README.md
+activities/blue/early-writers-2/jumping-ox/Blue - Early Writers 2 - Jumping OX.html
+activities/blue/write-now-2/jumping-ox/Blue - Write Now 2 - Jumping OX.html
+activities/green/early-writers-1/jumping-ox/Green - Early Writers 1 - Jumping OX.html
+activities/green/write-now-1/charades/Green - Write Now 1 - Charades.html
+activities/green/write-now-1/charades/WriteNow1CharadesStandalone.html
+activities/green/write-now-1/jeopardy/Green - Write Now 1 - Jeopardy.html
+activities/green/write-now-1/jumping-ox/Green - Write Now 1 - Jumping OX.html
+activities/green/write-now-1/team-match/Green - Write Now 1 - Team Match.html
+activities/green/write-now-1/team-match/WriteNow1VocabMatchingStandalone.html
+activities/green/write-now-1/vocabulary/Green - Write Now 1 - Vocabulary.html
+activities/green/write-now-1/vocabulary/write_now_1_vocabulary_game.html
+apple-touch-icon.png
+bake.js
+content/early-writers-1/jumpingOx.json
+content/early-writers-2/jumpingOx.json
+content/write-now-1/jeopardy.json
+content/write-now-1/jumpingOx.json
+content/write-now-1/vocabulary.json
+content/write-now-2/jumpingOx.json
+css/app.css
+data/activities.json
+data/catalog.json
+data/curricula.json
+electron-main.js
+embed.js
+favicon.ico
+favicon.svg
+index.html
+js/ai.js
+js/analyze.js
+js/app.js
+js/catalog.js
+js/domain.js
+js/embedded.js
+js/generate.js
+js/importer.js
+js/styles.js
+package-lock.json
+package.json
+scripts/extract-vocab.js
+scripts/make-jeopardy-template.js
+serve.js
+start-app.bat
+templates/charades.template.html
+templates/fanNPick.template.html
+templates/findSomeoneWho.template.html
+templates/jeopardy.template.html
+templates/jumpingOx.template.html
+templates/quizQuizTrade.template.html
+templates/rallyCoach.template.html
+templates/showdown.template.html
+templates/teamMatch.template.html
+templates/vocabulary.template.html
+vendor/pdfjs/SOURCE.txt
+vendor/pdfjs/pdf.min.js
+vendor/pdfjs/pdf.worker.min.js
+wrangler.jsonc
