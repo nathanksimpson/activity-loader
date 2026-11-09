@@ -166,7 +166,67 @@
         this.factoryBookIds[book.id] = true;
       });
       this.applyCurriculaOverlay();
+      if (typeof global.ActivityLibrary !== 'undefined') {
+        try {
+          const status = await global.ActivityLibrary.probe();
+          if (status.available) {
+            const payload = await global.ActivityLibrary.loadSharedLibrary();
+            this.mergeServerLibrary(payload);
+          }
+        } catch (e) {
+          console.warn('Team library load failed:', e);
+        }
+      }
       return this;
+    },
+
+    mergeServerLibrary(payload) {
+      if (!payload || typeof payload !== 'object') return { merged: 0 };
+      const serverBreakdowns = payload.breakdowns && typeof payload.breakdowns === 'object' ? payload.breakdowns : {};
+      const serverOverlay = payload.curriculaOverlay && typeof payload.curriculaOverlay === 'object' ? payload.curriculaOverlay : {};
+      const local = readJson(STORAGE_BREAKDOWNS, {});
+      let merged = 0;
+
+      // Cloud copy is the source of truth for logged-in users: replace local breakdowns with server set.
+      const Auth = global.ActivityAuth;
+      if (Auth && Auth.isLoggedIn()) {
+        Object.keys(local).forEach((id) => { delete local[id]; });
+        Object.keys(serverBreakdowns).forEach((bookId) => {
+          const server = serverBreakdowns[bookId];
+          if (!server || !Array.isArray(server.units) || !server.units.length) return;
+          local[bookId] = server;
+          merged++;
+        });
+      } else {
+        Object.keys(serverBreakdowns).forEach((bookId) => {
+          const server = serverBreakdowns[bookId];
+          const loc = local[bookId];
+          if (!server || !Array.isArray(server.units) || !server.units.length) return;
+          if (!loc || (Number(server.savedAt) || 0) >= (Number(loc.savedAt) || 0)) {
+            local[bookId] = server;
+            merged++;
+          }
+        });
+      }
+      localStorage.setItem(STORAGE_BREAKDOWNS, JSON.stringify(local));
+
+      if (Auth && Auth.isLoggedIn()) {
+        localStorage.setItem(STORAGE_CURRICULA, JSON.stringify(serverOverlay || {}));
+      } else if (Object.keys(serverOverlay).length) {
+        const overlay = readJson(STORAGE_CURRICULA, {});
+        Object.keys(serverOverlay).forEach((bookId) => {
+          overlay[bookId] = Object.assign({}, overlay[bookId], serverOverlay[bookId]);
+        });
+        localStorage.setItem(STORAGE_CURRICULA, JSON.stringify(overlay));
+      }
+      this.applyCurriculaOverlay();
+
+      // Merge generated packs from server into generate storage when present
+      if (payload.generatedPacks && typeof payload.generatedPacks === 'object' && global.ActivityGenerate && global.ActivityGenerate.mergeServerPacks) {
+        global.ActivityGenerate.mergeServerPacks(payload.generatedPacks);
+      }
+
+      return { merged: merged, bookCount: Object.keys(serverBreakdowns).length };
     },
 
     applyCurriculaOverlay() {
@@ -476,7 +536,7 @@
       return Array.from(byTitle.values());
     },
 
-    saveBreakdown(bookId, breakdown, { merge = false } = {}) {
+    saveBreakdown(bookId, breakdown, { merge = false, localOnly = false } = {}) {
       const book = this.getBook(bookId);
       if (!book) throw new Error('Unknown book.');
       const incoming = this.normalizeBreakdown(Object.assign({}, breakdown, { bookId: bookId }), book);
@@ -494,6 +554,21 @@
       const patch = { units: unitTitles };
       if (incoming.cefr) patch.cefr = incoming.cefr;
       this.patchBookOverlay(bookId, patch);
+      return incoming;
+    },
+
+    async saveBreakdownWithLibrary(bookId, breakdown, { merge = false } = {}) {
+      const incoming = this.saveBreakdown(bookId, breakdown, { merge: merge, localOnly: true });
+      const Library = global.ActivityLibrary;
+      const Auth = global.ActivityAuth;
+      if (Library && Library.isServerAvailable()) {
+        if (!Auth || !Auth.isLoggedIn()) {
+          const err = new Error('Please log in to save to your cloud library.');
+          err.code = 'LOGIN_REQUIRED';
+          throw err;
+        }
+        await Library.saveBreakdownToServer(bookId, incoming);
+      }
       return incoming;
     },
 

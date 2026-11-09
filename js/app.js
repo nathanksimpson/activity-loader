@@ -6,6 +6,8 @@
 
   const Catalog = window.ActivityLoaderCatalog;
   const Domain = window.ActivityDomain;
+  const Library = window.ActivityLibrary;
+  const Auth = window.ActivityAuth;
   const Generate = window.ActivityGenerate;
   const Analyze = window.ActivityAnalyze;
   const Importer = window.ActivityImporter;
@@ -13,11 +15,53 @@
   const VOCAB_TYPES = { vocabulary: true, teamMatch: true, charades: true, quizQuizTrade: true, fanNPick: true, findSomeoneWho: true, showdown: true, rallyCoach: true };
 
   const PANELS = ['activity', 'curriculum', 'generate', 'loader'];
+  const THEME_STORAGE = 'activityLoader.theme.v1';
+  const ONBOARDING_STORAGE = 'activityLoader.onboarding.v1';
+  const THEME_ORDER = ['system', 'light', 'dark'];
+  const THEME_LABELS = { system: 'System', light: 'Light', dark: 'Dark' };
+  const THEME_ICONS = {
+    system:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>',
+    light:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
+    dark:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 14.5A8.5 8.5 0 1 1 9.5 3a7 7 0 0 0 11.5 11.5z"/></svg>'
+  };
+  const WIZARD_STEPS = [
+    {
+      title: 'Welcome to Activity Loader',
+      body: 'This app has four tabs. Use them in order when you set up a new book: Activity → Curriculum → Generate. In class, jump straight to Loader to open games.',
+      panel: null
+    },
+    {
+      title: '4. Loader — play in class',
+      body: 'Pick a Rainbow level (for example Green), choose a book, then Open an activity. Built-in games like Jumping OX and Jeopardy work here without generating anything new.',
+      panel: 'loader'
+    },
+    {
+      title: '1. Activity — game types',
+      body: 'An Activity is the game style (Jumping OX, Jeopardy, Vocabulary, and others). Rules stay the same; only the words change later. You can also add a new style from an HTML file or a short description using AI.',
+      panel: 'activity'
+    },
+    {
+      title: '2. Curriculum — books',
+      body: 'A Curriculum is a book: units, grammar, vocabulary, and CEFR. Add a missing book or level, then upload a PDF or photos, Analyze with AI, and Save breakdown. A green Parsed mark means you can Generate from that book.',
+      panel: 'curriculum'
+    },
+    {
+      title: '3. Generate — make playable files',
+      body: 'Mix a game type with a book to download HTML. Vocabulary-style games need a saved breakdown. Jumping OX / Jeopardy can use built-in packs or AI. Use the Theme button anytime to switch Light, Dark, or follow your computer.',
+      panel: 'generate'
+    }
+  ];
   let prefs = { levelId: 'Green', bookId: 'write-now-1', panel: 'loader' };
   let lastGenerated = null;
   const pendingBreakdowns = {};
   let pendingImport = null;
   let pendingStyle = null;
+  let allowLocalWithoutLogin = false;
+  let wizardStepIndex = 0;
+  let wizardReturnPanel = null;
   const els = {};
   const TOAST_TITLES = {
     success: 'Done',
@@ -28,6 +72,105 @@
 
   function $(id) { return document.getElementById(id); }
   function clone(v) { return JSON.parse(JSON.stringify(v)); }
+
+  function readThemePref() {
+    try {
+      const t = localStorage.getItem(THEME_STORAGE) || 'system';
+      return THEME_ORDER.indexOf(t) >= 0 ? t : 'system';
+    } catch (e) {
+      return 'system';
+    }
+  }
+
+  function applyTheme(theme) {
+    const next = THEME_ORDER.indexOf(theme) >= 0 ? theme : 'system';
+    const label = THEME_LABELS[next] || 'System';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem(THEME_STORAGE, next); } catch (e) { /* ignore */ }
+    const btn = els['theme-toggle'] || $('theme-toggle');
+    if (!btn) return;
+    const glyph = btn.querySelector('.theme-toggle-glyph');
+    const text = btn.querySelector('.theme-toggle-text');
+    if (glyph) {
+      glyph.setAttribute('data-theme-icon', next);
+      glyph.innerHTML = THEME_ICONS[next] || THEME_ICONS.system;
+    }
+    if (text) text.textContent = label;
+    btn.setAttribute('aria-label', 'Color theme: ' + label + '. Click to change.');
+    btn.title = 'Theme: ' + label + ' (click to change)';
+  }
+
+  function cycleTheme() {
+    const current = readThemePref();
+    const idx = THEME_ORDER.indexOf(current);
+    const next = THEME_ORDER[(idx + 1) % THEME_ORDER.length];
+    applyTheme(next);
+  }
+
+  function hasCompletedOnboarding() {
+    try {
+      return localStorage.getItem(ONBOARDING_STORAGE) === 'done';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function markOnboardingDone() {
+    try { localStorage.setItem(ONBOARDING_STORAGE, 'done'); } catch (e) { /* ignore */ }
+  }
+
+  function clearWizardTabFocus() {
+    PANELS.forEach((panel) => {
+      const tab = $('tab-' + panel);
+      if (tab) tab.classList.remove('is-wizard-focus');
+    });
+  }
+
+  function renderWizardStep() {
+    const step = WIZARD_STEPS[wizardStepIndex];
+    const total = WIZARD_STEPS.length;
+    if (!step) return;
+    if (els['wizard-step-meta']) {
+      els['wizard-step-meta'].textContent = 'Step ' + (wizardStepIndex + 1) + ' of ' + total;
+    }
+    if (els['wizard-title']) els['wizard-title'].textContent = step.title;
+    if (els['wizard-body']) els['wizard-body'].textContent = step.body;
+    if (els['wizard-back-btn']) els['wizard-back-btn'].hidden = wizardStepIndex === 0;
+    if (els['wizard-next-btn']) {
+      els['wizard-next-btn'].textContent = wizardStepIndex === total - 1 ? 'Finish' : 'Next';
+    }
+    clearWizardTabFocus();
+    if (step.panel) {
+      showPanel(step.panel);
+      const tab = $('tab-' + step.panel);
+      if (tab) tab.classList.add('is-wizard-focus');
+    }
+  }
+
+  function closeWizard(restorePanel) {
+    const gate = els['onboarding-wizard'];
+    if (gate) gate.hidden = true;
+    clearWizardTabFocus();
+    if (restorePanel && wizardReturnPanel) showPanel(wizardReturnPanel);
+    wizardReturnPanel = null;
+  }
+
+  function finishOnboarding() {
+    markOnboardingDone();
+    closeWizard(true);
+  }
+
+  function maybeShowOnboardingWizard() {
+    if (hasCompletedOnboarding()) return;
+    if (els['login-gate'] && !els['login-gate'].hidden) return;
+    const gate = els['onboarding-wizard'];
+    if (!gate) return;
+    wizardReturnPanel = prefs.panel || 'loader';
+    wizardStepIndex = 0;
+    gate.hidden = false;
+    renderWizardStep();
+    if (els['wizard-next-btn']) els['wizard-next-btn'].focus();
+  }
 
   function cacheEls() {
     [
@@ -40,6 +183,7 @@
       'add-level-form', 'new-level-name', 'new-level-band', 'new-level-color', 'custom-level-list',
       'generate-form', 'gen-activity-list', 'gen-all', 'gen-book', 'gen-cefr', 'gen-save-cefr', 'gen-mode', 'gen-ai-provider', 'gen-ai-model',
       'api-key-field', 'gen-api-key', 'generate-btn', 'open-generated-btn', 'generate-status', 'gen-breakdown-hint',
+      'gen-output-folder-label', 'gen-output-folder-hint', 'gen-change-folder-btn',
       'gen-custom-fields', 'gen-custom-url', 'gen-custom-model', 'gen-custom-header-name', 'gen-custom-header-value',
       'style-form', 'style-file', 'style-description', 'style-parse-btn', 'style-save-btn', 'style-preview', 'style-preview-frame', 'style-status', 'style-list',
       'style-ai-provider', 'style-ai-model', 'style-api-key',
@@ -47,7 +191,15 @@
       'import-form', 'import-file', 'import-book', 'import-type', 'import-title', 'import-inspect-btn', 'import-ai-btn', 'import-save-btn', 'import-preview', 'import-status',
       'activity-form', 'act-id', 'act-title', 'act-book', 'act-type', 'act-path', 'act-status', 'act-unit',
       'edit-mode', 'manage-form-title', 'reset-form-btn', 'reset-overlay-btn', 'toast-region',
-      'manage-status', 'manage-list', 'backup-export-btn', 'backup-import-file', 'backup-status'
+      'manage-status', 'manage-list', 'backup-export-btn', 'backup-import-file', 'backup-status',
+      'library-status-badge', 'team-library-hint', 'publish-breakdowns-btn', 'team-library-status', 'school-packs-list',
+      'login-gate', 'login-form', 'login-username', 'login-password', 'login-status', 'login-local-hint',
+      'login-continue-local', 'continue-local-btn', 'account-bar', 'account-label', 'logout-btn', 'admin-link', 'app-shell',
+      'active-profile-field', 'active-profile-select', 'edit-profile-btn',
+      'active-profile-edit-card', 'active-profile-rename-form', 'active-profile-name', 'active-profile-slug',
+      'active-profile-publish-form', 'active-profile-pack-title', 'active-profile-edit-status',
+      'theme-toggle', 'onboarding-wizard', 'wizard-step-meta', 'wizard-title', 'wizard-body',
+      'wizard-skip-btn', 'wizard-back-btn', 'wizard-next-btn'
     ].forEach((id) => { els[id] = $(id); });
   }
 
@@ -83,6 +235,270 @@
     if (opts.toast && message) {
       showToast(message, opts.toastType || (opts.isError ? 'error' : 'success'), opts.toastOptions || {});
     }
+  }
+
+  function ensureCloudLogin() {
+    if (!Library || !Library.isServerAvailable()) return;
+    if (Auth && Auth.isLoggedIn()) return;
+    throw new Error('Please log in to save to your cloud library.');
+  }
+
+  async function persistBreakdown(bookId, incoming, merge) {
+    if (Library && Library.isServerAvailable()) ensureCloudLogin();
+    return Domain.saveBreakdownWithLibrary(bookId, incoming, { merge: merge });
+  }
+
+  function breakdownSaveMessage(bookTitle) {
+    if (Library && Library.isServerAvailable() && Auth && Auth.isLoggedIn()) {
+      return 'Saved breakdown for ' + bookTitle + ' to your private cloud library.';
+    }
+    return 'Saved breakdown for ' + bookTitle + ' in this browser. You can now Generate Vocabulary, Team Match, and Charades games.';
+  }
+
+  function updateAccountBar() {
+    const bar = els['account-bar'];
+    const label = els['account-label'];
+    const adminLink = els['admin-link'];
+    const field = els['active-profile-field'];
+    const select = els['active-profile-select'];
+    const editBtn = els['edit-profile-btn'];
+    if (!bar || !label) return;
+    if (Auth && Auth.isLoggedIn()) {
+      const u = Auth.getUser();
+      bar.hidden = false;
+      label.textContent = u.username + (u.role ? ' · ' + u.role : '');
+      if (adminLink) adminLink.hidden = !(Auth.canAccessAdminPage && Auth.canAccessAdminPage());
+
+      const profiles = Auth.getProfiles ? Auth.getProfiles() : (u.profiles || []);
+      if (field && select) {
+        if (profiles.length) {
+          field.hidden = false;
+          const activeId = Auth.getActiveProfileId ? Auth.getActiveProfileId() : null;
+          select.innerHTML = '';
+          profiles.forEach((p) => {
+            const opt = document.createElement('option');
+            opt.value = p.id;
+            opt.textContent = p.name + (p.accessLevel === 'editor' ? ' (editor)' : '');
+            select.appendChild(opt);
+          });
+          select.value = activeId || profiles[0].id;
+        } else {
+          field.hidden = true;
+          select.innerHTML = '';
+        }
+      }
+      if (editBtn) {
+        editBtn.hidden = !(Auth.canEditActiveProfile && Auth.canEditActiveProfile());
+      }
+      fillActiveProfileEditCard();
+    } else {
+      bar.hidden = true;
+      label.textContent = '';
+      if (adminLink) adminLink.hidden = true;
+      if (field) field.hidden = true;
+      if (editBtn) editBtn.hidden = true;
+      if (els['active-profile-edit-card']) els['active-profile-edit-card'].hidden = true;
+    }
+  }
+
+  function fillActiveProfileEditCard() {
+    const card = els['active-profile-edit-card'];
+    if (!card) return;
+    const canEdit = Auth && Auth.isLoggedIn() && Auth.canEditActiveProfile && Auth.canEditActiveProfile();
+    card.hidden = !canEdit;
+    if (!canEdit) return;
+    const p = Auth.getActiveProfile();
+    if (!p) {
+      card.hidden = true;
+      return;
+    }
+    if (els['active-profile-name']) els['active-profile-name'].value = p.name || '';
+    if (els['active-profile-slug']) els['active-profile-slug'].value = p.slug || '';
+  }
+
+  function updateLibraryBadge() {
+    const badge = els['library-status-badge'];
+    const hint = els['team-library-hint'];
+    if (!badge) return;
+    badge.classList.remove('is-connected', 'is-local');
+    if (Library && Library.isServerAvailable() && Auth && Auth.isLoggedIn()) {
+      badge.classList.add('is-connected');
+      const count = Object.keys(Domain.readBreakdowns()).filter((id) => Domain.hasBreakdown(id)).length;
+      const active = Auth.getActiveProfile && Auth.getActiveProfile();
+      badge.textContent = 'Signed in — ' + count + ' parsed book' + (count === 1 ? '' : 's') +
+        ' in your private library' +
+        (active ? ' · Profile: ' + active.name : '') + '.';
+      if (hint) hint.textContent = 'Saves go to your account. Use the header profile dropdown to switch profiles (one at a time).';
+    } else if (Library && Library.isServerAvailable()) {
+      badge.classList.add('is-local');
+      badge.textContent = 'Cloud site ready — please log in to sync your private library.';
+      if (hint) hint.textContent = 'Without login, changes stay only in this browser.';
+    } else {
+      badge.classList.add('is-local');
+      badge.textContent = 'This browser only — open the Cloudflare site and log in for permanent cloud storage.';
+      if (hint) hint.textContent = 'Cloud library needs the deployed Worker URL.';
+    }
+    renderSchoolPacks();
+  }
+
+  function renderSchoolPacks() {
+    const host = els['school-packs-list'];
+    if (!host) return;
+    host.innerHTML = '';
+    const last = Library && Library.getLastLibrary && Library.getLastLibrary();
+    const allPacks = last ? (last.profilePacks || last.schoolPacks || []) : [];
+    const activeId = Auth && Auth.getActiveProfileId ? Auth.getActiveProfileId() : null;
+    const packs = activeId
+      ? allPacks.filter((pack) => pack.profileId === activeId)
+      : [];
+    if (!Auth || !Auth.isLoggedIn()) {
+      const li = document.createElement('li');
+      li.className = 'hint';
+      li.textContent = 'Log in to see profile packs.';
+      host.appendChild(li);
+      return;
+    }
+    if (!activeId) {
+      const li = document.createElement('li');
+      li.className = 'hint';
+      li.textContent = 'No profile assigned yet. Ask an admin to grant you profile access.';
+      host.appendChild(li);
+      return;
+    }
+    if (!packs.length) {
+      const li = document.createElement('li');
+      li.className = 'hint';
+      li.textContent = 'No packs on this profile yet. Editors can publish one below, or ask an admin.';
+      host.appendChild(li);
+      return;
+    }
+    packs.forEach((pack) => {
+      const li = document.createElement('li');
+      li.className = 'manage-item';
+      const left = document.createElement('div');
+      left.innerHTML = '<strong></strong><span class="hint"></span>';
+      left.querySelector('strong').textContent = pack.title;
+      left.querySelector('.hint').textContent = 'Read-only · Fork to edit your own copy';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn-small btn-primary';
+      btn.textContent = 'Fork';
+      btn.addEventListener('click', () => {
+        onForkSchoolPack(pack.id, pack.title).catch((err) => {
+          setStatus(els['team-library-status'], err.message || String(err), { isError: true, toast: true, toastType: 'error' });
+        });
+      });
+      li.appendChild(left);
+      li.appendChild(btn);
+      host.appendChild(li);
+    });
+  }
+
+  async function onActiveProfileChange() {
+    const select = els['active-profile-select'];
+    if (!select || !Auth || !Auth.setActiveProfile) return;
+    const id = select.value;
+    try {
+      await Auth.setActiveProfile(id);
+      updateAccountBar();
+      updateLibraryBadge();
+      showToast('Switched to ' + ((Auth.getActiveProfile() && Auth.getActiveProfile().name) || 'profile'), 'success');
+    } catch (err) {
+      setStatus(els['team-library-status'], err.message || String(err), { isError: true, toast: true, toastType: 'error' });
+      updateAccountBar();
+    }
+  }
+
+  async function onForkSchoolPack(resourceId, title) {
+    ensureCloudLogin();
+    const result = await Library.forkResource(resourceId, title ? title + ' (my copy)' : null);
+    await reloadCloudLibrary();
+    setStatus(
+      els['team-library-status'],
+      'Forked into your library' +
+        (result && result.createdBreakdowns != null ? ' (' + result.createdBreakdowns + ' books)' : '') + '.',
+      { toast: true, toastType: 'success' }
+    );
+    renderCurriculum();
+    fillGenerateForm();
+  }
+
+  async function reloadCloudLibrary() {
+    if (!Library || !Library.isServerAvailable() || !Auth || !Auth.isLoggedIn()) return;
+    const payload = await Library.loadSharedLibrary();
+    Domain.mergeServerLibrary(payload);
+    updateLibraryBadge();
+  }
+
+  async function onPublishLocalBreakdowns() {
+    if (!Library || !Library.isServerAvailable()) {
+      throw new Error('Cloud library is only available on the Cloudflare site.');
+    }
+    ensureCloudLogin();
+    const breakdowns = Domain.readBreakdowns();
+    const ids = Object.keys(breakdowns).filter((id) => Domain.hasBreakdown(id));
+    if (!ids.length) throw new Error('No saved breakdowns in this browser to upload.');
+    if (!window.confirm('Upload ' + ids.length + ' saved breakdown(s) to your private cloud account?')) {
+      return;
+    }
+    const payload = {};
+    ids.forEach((id) => { payload[id] = breakdowns[id]; });
+    const result = await Library.publishAllBreakdowns(payload);
+    await reloadCloudLibrary();
+    setStatus(
+      els['team-library-status'],
+      'Uploaded ' + (result && result.saved != null ? result.saved : ids.length) + ' breakdown(s) to your account.',
+      { toast: true, toastType: 'success' }
+    );
+  }
+
+  function setLoginGateVisible(show) {
+    if (els['login-gate']) els['login-gate'].hidden = !show;
+    if (els['app-shell']) els['app-shell'].style.visibility = show ? 'hidden' : 'visible';
+  }
+
+  async function gateAuth() {
+    if (!Auth) {
+      setLoginGateVisible(false);
+      return;
+    }
+    await Auth.probe();
+    if (!Auth.isServerAvailable()) {
+      if (els['login-local-hint']) els['login-local-hint'].hidden = false;
+      if (els['login-continue-local']) els['login-continue-local'].hidden = false;
+      setLoginGateVisible(!allowLocalWithoutLogin);
+      if (allowLocalWithoutLogin) updateAccountBar();
+      return;
+    }
+    await Auth.refreshMe();
+    if (Auth.isLoggedIn()) {
+      setLoginGateVisible(false);
+      updateAccountBar();
+      return;
+    }
+    setLoginGateVisible(true);
+  }
+
+  async function onLoginSubmit(ev) {
+    ev.preventDefault();
+    const username = els['login-username'] && els['login-username'].value.trim();
+    const password = els['login-password'] && els['login-password'].value;
+    try {
+      await Auth.login(username, password);
+      setLoginGateVisible(false);
+      setStatus(els['login-status'], '');
+      await startAppAfterLogin();
+      showToast('Logged in as ' + Auth.getUser().username, 'success');
+    } catch (err) {
+      setStatus(els['login-status'], err.message || String(err), { isError: true });
+    }
+  }
+
+  async function onLogout() {
+    if (Auth) await Auth.logout();
+    updateAccountBar();
+    allowLocalWithoutLogin = false;
+    await gateAuth();
   }
 
   function currentProvider(source) {
@@ -532,6 +948,7 @@
     PANELS.forEach((panel) => {
       const panelEl = $('panel-' + panel);
       const tabEl = $('tab-' + panel);
+      if (!panelEl || !tabEl) return;
       const active = panel === prefs.panel;
       panelEl.classList.toggle('is-active', active);
       panelEl.hidden = !active;
@@ -544,6 +961,7 @@
       renderManageList();
       fillManageBookAndTypeSelects();
       renderActivityGrid();
+      renderSchoolPacks();
     }
     persistPrefs();
   }
@@ -1069,36 +1487,48 @@
         }
       });
       saveBtn.addEventListener('click', () => {
-        try {
-          const incoming = pendingBreakdowns[book.id];
-          if (!incoming) throw new Error('Analyze first, then Save.');
-          Domain.saveBreakdown(book.id, incoming, { merge: false });
+        const incoming = pendingBreakdowns[book.id];
+        if (!incoming) {
+          setStatus(els['curriculum-status'], 'Analyze first, then Save.', { isError: true, toast: true, toastType: 'error' });
+          return;
+        }
+        saveBtn.disabled = true;
+        persistBreakdown(book.id, incoming, false).then(() => {
           delete pendingBreakdowns[book.id];
-          setStatus(els['curriculum-status'], 'Saved breakdown for ' + book.title + '. You can now Generate Vocabulary, Team Match, and Charades games.', { toast: true, toastType: 'success' });
+          setStatus(els['curriculum-status'], breakdownSaveMessage(book.title), { toast: true, toastType: 'success' });
+          updateLibraryBadge();
           renderCurriculum();
           fillGenerateForm();
           fillBookSelect();
           Array.prototype.forEach.call(document.querySelectorAll('.gen-activity-check'), (el) => { el.checked = true; });
           if (els['gen-all']) els['gen-all'].checked = true;
-        } catch (err) {
+        }).catch((err) => {
           setStatus(els['curriculum-status'], err.message || String(err), { isError: true, toast: true, toastType: 'error' });
-        }
+        }).finally(() => {
+          saveBtn.disabled = false;
+        });
       });
       mergeBtn.addEventListener('click', () => {
-        try {
-          const incoming = pendingBreakdowns[book.id];
-          if (!incoming) throw new Error('Analyze the new pages first, then Add more pages.');
-          Domain.saveBreakdown(book.id, incoming, { merge: true });
+        const incoming = pendingBreakdowns[book.id];
+        if (!incoming) {
+          setStatus(els['curriculum-status'], 'Analyze the new pages first, then Add more pages.', { isError: true, toast: true, toastType: 'error' });
+          return;
+        }
+        mergeBtn.disabled = true;
+        persistBreakdown(book.id, incoming, true).then(() => {
           delete pendingBreakdowns[book.id];
-          setStatus(els['curriculum-status'], 'Merged extra units into ' + book.title + '.', { toast: true, toastType: 'success' });
+          setStatus(els['curriculum-status'], 'Merged extra units into ' + book.title + (Library && Library.isServerAvailable() && Library.getWriteToken() ? ' on the team library.' : '.'), { toast: true, toastType: 'success' });
+          updateLibraryBadge();
           renderCurriculum();
           fillGenerateForm();
           fillBookSelect();
           Array.prototype.forEach.call(document.querySelectorAll('.gen-activity-check'), (el) => { el.checked = true; });
           if (els['gen-all']) els['gen-all'].checked = true;
-        } catch (err) {
+        }).catch((err) => {
           setStatus(els['curriculum-status'], err.message || String(err), { isError: true, toast: true, toastType: 'error' });
-        }
+        }).finally(() => {
+          mergeBtn.disabled = false;
+        });
       });
 
       box.appendChild(fileLab);
@@ -1188,6 +1618,62 @@
     syncAiControls('generate');
     toggleApiField();
     updateGenerateHint();
+    refreshOutputFolderLabel();
+  }
+
+  function refreshOutputFolderLabel() {
+    const label = els['gen-output-folder-label'];
+    const hint = els['gen-output-folder-hint'];
+    const btn = els['gen-change-folder-btn'];
+    if (!label || !Generate.getOutputFolderInfo) return;
+    const info = Generate.getOutputFolderInfo();
+    if (!info.supported) {
+      label.textContent = 'Output folder: not available in this browser (files download instead)';
+      if (hint) hint.textContent = 'This browser cannot remember a save folder. Generated files go to your Downloads folder.';
+      if (btn) btn.disabled = true;
+      return;
+    }
+    if (btn) btn.disabled = false;
+    label.textContent = info.name
+      ? ('Output folder: ' + info.name)
+      : 'Output folder: not set yet';
+    if (hint) {
+      hint.textContent = info.name
+        ? 'Generate writes HTML files into this folder. Use Change folder to pick a different one.'
+        : 'First Generate asks once where to save. Later runs reuse that folder.';
+    }
+  }
+
+  async function onChangeOutputFolder() {
+    if (!Generate.pickOutputFolder) return;
+    const info = Generate.getOutputFolderInfo();
+    if (!info.supported) {
+      setStatus(els['generate-status'], 'This browser cannot pick a save folder.', {
+        isError: true,
+        toast: true,
+        toastType: 'error'
+      });
+      return;
+    }
+    try {
+      await Generate.pickOutputFolder();
+      refreshOutputFolderLabel();
+      const next = Generate.getOutputFolderInfo();
+      setStatus(els['generate-status'], 'Output folder set to “' + (next.name || 'selected folder') + '”.', {
+        toast: true,
+        toastType: 'success'
+      });
+    } catch (err) {
+      const msg = err && err.message ? err.message : String(err);
+      if (msg.indexOf('cancelled') !== -1) {
+        setStatus(els['generate-status'], 'Folder pick cancelled. Previous folder kept.', {
+          toast: true,
+          toastType: 'warning'
+        });
+        return;
+      }
+      setStatus(els['generate-status'], msg, { isError: true, toast: true, toastType: 'error' });
+    }
   }
 
   function syncGenerateCefr() {
@@ -1228,6 +1714,8 @@
     const book = Domain.getBook(bookId);
     const ok = [];
     const fail = [];
+    let savedToFolder = '';
+    let usedDownload = false;
     try {
       for (let i = 0; i < activityIds.length; i++) {
         const activityId = activityIds[i];
@@ -1263,17 +1751,31 @@
             generated: true
           });
           const filename = result.filename || result.path.split('/').pop();
-          Generate.downloadHtml(filename, result.html);
+          const saveResult = await Generate.saveHtml(filename, result.html, { pickIfMissing: true });
+          if (saveResult && saveResult.method === 'folder') {
+            savedToFolder = saveResult.folderName || Generate.getOutputFolderInfo().name || savedToFolder;
+          } else {
+            usedDownload = true;
+          }
           ok.push(filename);
           if (i < activityIds.length - 1) await sleep(450);
         } catch (err) {
-          fail.push(activityId + ': ' + (err.message || String(err)));
+          const msg = err && err.message ? err.message : String(err);
+          if (msg.indexOf('cancelled') !== -1) {
+            fail.push(activityId + ': ' + msg);
+            break;
+          }
+          fail.push(activityId + ': ' + msg);
         }
       }
-      let msg = ok.length ? ('Downloaded ' + ok.length + ' file(s): ' + ok.join(', ') + '.') : 'Nothing downloaded.';
-      if (ok.length) {
-        msg += ' Put files in the matching activities/... folder if you want Loader to open them from disk later.';
-      }
+      refreshOutputFolderLabel();
+      let msg = ok.length
+        ? ((savedToFolder && !usedDownload)
+          ? ('Saved ' + ok.length + ' file(s) to “' + savedToFolder + '”: ' + ok.join(', ') + '.')
+          : (savedToFolder
+            ? ('Saved/downloaded ' + ok.length + ' file(s): ' + ok.join(', ') + '. Folder: “' + savedToFolder + '”.')
+            : ('Downloaded ' + ok.length + ' file(s): ' + ok.join(', ') + '.')))
+        : 'Nothing saved.';
       if (fail.length) msg += ' Failed: ' + fail.join(' | ');
       setStatus(els['generate-status'], msg, {
         isError: fail.length > 0 && !ok.length,
@@ -1670,6 +2172,30 @@
   }
 
   function bindEvents() {
+    if (els['theme-toggle']) {
+      els['theme-toggle'].addEventListener('click', cycleTheme);
+    }
+    if (els['wizard-skip-btn']) {
+      els['wizard-skip-btn'].addEventListener('click', finishOnboarding);
+    }
+    if (els['wizard-back-btn']) {
+      els['wizard-back-btn'].addEventListener('click', () => {
+        if (wizardStepIndex > 0) {
+          wizardStepIndex -= 1;
+          renderWizardStep();
+        }
+      });
+    }
+    if (els['wizard-next-btn']) {
+      els['wizard-next-btn'].addEventListener('click', () => {
+        if (wizardStepIndex >= WIZARD_STEPS.length - 1) {
+          finishOnboarding();
+          return;
+        }
+        wizardStepIndex += 1;
+        renderWizardStep();
+      });
+    }
     els['band-filter'].addEventListener('change', () => {
       fillLevelSelect();
       renderLevelChips();
@@ -1685,6 +2211,94 @@
     if (els['import-save-btn']) els['import-save-btn'].addEventListener('click', onSaveImportedTemplate);
     if (els['backup-export-btn']) els['backup-export-btn'].addEventListener('click', downloadBackupFile);
     if (els['backup-import-file']) els['backup-import-file'].addEventListener('change', onRestoreBackup);
+    if (els['publish-breakdowns-btn']) {
+      els['publish-breakdowns-btn'].addEventListener('click', () => {
+        onPublishLocalBreakdowns().catch((err) => {
+          setStatus(els['team-library-status'], err.message || String(err), { isError: true, toast: true, toastType: 'error' });
+        });
+      });
+    }
+    if (els['login-form']) els['login-form'].addEventListener('submit', onLoginSubmit);
+    if (els['logout-btn']) els['logout-btn'].addEventListener('click', () => {
+      onLogout().catch((err) => console.warn(err));
+    });
+    if (els['active-profile-select']) {
+      els['active-profile-select'].addEventListener('change', () => {
+        onActiveProfileChange().catch((err) => console.warn(err));
+      });
+    }
+    if (els['edit-profile-btn']) {
+      els['edit-profile-btn'].addEventListener('click', () => {
+        showPanel('loader');
+        fillActiveProfileEditCard();
+        if (els['active-profile-edit-card'] && !els['active-profile-edit-card'].hidden) {
+          els['active-profile-edit-card'].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
+    }
+    if (els['active-profile-rename-form']) {
+      els['active-profile-rename-form'].addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        const p = Auth.getActiveProfile && Auth.getActiveProfile();
+        if (!p) return;
+        try {
+          await Auth.renameProfile(
+            p.id,
+            els['active-profile-name'].value.trim(),
+            els['active-profile-slug'].value.trim()
+          );
+          updateAccountBar();
+          updateLibraryBadge();
+          setStatus(els['active-profile-edit-status'], 'Profile name saved.', { toast: true, toastType: 'success' });
+        } catch (err) {
+          setStatus(els['active-profile-edit-status'], err.message || String(err), { isError: true, toast: true, toastType: 'error' });
+        }
+      });
+    }
+    if (els['active-profile-publish-form']) {
+      els['active-profile-publish-form'].addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        const p = Auth.getActiveProfile && Auth.getActiveProfile();
+        if (!p) return;
+        try {
+          const breakdowns = Domain.readBreakdowns();
+          const ids = Object.keys(breakdowns).filter((id) => Domain.hasBreakdown(id));
+          if (!ids.length) throw new Error('Save at least one book breakdown on Curriculum first.');
+          const curriculaOverlay = {};
+          ids.forEach((bookId) => {
+            const bd = breakdowns[bookId];
+            const patch = {};
+            if (bd && Array.isArray(bd.units)) {
+              patch.units = bd.units.map((u) => u.title).filter(Boolean);
+            }
+            if (bd && bd.cefr) patch.cefr = bd.cefr;
+            if (Object.keys(patch).length) curriculaOverlay[bookId] = patch;
+          });
+          const payload = {};
+          ids.forEach((id) => { payload[id] = breakdowns[id]; });
+          await Library.publishProfilePack(
+            p.id,
+            els['active-profile-pack-title'].value.trim(),
+            { breakdowns: payload, curriculaOverlay }
+          );
+          els['active-profile-pack-title'].value = '';
+          await reloadCloudLibrary();
+          setStatus(els['active-profile-edit-status'], 'Pack published to ' + p.name + '.', { toast: true, toastType: 'success' });
+        } catch (err) {
+          setStatus(els['active-profile-edit-status'], err.message || String(err), { isError: true, toast: true, toastType: 'error' });
+        }
+      });
+    }
+    if (els['continue-local-btn']) {
+      els['continue-local-btn'].addEventListener('click', () => {
+        allowLocalWithoutLogin = true;
+        setLoginGateVisible(false);
+        startAppAfterLogin().catch((err) => {
+          console.error(err);
+          setStatus(els['login-status'], err.message || String(err), { isError: true });
+        });
+      });
+    }
     els['activity-form'].addEventListener('submit', onSubmitActivity);
     els['reset-form-btn'].addEventListener('click', clearManageForm);
     els['reset-overlay-btn'].addEventListener('click', () => {
@@ -1703,6 +2317,9 @@
       }
     });
     els['generate-form'].addEventListener('submit', onGenerate);
+    if (els['gen-change-folder-btn']) {
+      els['gen-change-folder-btn'].addEventListener('click', onChangeOutputFolder);
+    }
     els['gen-book'].addEventListener('change', () => {
       fillActivityChecks(els['gen-book'].value);
       syncGenerateCefr();
@@ -1793,8 +2410,20 @@
 
   async function main() {
     cacheEls();
+    applyTheme(readThemePref());
+    await gateAuth();
+    if (els['login-gate'] && !els['login-gate'].hidden && Auth && Auth.isServerAvailable() && !Auth.isLoggedIn()) {
+      // Stay on login gate; still init light UI behind it once they log in / continue local.
+      bindEvents();
+      return;
+    }
     await Catalog.init();
     await Domain.init();
+    if (Auth && Auth.isLoggedIn()) {
+      try { await reloadCloudLibrary(); } catch (e) { console.warn(e); }
+    }
+    updateAccountBar();
+    updateLibraryBadge();
     try { await Generate.init(); } catch (e) {
       console.warn('Templates not fetched (file://). Built-in HTML files still open from Loader.', e);
     }
@@ -1822,6 +2451,44 @@
     renderActivityTypes();
     renderStylePreview(null);
     showPanel(prefs.panel);
+    maybeShowOnboardingWizard();
+  }
+
+  async function startAppAfterLogin() {
+    await Catalog.init();
+    await Domain.init();
+    if (Auth && Auth.isLoggedIn()) {
+      try { await reloadCloudLibrary(); } catch (e) { console.warn(e); }
+    }
+    updateAccountBar();
+    updateLibraryBadge();
+    try { await Generate.init(); } catch (e) {
+      console.warn('Templates not fetched (file://). Built-in HTML files still open from Loader.', e);
+    }
+    prefs = Catalog.getPrefs();
+    prefs.panel = mapLegacyPanel(prefs.panel);
+    if (!prefs.levelId) prefs.levelId = 'Green';
+    if (!prefs.bookId) prefs.bookId = 'write-now-1';
+    fillProviderSelect('curr-ai-provider');
+    fillProviderSelect('gen-ai-provider');
+    fillProviderSelect('style-ai-provider');
+    syncAllAiControls();
+    fillNewBookLevelSelect();
+    fillNewBookCefrSelect();
+    renderCustomLevelList();
+    fillLevelSelect();
+    renderLevelChips();
+    fillBookSelect();
+    renderActivityGrid();
+    fillImportSelects();
+    renderImportPreview(null);
+    fillManageBookAndTypeSelects();
+    clearManageForm();
+    fillGenerateForm();
+    renderActivityTypes();
+    renderStylePreview(null);
+    showPanel(prefs.panel);
+    maybeShowOnboardingWizard();
   }
 
   document.addEventListener('DOMContentLoaded', () => {
