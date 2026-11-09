@@ -7,6 +7,8 @@
   "name": "activity-loader",
   "main": "worker/index.js",
   "compatibility_date": "2026-08-20",
+  // Keep any variables set in the Cloudflare dashboard when deploying.
+  "keep_vars": true,
   "assets": {
     "directory": ".",
     "binding": "ASSETS",
