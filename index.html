@@ -305,7 +305,12 @@
                 <input id="gen-custom-header-value" class="input" placeholder="https://yoursite.example" autocomplete="off">
               </div>
             </div>
-            <div class="field">
+            <div class="field" id="gen-online-field" hidden>
+              <span class="field-legend">Where games go</span>
+              <p class="hint">Games are saved to your account. Play them online from <strong>Loader</strong> or straight from the list below after you generate, and make a <strong>share link</strong> for students.</p>
+              <label class="check-line"><input type="checkbox" id="gen-also-download"> Also save HTML files to this computer</label>
+            </div>
+            <div class="field" id="gen-folder-field">
               <span class="field-legend">Output folder</span>
               <p class="hint" id="gen-output-folder-hint">First Generate asks once where to save. Later runs reuse that folder.</p>
               <p class="hint" id="gen-output-folder-label">Output folder: not set yet</p>
@@ -319,6 +324,7 @@
             </div>
           </form>
           <p id="generate-status" class="status-bar" aria-live="polite"></p>
+          <ul id="gen-online-results" class="online-results" hidden></ul>
         </div>
       </section>
 

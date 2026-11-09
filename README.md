@@ -154,3 +154,33 @@ serve.js             Local folder server (needed for Gemini)
 
 To bake HTML from built-in packs again: `node bake.js`  
 To refresh offline template copies: `node embed.js`
+
+## Online play and share links (live site)
+
+When you're logged in on the live site, **Generate** saves each game to your account instead of downloading it. Saving HTML files to the computer is optional (tick **Also save HTML files to this computer**).
+
+- **Play online** opens the game at its own address (`/play/…`). Only you can open it, while logged in.
+- **Share link** makes a public student link (`/s/…`). Anyone with it can play in a browser without an account, on a computer, tablet or phone. **Turn off link** stops it straight away; making a new one gives a different address.
+- Regenerating a game keeps the same play address and share link, so links you've already sent show the new version.
+- Games run sandboxed, away from the site, so they can't see anyone's login. Inside a shared game, anything the game remembers (Charades pictures, Jeopardy edits) lasts only until the tab is closed.
+
+## Server code and deploying
+
+`worker/` is the Cloudflare Worker: logins, roles, groups and profiles, each account's library (D1 `activity-loader-db` + KV `activity-loader-library`), and online play (`worker/play.js`). `wrangler.jsonc` has the bindings.
+
+Deploy from this folder:
+
+```text
+npx wrangler d1 migrations apply activity-loader-db --remote   (only when migrations/ has something new)
+npx wrangler deploy
+```
+
+Or connect the repo in Cloudflare (Workers → activity-loader → Settings → Builds) with branch `main` and deploy command `npx wrangler deploy`.
+
+### Testing locally
+
+```text
+node tests/dev-server.mjs 8787         (the site on http://localhost:8787; admin / admin-pass)
+node tests/play-api-check.mjs          (server checks)
+node tests/play-browser-check.mjs      (browser checks; needs Google Chrome)
+```

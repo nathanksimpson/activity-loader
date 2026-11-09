@@ -33,6 +33,9 @@
 
   function clone(v) { return JSON.parse(JSON.stringify(v)); }
 
+  // bookId:activityId -> promise of the online save started by savePack().
+  const cloudSaves = {};
+
   function readPacks() {
     try {
       return JSON.parse(localStorage.getItem(STORAGE_PACKS) || '{}');
@@ -773,6 +776,11 @@
       return fetchJson(path);
     },
 
+    /** Resolves when the online copy of this game is saved; null when not saving online. */
+    cloudSaveFor(bookId, activityId) {
+      return cloudSaves[packKey(bookId, activityId)] || null;
+    },
+
     getSavedPack(bookId, activityId) {
       return readPacks()[packKey(bookId, activityId)] || null;
     },
@@ -793,15 +801,19 @@
       const Library = global.ActivityLibrary;
       const Auth = global.ActivityAuth;
       if (Library && Library.isServerAvailable && Library.isServerAvailable() && Auth && Auth.isLoggedIn()) {
-        Library.saveGeneratedToServer(bookId, activityId, {
+        const promise = Library.saveGeneratedToServer(bookId, activityId, {
           title: (pack && pack.title) || (bookId + ' ' + activityId),
           cefr: cefr,
           source: source,
           pack: pack,
           html: html
-        }).catch(function (err) {
+        });
+        cloudSaves[packKey(bookId, activityId)] = promise;
+        promise.catch(function (err) {
           console.warn('Cloud save of generated activity failed:', err);
         });
+      } else {
+        delete cloudSaves[packKey(bookId, activityId)];
       }
       return saved;
     },

@@ -1,7 +1,30 @@
 {
+  // Activity Loader — Cloudflare Worker (worker/) + static files (this folder) + D1 + KV.
+  // Deploy: `npx wrangler d1 migrations apply activity-loader-db --remote` (only when
+  // migrations/ has something new), then `npx wrangler deploy`.
+  // Secrets (Cloudflare dashboard): ADMIN_USERNAME, ADMIN_PASSWORD — only used to
+  // create the first super admin when the database has none.
   "name": "activity-loader",
+  "main": "worker/index.js",
   "compatibility_date": "2026-08-20",
   "assets": {
-    "directory": "."
-  }
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*", "/play/*", "/s/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "activity-loader-db",
+      "database_id": "45eb3ffd-0701-4764-b322-4dfdd90d9612",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "LIBRARY",
+      "id": "7b55fbd474974873ba09ef3291ea063a",
+      "preview_id": "55a572711d6b451e972d47f3ce35e4f0"
+    }
+  ]
 }

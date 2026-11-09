@@ -184,6 +184,7 @@
       'generate-form', 'gen-activity-list', 'gen-all', 'gen-book', 'gen-cefr', 'gen-save-cefr', 'gen-mode', 'gen-ai-provider', 'gen-ai-model',
       'api-key-field', 'gen-api-key', 'generate-btn', 'open-generated-btn', 'generate-status', 'gen-breakdown-hint',
       'gen-output-folder-label', 'gen-output-folder-hint', 'gen-change-folder-btn',
+      'gen-online-field', 'gen-also-download', 'gen-folder-field', 'gen-online-results',
       'gen-custom-fields', 'gen-custom-url', 'gen-custom-model', 'gen-custom-header-name', 'gen-custom-header-value',
       'style-form', 'style-file', 'style-description', 'style-parse-btn', 'style-save-btn', 'style-preview', 'style-preview-frame', 'style-status', 'style-list',
       'style-ai-provider', 'style-ai-model', 'style-api-key',
@@ -847,6 +848,152 @@
     return 'badge';
   }
 
+  /* ---------- Online play & share links ---------- */
+
+  const ALSO_DOWNLOAD_PREF = 'activityLoader.alsoDownload.v1';
+
+  function isOnlineLibrary() {
+    return !!(Library && Library.isServerAvailable && Library.isServerAvailable() && Auth && Auth.isLoggedIn());
+  }
+
+  function onlineMeta(bookId, activityId) {
+    return isOnlineLibrary() && Library.getGeneratedMeta ? Library.getGeneratedMeta(bookId, activityId) : null;
+  }
+
+  function playOnline(meta) {
+    window.open(Library.absoluteUrl(meta.playPath), '_blank', 'noopener');
+  }
+
+  function alsoDownloadWanted() {
+    if (!isOnlineLibrary()) return true;
+    return !!(els['gen-also-download'] && els['gen-also-download'].checked);
+  }
+
+  function syncGenerateSaveOptions() {
+    const online = isOnlineLibrary();
+    if (els['gen-online-field']) els['gen-online-field'].hidden = !online;
+    if (els['gen-also-download']) {
+      let stored = false;
+      try { stored = localStorage.getItem(ALSO_DOWNLOAD_PREF) === '1'; } catch (e) { /* private mode */ }
+      els['gen-also-download'].checked = stored;
+    }
+    if (els['gen-folder-field']) els['gen-folder-field'].hidden = online && !alsoDownloadWanted();
+  }
+
+  function onAlsoDownloadChanged() {
+    try { localStorage.setItem(ALSO_DOWNLOAD_PREF, els['gen-also-download'].checked ? '1' : '0'); } catch (e) { /* private mode */ }
+    if (els['gen-folder-field']) els['gen-folder-field'].hidden = !alsoDownloadWanted();
+  }
+
+  let shareDialog = null;
+
+  function openShareDialog(bookId, activityId, title) {
+    if (!shareDialog) {
+      shareDialog = document.createElement('dialog');
+      shareDialog.className = 'share-dialog';
+      shareDialog.innerHTML =
+        '<form method="dialog" class="share-dialog-inner">' +
+        '<div class="share-head"><h2 class="section-title share-title"></h2>' +
+        '<button type="submit" class="btn btn-ghost share-close" aria-label="Close">✕</button></div>' +
+        '<p class="hint share-explain">Anyone with this link can play the game in a browser — no account needed. ' +
+        'Send it to students or put it on the class page. Turn it off any time.</p>' +
+        '<div class="share-link-row"><input class="input share-url" readonly aria-label="Share link">' +
+        '<button type="button" class="btn btn-primary share-copy">Copy</button></div>' +
+        '<div class="share-actions">' +
+        '<button type="button" class="btn share-open">Open link</button>' +
+        '<button type="button" class="btn btn-danger share-off">Turn off link</button>' +
+        '<button type="button" class="btn btn-primary share-on">Make share link</button></div>' +
+        '<p class="share-note" aria-live="polite"></p></form>';
+      document.body.appendChild(shareDialog);
+      shareDialog.addEventListener('click', (e) => { if (e.target === shareDialog) shareDialog.close(); });
+    }
+    const d = shareDialog;
+    const q = (sel) => d.querySelector(sel);
+    const note = (text, isError) => {
+      q('.share-note').textContent = text || '';
+      q('.share-note').classList.toggle('is-error', !!isError);
+    };
+    const render = (meta) => {
+      const on = !!(meta && meta.sharePath);
+      const url = on ? Library.absoluteUrl(meta.sharePath) : '';
+      q('.share-url').value = url;
+      q('.share-link-row').hidden = !on;
+      q('.share-open').hidden = !on;
+      q('.share-off').hidden = !on;
+      q('.share-on').hidden = on;
+      q('.share-explain').textContent = on
+        ? 'Anyone with this link can play the game in a browser — no account needed. Send it to students or put it on the class page.'
+        : 'The share link for this game is off. Make one to let students play it without an account.';
+    };
+    const run = async (fn) => {
+      note('');
+      try { render(await fn()); } catch (err) { note(err && err.message ? err.message : String(err), true); }
+    };
+    q('.share-title').textContent = 'Share: ' + (title || activityId);
+    q('.share-copy').onclick = async () => {
+      const input = q('.share-url');
+      try {
+        await navigator.clipboard.writeText(input.value);
+        note('Link copied.');
+      } catch (e) {
+        input.select();
+        note('Press Ctrl+C to copy.');
+      }
+    };
+    q('.share-open').onclick = () => window.open(q('.share-url').value, '_blank', 'noopener');
+    q('.share-off').onclick = () => {
+      if (!window.confirm('Turn off this link? Students who have it will no longer be able to open the game.')) return;
+      run(() => Library.unshareGenerated(bookId, activityId)).then(() => {
+        if (!q('.share-note').classList.contains('is-error')) note('Link turned off.');
+        renderActivityGrid();
+      });
+    };
+    q('.share-on').onclick = () => run(() => Library.shareGenerated(bookId, activityId)).then(renderActivityGrid);
+    render(onlineMeta(bookId, activityId));
+    note('');
+    if (!d.open) d.showModal();
+    if (!(onlineMeta(bookId, activityId) || {}).sharePath) {
+      run(() => Library.shareGenerated(bookId, activityId)).then(renderActivityGrid);
+    }
+  }
+
+  function renderOnlineResults(items) {
+    const list = els['gen-online-results'];
+    if (!list) return;
+    list.innerHTML = '';
+    list.hidden = !items.length;
+    items.forEach((item) => {
+      const li = document.createElement('li');
+      const name = document.createElement('span');
+      name.className = 'online-result-title';
+      name.textContent = item.title;
+      const actions = document.createElement('span');
+      actions.className = 'online-result-actions';
+      if (item.meta) {
+        const play = document.createElement('button');
+        play.type = 'button';
+        play.className = 'btn btn-primary btn-small';
+        play.textContent = 'Play online';
+        play.addEventListener('click', () => playOnline(item.meta));
+        const share = document.createElement('button');
+        share.type = 'button';
+        share.className = 'btn btn-small';
+        share.textContent = 'Share link';
+        share.addEventListener('click', () => openShareDialog(item.bookId, item.activityId, item.title));
+        actions.appendChild(play);
+        actions.appendChild(share);
+      } else {
+        const warn = document.createElement('span');
+        warn.className = 'online-result-error';
+        warn.textContent = item.error || 'Not saved online';
+        actions.appendChild(warn);
+      }
+      li.appendChild(name);
+      li.appendChild(actions);
+      list.appendChild(li);
+    });
+  }
+
   function openActivity(activity) {
     const hasBuiltin = Generate && activity && Generate.hasBuiltinPack &&
       Generate.hasBuiltinPack(activity.bookId, activity.type);
@@ -910,6 +1057,23 @@
         const fold = document.querySelector('.manage-fold');
         if (fold) fold.open = true;
       });
+      const online = act.generated ? onlineMeta(act.bookId, act.type) : null;
+      if (online) {
+        const playBtn = document.createElement('button');
+        playBtn.type = 'button';
+        playBtn.className = 'btn btn-primary';
+        playBtn.textContent = 'Play online';
+        playBtn.addEventListener('click', () => playOnline(online));
+        const shareBtn = document.createElement('button');
+        shareBtn.type = 'button';
+        shareBtn.className = 'btn';
+        shareBtn.textContent = online.sharePath ? 'Share link · on' : 'Share link';
+        shareBtn.addEventListener('click', () => openShareDialog(act.bookId, act.type, act.title));
+        openBtn.className = 'btn';
+        openBtn.textContent = 'Open file';
+        actions.appendChild(playBtn);
+        actions.appendChild(shareBtn);
+      }
       actions.appendChild(openBtn);
       actions.appendChild(editBtn);
       card.appendChild(title);
@@ -1593,6 +1757,7 @@
   }
 
   function fillGenerateForm() {
+    syncGenerateSaveOptions();
     const bookSel = els['gen-book'];
     const cefrSel = els['gen-cefr'];
     const prevBook = bookSel.value;
@@ -1716,6 +1881,9 @@
     const fail = [];
     let savedToFolder = '';
     let usedDownload = false;
+    const saveFiles = alsoDownloadWanted();
+    const onlineItems = [];
+    renderOnlineResults([]);
     try {
       for (let i = 0; i < activityIds.length; i++) {
         const activityId = activityIds[i];
@@ -1751,13 +1919,25 @@
             generated: true
           });
           const filename = result.filename || result.path.split('/').pop();
-          const saveResult = await Generate.saveHtml(filename, result.html, { pickIfMissing: true });
-          if (saveResult && saveResult.method === 'folder') {
-            savedToFolder = saveResult.folderName || Generate.getOutputFolderInfo().name || savedToFolder;
-          } else {
-            usedDownload = true;
+          const cloud = Generate.cloudSaveFor ? Generate.cloudSaveFor(bookId, activityId) : null;
+          if (cloud) {
+            const gameTitle = result.pack.title || ((book && book.title) + ' ' + activityId);
+            try {
+              await cloud;
+              onlineItems.push({ bookId: bookId, activityId: activityId, title: gameTitle, meta: Library.getGeneratedMeta(bookId, activityId) });
+            } catch (cloudErr) {
+              onlineItems.push({ bookId: bookId, activityId: activityId, title: gameTitle, error: 'Not saved online: ' + (cloudErr && cloudErr.message ? cloudErr.message : cloudErr) });
+            }
           }
-          ok.push(filename);
+          if (saveFiles || !cloud) {
+            const saveResult = await Generate.saveHtml(filename, result.html, { pickIfMissing: true });
+            if (saveResult && saveResult.method === 'folder') {
+              savedToFolder = saveResult.folderName || Generate.getOutputFolderInfo().name || savedToFolder;
+            } else {
+              usedDownload = true;
+            }
+          }
+          ok.push(cloud && !saveFiles ? (result.pack.title || filename) : filename);
           if (i < activityIds.length - 1) await sleep(450);
         } catch (err) {
           const msg = err && err.message ? err.message : String(err);
@@ -1769,13 +1949,18 @@
         }
       }
       refreshOutputFolderLabel();
+      renderOnlineResults(onlineItems);
+      const onlineOk = onlineItems.filter((item) => item.meta).length;
       let msg = ok.length
-        ? ((savedToFolder && !usedDownload)
+        ? (onlineOk && !savedToFolder && !usedDownload)
+          ? ('Saved ' + onlineOk + ' game(s) to your account. Play them online below or from Loader.')
+          : ((savedToFolder && !usedDownload)
           ? ('Saved ' + ok.length + ' file(s) to “' + savedToFolder + '”: ' + ok.join(', ') + '.')
           : (savedToFolder
             ? ('Saved/downloaded ' + ok.length + ' file(s): ' + ok.join(', ') + '. Folder: “' + savedToFolder + '”.')
             : ('Downloaded ' + ok.length + ' file(s): ' + ok.join(', ') + '.')))
         : 'Nothing saved.';
+      if (ok.length && onlineOk && (savedToFolder || usedDownload)) msg += ' Also saved online — play below or from Loader.';
       if (fail.length) msg += ' Failed: ' + fail.join(' | ');
       setStatus(els['generate-status'], msg, {
         isError: fail.length > 0 && !ok.length,
@@ -2317,6 +2502,7 @@
       }
     });
     els['generate-form'].addEventListener('submit', onGenerate);
+    if (els['gen-also-download']) els['gen-also-download'].addEventListener('change', onAlsoDownloadChanged);
     if (els['gen-change-folder-btn']) {
       els['gen-change-folder-btn'].addEventListener('click', onChangeOutputFolder);
     }

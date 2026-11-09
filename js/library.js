@@ -9,6 +9,8 @@
   let writesEnabled = false;
   let probeDone = false;
   let lastLibrary = null;
+  // bookId:activityId -> { resourceId, playPath, sharePath } for games saved online.
+  const generatedMeta = {};
 
   function Auth() {
     return global.ActivityAuth;
@@ -62,6 +64,8 @@
     }
     const data = await auth.api('/api/me/library');
     lastLibrary = data;
+    Object.keys(generatedMeta).forEach((k) => { delete generatedMeta[k]; });
+    Object.assign(generatedMeta, (data && data.generatedMeta) || {});
     const packs = (data && (data.profilePacks || data.schoolPacks)) || [];
     return {
       breakdowns: (data && data.breakdowns) || {},
@@ -103,10 +107,47 @@
   async function saveGeneratedToServer(bookId, activityId, payload) {
     const auth = Auth();
     if (!auth || !auth.isLoggedIn()) throw new Error('Please log in to save generated activities.');
-    return auth.api(
+    const res = await auth.api(
       '/api/me/generated/' + encodeURIComponent(bookId) + '/' + encodeURIComponent(activityId),
       { method: 'PUT', body: payload }
     );
+    if (res && res.resourceId) {
+      const key = bookId + ':' + activityId;
+      const prev = generatedMeta[key] || {};
+      generatedMeta[key] = Object.assign({}, prev, {
+        resourceId: res.resourceId,
+        playPath: res.playPath || ('/play/' + res.resourceId),
+        sharePath: prev.resourceId === res.resourceId ? (prev.sharePath || null) : null
+      });
+    }
+    return res;
+  }
+
+  /** Online play info for a saved game, or null when it only exists in this browser. */
+  function getGeneratedMeta(bookId, activityId) {
+    const meta = generatedMeta[bookId + ':' + activityId];
+    return meta && meta.resourceId ? meta : null;
+  }
+
+  function absoluteUrl(path) {
+    return path ? new URL(path, global.location.href).href : '';
+  }
+
+  /** Makes (or returns) the public student link for a saved game. */
+  async function shareGenerated(bookId, activityId) {
+    const meta = getGeneratedMeta(bookId, activityId);
+    if (!meta) throw new Error('Save this game online first (generate it while logged in).');
+    const res = await Auth().api('/api/me/share/' + encodeURIComponent(meta.resourceId), { method: 'POST' });
+    meta.sharePath = res.sharePath;
+    return meta;
+  }
+
+  async function unshareGenerated(bookId, activityId) {
+    const meta = getGeneratedMeta(bookId, activityId);
+    if (!meta) return null;
+    await Auth().api('/api/me/share/' + encodeURIComponent(meta.resourceId), { method: 'DELETE' });
+    meta.sharePath = null;
+    return meta;
   }
 
   async function forkResource(resourceId, title) {
@@ -196,6 +237,10 @@
     saveBreakdownToServer,
     publishAllBreakdowns,
     saveGeneratedToServer,
+    getGeneratedMeta,
+    shareGenerated,
+    unshareGenerated,
+    absoluteUrl,
     forkResource,
     listUsers,
     createUser,
