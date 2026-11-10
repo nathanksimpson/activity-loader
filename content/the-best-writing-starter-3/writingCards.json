@@ -1,0 +1,379 @@
+{
+  "bookId": "the-best-writing-starter-3",
+  "cefr": "A1",
+  "activityId": "writingCards",
+  "title": "The Best Writing Starter 3 Writing Card Spinner",
+  "cards": [
+    {
+      "title": "My Dream Job",
+      "lines": [
+        "I want to be {job}.",
+        "I like to {jobact} and {jobact}.",
+        "My best friend {name#bf} wants to be {job}.",
+        "{He} likes to {jobact}.",
+        "{He}'s really good at it!",
+        "I wish our dreams come true."
+      ]
+    },
+    {
+      "title": "Tastes of Food",
+      "lines": [
+        "There are many different tastes in food.",
+        "The {food} is delicious.",
+        "It has {ingredient} in it, so it's {taste}.",
+        "The {food} is tasty.",
+        "It has {ingredient} in it, so it's {taste}.",
+        "I enjoy all the {taste} tastes."
+      ]
+    },
+    {
+      "title": "My Daily Routine",
+      "lines": [
+        "I have busy weekdays.",
+        "In the morning, I {morning} at {mtime}.",
+        "In the afternoon, I {afternoon} at {atime}.",
+        "In the evening, I {evening} around {etime}.",
+        "At night, I {night} around {ntime}."
+      ]
+    },
+    {
+      "title": "Animals vs. Humans",
+      "lines": [
+        "This is my report on {animal#a} and humans.",
+        "The {animal#a} live {home}, but humans live in houses.",
+        "The {animal#a} have {part}, but humans have skin.",
+        "The {animal#a} can't {cant}, but humans can.",
+        "Both {animal#a} and humans can {both}.",
+        "They are both amazing!"
+      ]
+    },
+    {
+      "title": "Fun Time with My Family",
+      "lines": [
+        "My family does many fun activities together.",
+        "When it's {weather}, we usually stay home.",
+        "We {indoor} and eat {snack}.",
+        "But sometimes, we go out and {outdoor}.",
+        "We always have a great time."
+      ]
+    },
+    {
+      "title": "My Busy Weekend",
+      "lines": [
+        "I have so much to do this weekend.",
+        "First, I'm going to {plan}.",
+        "Second, I'm going to {plan}.",
+        "Third, I'm going to {plan}.",
+        "Finally, I'm going to {plan}.",
+        "What a weekend!"
+      ]
+    },
+    {
+      "title": "Packing List",
+      "lines": [
+        "My family is packing for the summer vacation.",
+        "I will take my {item} and {item}.",
+        "I'll take my {gadget} to {gadgetact}.",
+        "I won't take my {notake}.",
+        "My {relative} will take {his} {item}.",
+        "{He} won't take {his} {notake}."
+      ]
+    },
+    {
+      "title": "Gifts for Friends",
+      "lines": [
+        "Christmas is coming.",
+        "I think of gifts for my friends.",
+        "I'll give {gift} to {name} because {reason}.",
+        "I'll give {gift} to {name} because {reason}.",
+        "I'll give {gift} to {name} because {reason}."
+      ]
+    },
+    {
+      "title": "I Want a Pet",
+      "lines": [
+        "Dear Mom and Dad,",
+        "For my birthday, I really want {pet#p}.",
+        "I will take good care of it.",
+        "First, I'll {care}.",
+        "Second, I'll {care}.",
+        "Finally, I'll {care}.",
+        "Please let me have {pet#p}."
+      ]
+    }
+  ],
+  "pools": {
+    "job": [
+      "a vet",
+      "an actor",
+      "an artist",
+      "a musician",
+      "a content creator",
+      "a police officer",
+      "a chef",
+      "a scientist",
+      "a firefighter"
+    ],
+    "jobact": [
+      "take care of animals",
+      "write songs",
+      "play the guitar",
+      "make videos",
+      "draw pictures",
+      "dance",
+      "sing",
+      "try new foods",
+      "cook for others",
+      "help other people"
+    ],
+    "name": [
+      "Kelly",
+      "Shawn",
+      "Kevin",
+      "Susan",
+      "Jack",
+      "Jenny",
+      "Tom",
+      "Amy",
+      "Leo",
+      "Luke"
+    ],
+    "food": [
+      "pizza",
+      "pasta",
+      "salad",
+      "taco",
+      "cupcake",
+      "sandwich",
+      "soup",
+      "lemonade"
+    ],
+    "ingredient": [
+      "bacon",
+      "pepper",
+      "lemon",
+      "chocolate",
+      "tomato",
+      "beef",
+      "sugar",
+      "ham",
+      "cheese"
+    ],
+    "taste": [
+      "salty",
+      "spicy",
+      "sour",
+      "sweet",
+      "fresh",
+      "savory"
+    ],
+    "morning": [
+      "wake up",
+      "eat breakfast",
+      "take the school bus",
+      "walk to school"
+    ],
+    "mtime": [
+      "six thirty",
+      "seven",
+      "seven fifteen",
+      "seven thirty",
+      "eight twenty"
+    ],
+    "afternoon": [
+      "have lunch",
+      "take classes",
+      "come home",
+      "do my homework"
+    ],
+    "atime": [
+      "twelve thirty",
+      "one",
+      "two",
+      "three",
+      "three thirty"
+    ],
+    "evening": [
+      "have dinner",
+      "practice the piano",
+      "spend time with family",
+      "watch TV"
+    ],
+    "etime": [
+      "six",
+      "six thirty",
+      "seven",
+      "seven twenty",
+      "eight"
+    ],
+    "night": [
+      "write a diary",
+      "go to sleep",
+      "listen to music",
+      "read a book"
+    ],
+    "ntime": [
+      "nine",
+      "nine thirty",
+      "ten",
+      "ten thirty"
+    ],
+    "animal": [
+      "fish",
+      "birds",
+      "dogs",
+      "frogs",
+      "cats",
+      "rabbits"
+    ],
+    "home": [
+      "in the water",
+      "in a nest",
+      "in a pond",
+      "in a hole",
+      "in the forest"
+    ],
+    "part": [
+      "scales",
+      "feathers",
+      "fur",
+      "fins",
+      "gills",
+      "wings"
+    ],
+    "cant": [
+      "talk",
+      "run",
+      "blink their eyes",
+      "use their hands",
+      "read books",
+      "ride a bike"
+    ],
+    "both": [
+      "swim",
+      "walk",
+      "sing",
+      "eat fish",
+      "sleep",
+      "run",
+      "jump"
+    ],
+    "weather": [
+      "snowy",
+      "windy",
+      "rainy",
+      "cold",
+      "hot",
+      "cloudy"
+    ],
+    "indoor": [
+      "watch TV",
+      "play a board game",
+      "make cookies",
+      "read books",
+      "play video games"
+    ],
+    "snack": [
+      "cookies",
+      "snacks",
+      "popcorn",
+      "fruit",
+      "sandwiches"
+    ],
+    "outdoor": [
+      "make a snowman",
+      "take a walk",
+      "go on a picnic",
+      "ride a bike",
+      "fly a kite",
+      "play soccer"
+    ],
+    "plan": [
+      "play soccer with friends",
+      "go to a party",
+      "see a movie",
+      "buy some books",
+      "help around the house",
+      "walk my dog",
+      "visit my grandma",
+      "do my homework",
+      "clean my room"
+    ],
+    "item": [
+      "swimsuit",
+      "shorts",
+      "sundress",
+      "sunhat",
+      "swimming goggles",
+      "sunglasses",
+      "cap"
+    ],
+    "gadget": [
+      "tablet",
+      "laptop",
+      "drone",
+      "camera",
+      "smartphone"
+    ],
+    "gadgetact": [
+      "read e-books",
+      "play video games",
+      "shoot a video",
+      "watch animations",
+      "take pictures"
+    ],
+    "notake": [
+      "books",
+      "homework",
+      "RC car",
+      "computer",
+      "blocks",
+      "work"
+    ],
+    "relative": [
+      "dad",
+      "mom",
+      "brother",
+      "sister",
+      "grandpa",
+      "grandma"
+    ],
+    "gift": [
+      "a baseball mitt",
+      "a flower pot",
+      "gloves",
+      "a scarf",
+      "socks",
+      "a tuna can",
+      "a chocolate bar",
+      "colored pencils",
+      "a book"
+    ],
+    "reason": [
+      "his mitt is too small",
+      "the weather is very cold",
+      "she loves flowers",
+      "she loves drawing",
+      "his socks are too old",
+      "her cat loves tuna",
+      "he loves chocolate",
+      "she loves reading books"
+    ],
+    "pet": [
+      "a puppy",
+      "a kitten",
+      "a parrot",
+      "an iguana",
+      "a hamster",
+      "a rabbit"
+    ],
+    "care": [
+      "feed it",
+      "give it a bath",
+      "clean up its poop",
+      "play with it every day",
+      "clean its cage",
+      "walk it every day"
+    ]
+  }
+}

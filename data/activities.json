@@ -80,6 +80,30 @@
       "template": "templates/rallyCoach.template.html",
       "contentSchema": "vocabByUnit",
       "cefrAgnostic": true
+    },
+    {
+      "id": "sentenceScramble",
+      "name": "Sentence Scramble",
+      "description": "Drag shuffled words back into order. Hint locks the next word, Check colours each word, teams score.",
+      "template": "templates/sentenceScramble.template.html",
+      "contentSchema": "unitSentences",
+      "cefrAgnostic": true
+    },
+    {
+      "id": "gapFill",
+      "name": "Gap Fill",
+      "description": "Unit model writing with numbered blanks to reveal. Word bank, first-letter hints, extra-blanks mode, teams.",
+      "template": "templates/gapFill.template.html",
+      "contentSchema": "unitPassages",
+      "cefrAgnostic": true
+    },
+    {
+      "id": "writingCards",
+      "name": "Writing Card Spinner",
+      "description": "Fill-in writing frames per unit. Spin silly words to fix, say it aloud, or type the class's ideas.",
+      "template": "templates/writingCards.template.html",
+      "contentSchema": "writingCards",
+      "cefrAgnostic": true
     }
   ]
 }

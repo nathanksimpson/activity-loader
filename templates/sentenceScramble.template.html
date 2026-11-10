@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>__TITLE__</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap");
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body { font-family: Nunito, "Segoe UI", "Malgun Gothic", sans-serif; background: #f1f5f9; color: #0f172a; min-height: 100vh; }
+    select, button, input { font: inherit; font-weight: 800; }
+    .topbar { position: sticky; top: 0; z-index: 20; background: #fff; border-bottom: 1px solid #e2e8f0; box-shadow: 0 4px 14px rgba(15,23,42,.06); padding: .75rem 1.25rem; display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+    .topbar h1 { margin: 0 auto 0 0; font-size: 1.25rem; font-weight: 900; color: #be185d; }
+    select { padding: .5rem .8rem; border-radius: .6rem; border: 2px solid #e2e8f0; background: #f8fafc; color: #334155; }
+    .btn { border: 0; border-radius: .6rem; padding: .55rem 1rem; cursor: pointer; color: #fff; background: #db2777; }
+    .btn:hover { filter: brightness(1.07); }
+    .btn.slate { background: #e2e8f0; color: #334155; }
+    .btn.green { background: #10b981; }
+    .btn.amber { background: #f59e0b; }
+    .btn.indigo { background: #6366f1; }
+    .btn:disabled { opacity: .45; cursor: default; filter: none; }
+    .wrap { max-width: 68rem; margin: 0 auto; padding: 1.25rem; }
+    .stage { background: #fff; border-radius: 1rem; box-shadow: 0 25px 50px -12px rgba(15,23,42,.15); padding: 1.5rem; text-align: center; }
+    .meta { display: flex; justify-content: space-between; color: #64748b; font-weight: 800; font-size: .95rem; margin-bottom: .4rem; }
+    .prompt { font-size: 1.15rem; color: #475569; font-weight: 800; margin: .25rem 0 1rem; }
+    .tray { position: relative; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: .8rem; min-height: 8rem; padding: 1.4rem; background: #fdf2f8; border: 3px dashed #f9a8d4; border-radius: 1rem; touch-action: none; user-select: none; -webkit-user-select: none; }
+    .tray.solved { background: #f0fdf4; border: 3px solid #86efac; }
+    .chip { font-size: clamp(1.3rem, 3vw, 2rem); font-weight: 900; padding: .5rem 1.1rem; border-radius: .8rem; background: #fff; border: 3px solid #f472b6; color: #0f172a; cursor: grab; box-shadow: 0 4px 0 #f9a8d4; white-space: nowrap; }
+    .chip.placeholder { background: transparent; border-style: dashed; border-color: #f9a8d4; color: transparent; box-shadow: none; }
+    .chip.locked { background: #e0e7ff; border-color: #6366f1; box-shadow: 0 4px 0 #a5b4fc; cursor: default; }
+    .chip.ok { background: #dcfce7; border-color: #22c55e; box-shadow: 0 4px 0 #86efac; }
+    .chip.bad { background: #fee2e2; border-color: #ef4444; box-shadow: 0 4px 0 #fca5a5; }
+    .ghost { position: fixed; z-index: 100; pointer-events: none; margin: 0; transform: scale(1.1) rotate(-2deg); box-shadow: 0 18px 30px rgba(15,23,42,.28); cursor: grabbing; }
+    .feedback { min-height: 2.6rem; margin-top: 1rem; font-size: 1.45rem; font-weight: 900; color: #15803d; }
+    .feedback.try { color: #b45309; font-size: 1.15rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: .75rem; justify-content: center; margin-top: .75rem; }
+    .actions .btn { font-size: 1.1rem; padding: .8rem 1.5rem; }
+    .award { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; margin-top: .9rem; }
+    .award .btn { padding: .6rem 1.1rem; }
+    .scores { margin-top: 1.25rem; background: #fff; border-radius: 1rem; padding: 1rem; box-shadow: 0 10px 25px -10px rgba(15,23,42,.12); }
+    .scores-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: .75rem; flex-wrap: wrap; gap: .5rem; }
+    .scores-head h2 { margin: 0; font-size: 1.2rem; color: #334155; }
+    .teams { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .75rem; }
+    .team { border-radius: .8rem; padding: .75rem; text-align: center; }
+    .team input { width: 100%; text-align: center; border: 0; background: transparent; font-size: 1.1rem; font-weight: 900; color: inherit; }
+    .team .score { font-size: 2.2rem; font-weight: 900; }
+    .team .row { display: flex; gap: .4rem; }
+    .team .row button { flex: 1; border: 0; border-radius: .5rem; padding: .3rem; font-size: 1.2rem; cursor: pointer; color: #fff; }
+    .how { color: #64748b; font-size: .9rem; margin-top: 1rem; text-align: center; }
+    @media (max-width: 640px) { .topbar h1 { width: 100%; } .wrap { padding: .75rem; } .stage { padding: 1rem; } }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <h1>__TITLE__</h1>
+    <label>Unit <select id="unit"></select></label>
+    <button type="button" class="btn slate" id="restart">🔀 Shuffle sentences</button>
+  </div>
+
+  <div class="wrap">
+    <div class="stage">
+      <div class="meta"><span id="count">Sentence 1 / 1</span><span id="words">0 words</span></div>
+      <p class="prompt">Drag the words into the right order!</p>
+      <div class="tray" id="tray"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="award" id="award"></div>
+      <div class="actions">
+        <button type="button" class="btn green" id="checkBtn">✔ Check</button>
+        <button type="button" class="btn indigo" id="hintBtn">💡 Hint</button>
+        <button type="button" class="btn amber" id="revealBtn">👀 Reveal</button>
+        <button type="button" class="btn" id="nextBtn">Next ➜</button>
+      </div>
+    </div>
+
+    <div class="scores">
+      <div class="scores-head">
+        <h2>Scoreboard</h2>
+        <div style="display:flex;gap:.5rem">
+          <button type="button" class="btn slate" id="addTeam">+ Team</button>
+          <button type="button" class="btn slate" id="removeTeam">− Team</button>
+          <button type="button" class="btn slate" id="resetScores">Reset</button>
+        </div>
+      </div>
+      <div class="teams" id="teams"></div>
+    </div>
+    <p class="how">A student from each team comes to the board. Hint locks the next correct word in place (purple). Check colours each word: green = right spot.</p>
+  </div>
+
+  <script>
+    var TITLE = __TITLE_JSON__;
+    var DATA = __ACTIVITY_DATA__;
+    var UNITS = (DATA.units || []).map(function (u, i) { return { id: u.id || ("u" + (i + 1)), name: u.name || ("Unit " + (i + 1)), sentences: (u.sentences || []).filter(Boolean) }; }).filter(function (u) { return u.sentences.length; });
+    var TONES = [["#dbeafe", "#1e40af", "#3b82f6"], ["#ffe4e6", "#9f1239", "#f43f5e"], ["#fef3c7", "#92400e", "#f59e0b"],
+                 ["#ccfbf1", "#115e59", "#14b8a6"], ["#ede9fe", "#5b21b6", "#8b5cf6"], ["#ecfccb", "#3f6212", "#84cc16"]];
+
+    function $(id) { return document.getElementById(id); }
+    var tray = $("tray");
+    var queue = [], qi = 0, answer = [], locked = 0, solved = false, drag = null, lastSwap = 0;
+    var teams = [{ name: "Team 1", score: 0 }, { name: "Team 2", score: 0 }];
+
+    function shuffle(a) {
+      a = a.slice();
+      for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+      return a;
+    }
+
+    function populate() {
+      var sel = $("unit");
+      var o = document.createElement("option"); o.value = "all"; o.textContent = "All units"; sel.appendChild(o);
+      UNITS.forEach(function (u) { var op = document.createElement("option"); op.value = u.id; op.textContent = u.name; sel.appendChild(op); });
+    }
+
+    function buildQueue() {
+      var v = $("unit").value;
+      var pool = v === "all" ? UNITS.reduce(function (a, u) { return a.concat(u.sentences); }, [])
+                             : UNITS.filter(function (u) { return u.id === v; })[0].sentences;
+      queue = shuffle(pool); qi = 0; load();
+    }
+
+    function load() {
+      var s = String(queue[qi]).replace(/\s+/g, " ").trim();
+      answer = s.split(" ");
+      locked = 0; solved = false;
+      var order = shuffle(answer), guard = 0;
+      while (answer.length > 1 && order.join(" ") === s && guard++ < 30) order = shuffle(answer);
+      tray.innerHTML = ""; tray.classList.remove("solved");
+      order.forEach(function (w) { var c = document.createElement("div"); c.className = "chip"; c.textContent = w; tray.appendChild(c); });
+      setFeedback("", false);
+      $("award").innerHTML = "";
+      $("count").textContent = "Sentence " + (qi + 1) + " / " + queue.length;
+      $("words").textContent = answer.length + " words";
+      setButtons();
+    }
+
+    function setButtons() {
+      $("checkBtn").disabled = solved; $("hintBtn").disabled = solved; $("revealBtn").disabled = solved;
+    }
+    function setFeedback(text, tryAgain) {
+      var f = $("feedback"); f.textContent = text; f.classList.toggle("try", !!tryAgain);
+    }
+
+    // FLIP animation: other words glide out of the way
+    function flip(mutate) {
+      var els = Array.prototype.slice.call(tray.children);
+      var first = els.map(function (el) { return el.getBoundingClientRect(); });
+      mutate();
+      els.forEach(function (el, i) {
+        var l = el.getBoundingClientRect();
+        var dx = first[i].left - l.left, dy = first[i].top - l.top;
+        if (!dx && !dy) return;
+        el.style.transition = "none";
+        el.style.transform = "translate(" + dx + "px," + dy + "px)";
+        void el.offsetWidth;
+        el.style.transition = "transform .22s ease";
+        el.style.transform = "";
+      });
+    }
+
+    function clearMarks() {
+      Array.prototype.forEach.call(tray.children, function (c) { if (!c.classList.contains("locked")) c.classList.remove("ok", "bad"); });
+    }
+
+    tray.addEventListener("pointerdown", function (e) {
+      var chip = e.target.closest(".chip");
+      if (!chip || solved || drag || chip.classList.contains("locked")) return;
+      e.preventDefault();
+      var r = chip.getBoundingClientRect();
+      clearMarks();
+      setFeedback("", false);
+      var ghost = chip.cloneNode(true);
+      ghost.classList.add("ghost");
+      ghost.style.left = r.left + "px"; ghost.style.top = r.top + "px"; ghost.style.width = r.width + "px";
+      document.body.appendChild(ghost);
+      chip.classList.add("placeholder");
+      drag = { chip: chip, ghost: ghost, dx: e.clientX - r.left, dy: e.clientY - r.top };
+    });
+
+    window.addEventListener("pointermove", function (e) {
+      if (!drag) return;
+      drag.ghost.style.left = (e.clientX - drag.dx) + "px";
+      drag.ghost.style.top = (e.clientY - drag.dy) + "px";
+      if (Date.now() - lastSwap < 140) return;
+      var tr = tray.getBoundingClientRect();
+      var px = e.clientX - tr.left, py = e.clientY - tr.top;
+      var best = null, bd = Infinity, after = false;
+      Array.prototype.forEach.call(tray.children, function (c) {
+        if (c === drag.chip || c.classList.contains("locked")) return;
+        var cx = c.offsetLeft + c.offsetWidth / 2, cy = c.offsetTop + c.offsetHeight / 2;
+        var d = Math.abs(px - cx) + Math.abs(py - cy) * 2.5;
+        if (d < bd) { bd = d; best = c; after = px > cx; }
+      });
+      if (!best) return;
+      var ref = after ? best.nextSibling : best;
+      if (ref === drag.chip || ref === drag.chip.nextSibling) return;
+      lastSwap = Date.now();
+      var chip = drag.chip;
+      flip(function () { tray.insertBefore(chip, ref); });
+    });
+
+    function endDrag() {
+      if (!drag) return;
+      var chip = drag.chip, ghost = drag.ghost;
+      drag = null;
+      var r = chip.getBoundingClientRect();
+      ghost.style.transition = "left .18s ease, top .18s ease, transform .18s ease, box-shadow .18s ease";
+      ghost.style.left = r.left + "px"; ghost.style.top = r.top + "px";
+      ghost.style.transform = "none"; ghost.style.boxShadow = "none";
+      setTimeout(function () { ghost.remove(); chip.classList.remove("placeholder"); }, 190);
+    }
+    window.addEventListener("pointerup", endDrag);
+    window.addEventListener("pointercancel", endDrag);
+
+    function check() {
+      if (solved) return;
+      var all = true;
+      Array.prototype.forEach.call(tray.children, function (c, i) {
+        var ok = c.textContent === answer[i];
+        c.classList.toggle("ok", ok); c.classList.toggle("bad", !ok);
+        if (!ok) all = false;
+      });
+      if (all) win(true);
+      else setFeedback("Not yet! Green words are in the right spot. Try again.", true);
+    }
+
+    function win(points) {
+      solved = true;
+      tray.classList.add("solved");
+      setFeedback("🎉 " + answer.join(" "), false);
+      setButtons();
+      var award = $("award"); award.innerHTML = "";
+      if (!points) return;
+      teams.forEach(function (t, i) {
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "btn"; b.style.background = TONES[i % TONES.length][2];
+        b.textContent = "+1 " + t.name;
+        b.addEventListener("click", function () {
+          t.score += 1; renderTeams();
+          Array.prototype.forEach.call(award.children, function (x) { x.disabled = true; });
+          b.textContent = "✔ " + t.name;
+        });
+        award.appendChild(b);
+      });
+    }
+
+    function hint() {
+      if (solved || locked >= answer.length) return;
+      var w = answer[locked];
+      var chips = Array.prototype.slice.call(tray.children);
+      var c = chips.slice(locked).filter(function (x) { return x.textContent === w; })[0];
+      clearMarks();
+      flip(function () { tray.insertBefore(c, tray.children[locked]); });
+      c.classList.add("locked");
+      locked++;
+      if (locked >= answer.length - 1) { check(); }
+    }
+
+    function reveal() {
+      if (solved) return;
+      flip(function () {
+        answer.forEach(function (w, i) {
+          var chips = Array.prototype.slice.call(tray.children);
+          var c = chips.slice(i).filter(function (x) { return x.textContent === w; })[0];
+          tray.insertBefore(c, tray.children[i]);
+        });
+      });
+      Array.prototype.forEach.call(tray.children, function (c) { c.classList.remove("bad"); c.classList.add("ok"); });
+      win(false);
+    }
+
+    function next() {
+      qi++;
+      if (qi >= queue.length) { queue = shuffle(queue); qi = 0; }
+      load();
+    }
+
+    function renderTeams() {
+      var box = $("teams"); box.innerHTML = "";
+      teams.forEach(function (t, i) {
+        var tone = TONES[i % TONES.length];
+        var d = document.createElement("div");
+        d.className = "team"; d.style.background = tone[0]; d.style.color = tone[1];
+        d.innerHTML = '<input type="text"><div class="score"></div><div class="row"><button type="button">−</button><button type="button">+</button></div>';
+        var inp = d.querySelector("input"); inp.value = t.name;
+        inp.addEventListener("input", function () { t.name = inp.value; });
+        d.querySelector(".score").textContent = t.score;
+        var btns = d.querySelectorAll(".row button");
+        btns[0].style.background = tone[1]; btns[1].style.background = tone[2];
+        btns[0].addEventListener("click", function () { if (t.score > 0) t.score--; renderTeams(); });
+        btns[1].addEventListener("click", function () { t.score++; renderTeams(); });
+        box.appendChild(d);
+      });
+    }
+
+    $("checkBtn").addEventListener("click", check);
+    $("hintBtn").addEventListener("click", hint);
+    $("revealBtn").addEventListener("click", reveal);
+    $("nextBtn").addEventListener("click", next);
+    $("restart").addEventListener("click", buildQueue);
+    $("unit").addEventListener("change", buildQueue);
+    $("addTeam").addEventListener("click", function () { if (teams.length < 6) { teams.push({ name: "Team " + (teams.length + 1), score: 0 }); renderTeams(); } });
+    $("removeTeam").addEventListener("click", function () { if (teams.length > 1) { teams.pop(); renderTeams(); } });
+    $("resetScores").addEventListener("click", function () { teams.forEach(function (t) { t.score = 0; }); renderTeams(); });
+
+    populate();
+    renderTeams();
+    buildQueue();
+  </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+{
+  "bookId": "the-best-writing-starter-3",
+  "cefr": "A1",
+  "activityId": "sentenceScramble",
+  "title": "The Best Writing Starter 3 Sentence Scramble",
+  "units": [
+    {
+      "name": "Unit 01: Dream Jobs",
+      "sentences": [
+        "My friends and I have dream jobs.",
+        "I want to be a musician.",
+        "I like to write songs and play the guitar.",
+        "Kelly wants to be a content creator.",
+        "She likes to make videos.",
+        "She's really good at it!",
+        "Shawn wants to be a chef.",
+        "He likes to try new foods.",
+        "I wish our dreams come true.",
+        "I want to be a vet."
+      ]
+    },
+    {
+      "name": "Unit 02: Tastes of Food",
+      "sentences": [
+        "There are many different tastes in food.",
+        "The pizza is delicious.",
+        "It has bacon in it, so it's salty.",
+        "It has pepper in it, so it's spicy.",
+        "It has lemon in it, so it's sour.",
+        "The cupcakes are tasty.",
+        "My favorite food is steak.",
+        "It's savory and salty.",
+        "The salad is delicious."
+      ]
+    },
+    {
+      "name": "Unit 03: My Daily Routine",
+      "sentences": [
+        "I have busy weekdays.",
+        "In the morning, I wake up at seven.",
+        "I eat breakfast at seven thirty.",
+        "I take the school bus around eight twenty.",
+        "In the afternoon, I come home at two.",
+        "I do my homework around three.",
+        "In the evening, I practice the piano at six.",
+        "At night, I write a diary at nine.",
+        "I go to sleep around ten."
+      ]
+    },
+    {
+      "name": "Unit 04: Animals vs. Humans",
+      "sentences": [
+        "This is my report on fish and humans.",
+        "Fish and humans are very different.",
+        "Fish live in the water, but humans live on land.",
+        "Fish have scales, but humans have skin.",
+        "Fish can't run, but humans can.",
+        "Both fish and humans can swim.",
+        "Fish and humans are both amazing!",
+        "Birds have feathers, but humans have skin.",
+        "Both birds and humans can sing."
+      ]
+    },
+    {
+      "name": "Review 01: Meeting a Friend",
+      "sentences": [
+        "Do you want to hang out?",
+        "What time do you want to meet?",
+        "Let's meet at three thirty.",
+        "Where do you want to go?",
+        "Let's go to the shopping mall.",
+        "I will see you there.",
+        "I want to buy a new comic book.",
+        "I usually meet my friends at the bookstore."
+      ]
+    },
+    {
+      "name": "Unit 05: Fun Time with My Family",
+      "sentences": [
+        "My family does many fun activities together.",
+        "When it's snowy, we usually stay home.",
+        "We watch TV and eat cookies.",
+        "But sometimes, we go out and make a snowman.",
+        "When it's windy, we usually stay home.",
+        "We play a board game and eat snacks.",
+        "When it's warm, we usually go out.",
+        "We go on a picnic and eat sandwiches.",
+        "We always have a great time."
+      ]
+    },
+    {
+      "name": "Unit 06: My Busy Weekend",
+      "sentences": [
+        "I have so much to do this weekend.",
+        "First, I'm going to play soccer with friends.",
+        "Second, I'm going to go to a party.",
+        "Third, I'm going to see a movie.",
+        "Fourth, I'm going to buy some books.",
+        "Fifth, I'm going to help around the house.",
+        "Finally, I'm going to walk my dog.",
+        "What a weekend!",
+        "I'm going to clean my room."
+      ]
+    },
+    {
+      "name": "Unit 07: Packing List",
+      "sentences": [
+        "My family is packing for the summer vacation.",
+        "Mom will take her sundress and sunhat.",
+        "She'll take her tablet to read e-books.",
+        "She won't take her work.",
+        "Dad will take his swimming goggles and sunglasses.",
+        "He'll take his drone to shoot a video.",
+        "I will take my swimsuit and shorts.",
+        "I'll take my laptop to play video games.",
+        "I won't take my books."
+      ]
+    },
+    {
+      "name": "Unit 08: Gifts for Friends",
+      "sentences": [
+        "Christmas is coming.",
+        "I think of gifts for my friends.",
+        "I'll give a baseball mitt to Jack.",
+        "His mitt is too small.",
+        "I'll give gloves to Tom because the weather is very cold.",
+        "I'll give a flower pot to Jenny because she loves flowers.",
+        "I'll give socks to Leo because his socks are too old.",
+        "I'll give a scarf to Amy.",
+        "I want a book."
+      ]
+    },
+    {
+      "name": "Review 02: I Want a Pet",
+      "sentences": [
+        "For my birthday, I really want a parrot.",
+        "I will take good care of it.",
+        "First, I'll feed the parrot.",
+        "Second, I'll clean up the parrot's poop.",
+        "Third, I'll play with the parrot every day.",
+        "Finally, I'll give the parrot a bath.",
+        "I'll be a good child.",
+        "Please let me have a parrot."
+      ]
+    }
+  ]
+}

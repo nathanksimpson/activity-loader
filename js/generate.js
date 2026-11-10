@@ -16,7 +16,20 @@
     'write-now-1:jeopardy': 'content/write-now-1/jeopardy.json',
     'write-now-1:vocabulary': 'content/write-now-1/vocabulary.json',
     'write-now-2:jumpingOx': 'content/write-now-2/jumpingOx.json',
-    'early-writers-2:jumpingOx': 'content/early-writers-2/jumpingOx.json'
+    'early-writers-2:jumpingOx': 'content/early-writers-2/jumpingOx.json',
+    'the-best-writing-starter-2:sentenceScramble': 'content/the-best-writing-starter-2/sentenceScramble.json',
+    'the-best-writing-starter-2:gapFill': 'content/the-best-writing-starter-2/gapFill.json',
+    'the-best-writing-starter-2:writingCards': 'content/the-best-writing-starter-2/writingCards.json',
+    'best-writing-starter-1:jumpingOx': 'content/best-writing-starter-1/jumpingOx.json',
+    'best-writing-starter-1:jeopardy': 'content/best-writing-starter-1/jeopardy.json',
+    'best-writing-starter-1:sentenceScramble': 'content/best-writing-starter-1/sentenceScramble.json',
+    'best-writing-starter-1:gapFill': 'content/best-writing-starter-1/gapFill.json',
+    'best-writing-starter-1:writingCards': 'content/best-writing-starter-1/writingCards.json',
+    'the-best-writing-starter-3:jumpingOx': 'content/the-best-writing-starter-3/jumpingOx.json',
+    'the-best-writing-starter-3:jeopardy': 'content/the-best-writing-starter-3/jeopardy.json',
+    'the-best-writing-starter-3:sentenceScramble': 'content/the-best-writing-starter-3/sentenceScramble.json',
+    'the-best-writing-starter-3:gapFill': 'content/the-best-writing-starter-3/gapFill.json',
+    'the-best-writing-starter-3:writingCards': 'content/the-best-writing-starter-3/writingCards.json'
   };
 
   let jumpingOxTemplate = '';
@@ -29,7 +42,12 @@
   let findSomeoneWhoTemplate = '';
   let showdownTemplate = '';
   let rallyCoachTemplate = '';
+  let sentenceScrambleTemplate = '';
+  let gapFillTemplate = '';
+  let writingCardsTemplate = '';
   const VOCAB_TYPES = { vocabulary: true, teamMatch: true, charades: true, quizQuizTrade: true, fanNPick: true, findSomeoneWho: true, showdown: true, rallyCoach: true };
+  // Writing-practice types: content comes from AI (sentences, passages, frames) or, without a key, from the saved breakdown.
+  const WRITING_TYPES = { sentenceScramble: true, gapFill: true, writingCards: true };
 
   function clone(v) { return JSON.parse(JSON.stringify(v)); }
 
@@ -220,7 +238,10 @@
       fanNPick: 'fan-n-pick',
       findSomeoneWho: 'find-someone-who',
       showdown: 'showdown',
-      rallyCoach: 'rally-coach'
+      rallyCoach: 'rally-coach',
+      sentenceScramble: 'sentence-scramble',
+      gapFill: 'gap-fill',
+      writingCards: 'writing-card-spinner'
     }[activityId] || activityId;
     return short + '-' + type;
   }
@@ -256,7 +277,10 @@
       fanNPick: 'Fan-N-Pick',
       findSomeoneWho: 'Find Someone Who',
       showdown: 'Showdown',
-      rallyCoach: 'RallyCoach'
+      rallyCoach: 'RallyCoach',
+      sentenceScramble: 'Sentence Scramble',
+      gapFill: 'Gap Fill',
+      writingCards: 'Writing Card Spinner'
     }[activityId] || activityId;
   }
 
@@ -289,7 +313,10 @@
         fanNPick: 'fan-n-pick',
         findSomeoneWho: 'find-someone-who',
         showdown: 'showdown',
-        rallyCoach: 'rally-coach'
+        rallyCoach: 'rally-coach',
+        sentenceScramble: 'sentence-scramble',
+        gapFill: 'gap-fill',
+        writingCards: 'writing-card-spinner'
       }[activityId] || activityId);
     return 'activities/' + bookLevelFolder(bookId) + '/' + bookId + '/' + folder + '/' + outputFileName(bookId, activityId);
   }
@@ -368,6 +395,20 @@
       .replace('__VOCAB_BY_UNIT__', JSON.stringify(pack.vocabByUnit || {}).replace(/</g, '\\u003c'));
   }
 
+  function writingData(activityId, pack) {
+    if (activityId === 'writingCards') return { cards: pack.cards || [], pools: pack.pools || {} };
+    return { units: pack.units || [] };
+  }
+
+  function injectWriting(template, pack, bookId, activityId) {
+    const title = pack.title || activityLabel(activityId);
+    const id = bookId || pack.bookId || 'book';
+    return injectMeta(template, pack, id, activityId)
+      .replace('__TITLE_JSON__', () => JSON.stringify(title))
+      .replace(/__TITLE__/g, () => title.replace(/[<>&]/g, ''))
+      .replace('__ACTIVITY_DATA__', () => JSON.stringify(writingData(activityId, pack)).replace(/</g, '\\u003c'));
+  }
+
   function resolveTemplate(activityId) {
     const Domain = global.ActivityDomain;
     const style = Domain && Domain.getSavedStyle ? Domain.getSavedStyle(activityId) : null;
@@ -388,6 +429,9 @@
     if (activityId === 'findSomeoneWho') return findSomeoneWhoTemplate;
     if (activityId === 'showdown') return showdownTemplate;
     if (activityId === 'rallyCoach') return rallyCoachTemplate;
+    if (activityId === 'sentenceScramble') return sentenceScrambleTemplate;
+    if (activityId === 'gapFill') return gapFillTemplate;
+    if (activityId === 'writingCards') return writingCardsTemplate;
     return '';
   }
 
@@ -467,6 +511,11 @@
       const template = resolveTemplate(activityId);
       if (!template) throw new Error('RallyCoach template is not loaded.');
       return injectVocab(template, pack, bookId, 'rallyCoach');
+    }
+    if (WRITING_TYPES[activityId]) {
+      const template = resolveTemplate(activityId);
+      if (!template) throw new Error(activityLabel(activityId) + ' template is not loaded.');
+      return injectWriting(template, pack, bookId, activityId);
     }
     throw new Error('This activity type cannot be generated yet.');
   }
@@ -553,6 +602,31 @@
       }
       return pack;
     }
+    if (activityId === 'sentenceScramble') {
+      const units = Array.isArray(pack.units) ? pack.units : [];
+      let total = 0;
+      units.forEach((u) => {
+        u.sentences = (u.sentences || []).map((x) => String(x || '').replace(/\s+/g, ' ').trim()).filter((x) => x.split(' ').length >= 2);
+        total += u.sentences.length;
+      });
+      pack.units = units.filter((u) => u.sentences.length);
+      if (total < 4) throw new Error('Sentence Scramble needs at least 4 sentences. Use AI mode, or save a breakdown with grammar examples.');
+      return pack;
+    }
+    if (activityId === 'gapFill') {
+      const units = (Array.isArray(pack.units) ? pack.units : []).filter((u) => u && Array.isArray(u.lines) && u.lines.length);
+      const blanks = units.reduce((n, u) => n + u.lines.join('\n').split('[').length - 1, 0);
+      if (!units.length || blanks < 3) throw new Error('Gap Fill needs passages with [blanks]. Use AI mode, or save a breakdown with grammar examples.');
+      pack.units = units;
+      return pack;
+    }
+    if (activityId === 'writingCards') {
+      const cards = (Array.isArray(pack.cards) ? pack.cards : []).filter((c) => c && Array.isArray(c.lines) && c.lines.some((l) => /\{\w+/.test(l)));
+      if (!cards.length) throw new Error('Writing Card Spinner needs at least one card with {blanks}. Use AI mode, or save a breakdown with grammar examples.');
+      pack.cards = cards;
+      pack.pools = pack.pools && typeof pack.pools === 'object' ? pack.pools : {};
+      return pack;
+    }
     throw new Error('Unknown activity.');
   }
 
@@ -604,6 +678,130 @@
       'Each unit needs exactly 15 items. q is a short child-friendly English definition. a is the book word or short phrase.',
       'Keys of units must match the unit titles above exactly. No markdown.'
     ].join('\n');
+  }
+
+  function sentenceScramblePrompt(book, cefr, breakdown) {
+    return [
+      'Create Sentence Scramble items for ' + book.title + ' at CEFR ' + cefr + '. Students drag shuffled words back into order.',
+      'Use this book content. Each sentence must practise the grammar and vocabulary of its unit. Do not invent a different syllabus.',
+      breakdownUnitText(breakdown) || (book.units || []).join('\n'),
+      'Return JSON only: { "title": string, "units": [ { "name": string, "sentences": [string] } ] }',
+      'Need 8 to 10 sentences per unit, 4 to 10 words each, correct English with a capital letter and end punctuation.',
+      'Sentences should sound like the model writing a child would produce for that unit (first person, simple, concrete). Avoid duplicate sentences.',
+      'name must match the unit titles above exactly, in the same order. No markdown.'
+    ].join('\n');
+  }
+
+  function gapFillPrompt(book, cefr, breakdown) {
+    return [
+      'Create one Model Writing passage per unit for a gap-fill review of ' + book.title + ' at CEFR ' + cefr + '.',
+      'Use this book content. Each passage is a short model text a student could write for that unit (a paragraph, letter or list), using its grammar and vocabulary.',
+      breakdownUnitText(breakdown) || (book.units || []).join('\n'),
+      'Return JSON only: { "title": string, "units": [ { "name": string, "title": string, "lines": [string] } ] }',
+      'lines is the passage, one sentence per line, 8 to 14 lines. Use an empty string "" between paragraphs.',
+      'Wrap 5 to 8 target words or short phrases in square brackets, e.g. "My favorite [color] is purple." Brackets go around unit vocabulary or the key grammar word. Never bracket names, never more than one bracket per line unless it is a list.',
+      'name must match the unit titles above exactly, in the same order. title is a short passage title. No markdown.'
+    ].join('\n');
+  }
+
+  function writingCardsPrompt(book, cefr, breakdown) {
+    return [
+      'Create fill-in writing frame cards (like textbook Writing Assignment Cards) for ' + book.title + ' at CEFR ' + cefr + '.',
+      'One card per unit, using that unit\'s grammar and vocabulary. Students say or write the card with their own words; the app can also spin random words into the blanks.',
+      breakdownUnitText(breakdown) || (book.units || []).join('\n'),
+      'Return JSON only: { "title": string, "cards": [ { "title": string, "lines": [string] } ], "pools": { "category": [string] } }',
+      'Each card has 5 to 9 short lines. A blank is written {category} where category is a lowercase word, e.g. "My favorite color is {color}." Use 3 to 7 blanks per card.',
+      'To repeat the same answer later in the card, use {category#id}, e.g. "My best friend is {name#bf}." ... "{name#bf} is my best friend ever!"',
+      'Pronouns that depend on he/she are written {He}, {he}, {his}, {him} (the app switches them).',
+      'Every category used must exist in pools with 6 to 10 short options that fit the sentence grammatically (include articles where needed). Prefer the unit vocabulary. Categories may be shared across cards.',
+      'Card titles are short, in Title Case. No markdown.'
+    ].join('\n');
+  }
+
+  function cleanSentence(text) {
+    let t = String(text || '').replace(/\s+/g, ' ').replace(/^[-•*\d.)\s]+/, '').trim();
+    if (!t) return '';
+    t = t.charAt(0).toUpperCase() + t.slice(1);
+    if (!/[.!?]$/.test(t)) t += '.';
+    return t;
+  }
+
+  // Grammar examples from the breakdown, split into single sentences.
+  function unitExamples(unit) {
+    const out = [];
+    (unit.grammar || []).forEach((g) => {
+      String((g && g.example) || '').split(/\s*(?:\/|;|\|)\s*|(?<=[.!?])\s+/).forEach((part) => {
+        const s = cleanSentence(part);
+        const n = s.split(' ').length;
+        if (n >= 3 && n <= 14 && out.indexOf(s) < 0) out.push(s);
+      });
+    });
+    return out;
+  }
+
+  function findVocabIn(sentence, unit) {
+    const words = (unit.vocabulary || []).map((w) => String((w && w.en) || '').trim()).filter(Boolean)
+      .sort((a, b) => b.length - a.length);
+    for (let i = 0; i < words.length; i++) {
+      const esc = words[i].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const m = sentence.match(new RegExp('\\b' + esc + '\\b', 'i'));
+      if (m) return { index: m.index, text: m[0] };
+    }
+    return null;
+  }
+
+  function writingPackFromBreakdown(book, activityId, cefr, breakdown) {
+    const units = breakdown.units || [];
+    const base = { title: book.title + ' ' + activityLabel(activityId), cefr: cefr, bookId: book.id, activityId: activityId };
+    if (activityId === 'sentenceScramble') {
+      base.units = units.map((u, i) => ({ name: String(u.title || ('Unit ' + (i + 1))), sentences: unitExamples(u) }));
+      return base;
+    }
+    if (activityId === 'gapFill') {
+      base.units = units.map((u, i) => {
+        const lines = unitExamples(u).map((s) => {
+          const hit = findVocabIn(s, u);
+          if (hit) return s.slice(0, hit.index) + '[' + hit.text + ']' + s.slice(hit.index + hit.text.length);
+          const longest = s.replace(/[^A-Za-z' ]/g, ' ').split(' ').filter((w) => w.length >= 4).sort((a, b) => b.length - a.length)[0];
+          return longest ? s.replace(new RegExp('\\b' + longest + '\\b'), '[' + longest + ']') : s;
+        });
+        const name = String(u.title || ('Unit ' + (i + 1)));
+        return { name: name, title: name.replace(/^Unit\s*\d+\s*[:.-]\s*/i, ''), lines: lines };
+      });
+      return base;
+    }
+    // writingCards: grammar examples become frames; unit vocabulary fills the blanks.
+    const pools = {};
+    base.cards = units.map((u, i) => {
+      const cat = 'unit' + (i + 1);
+      pools[cat] = (u.vocabulary || []).map((w) => String((w && w.en) || '').trim()).filter(Boolean);
+      const lines = unitExamples(u).map((s) => {
+        const hit = findVocabIn(s, u);
+        return hit ? s.slice(0, hit.index) + '{' + cat + '}' + s.slice(hit.index + hit.text.length) : s;
+      });
+      return { title: String(u.title || ('Unit ' + (i + 1))).replace(/^Unit\s*\d+\s*[:.-]\s*/i, ''), lines: lines };
+    });
+    base.pools = pools;
+    return base;
+  }
+
+  // AI answers: keep only the fields the templates read.
+  function normalizeWritingPack(activityId, raw) {
+    const pack = raw && typeof raw === 'object' ? raw : {};
+    const asList = (v) => Array.isArray(v) ? v : (v && typeof v === 'object' ? Object.keys(v).map((k) => Object.assign({ name: k }, v[k])) : []);
+    if (activityId === 'writingCards') {
+      pack.cards = asList(pack.cards).map((c) => ({ title: String(c.title || ''), lines: (c.lines || []).map(String) }));
+      const pools = {};
+      Object.keys(pack.pools || {}).forEach((k) => {
+        if (Array.isArray(pack.pools[k])) pools[k] = pack.pools[k].map(String).filter(Boolean);
+      });
+      pack.pools = pools;
+      return pack;
+    }
+    pack.units = asList(pack.units).map((u) => (activityId === 'gapFill'
+      ? { name: String(u.name || u.title || ''), title: String(u.title || u.name || ''), lines: (u.lines || []).map((l) => String(l == null ? '' : l)) }
+      : { name: String(u.name || u.title || ''), sentences: (u.sentences || []).map(String) }));
+    return pack;
   }
 
   function vocabPackFromBreakdown(book, activityId, cefr, breakdown) {
@@ -742,6 +940,9 @@
       findSomeoneWhoTemplate = t.findSomeoneWho || '';
       showdownTemplate = t.showdown || '';
       rallyCoachTemplate = t.rallyCoach || '';
+      sentenceScrambleTemplate = t.sentenceScramble || '';
+      gapFillTemplate = t.gapFill || '';
+      writingCardsTemplate = t.writingCards || '';
       try {
         jumpingOxTemplate = await fetchText('templates/jumpingOx.template.html');
         jeopardyTemplate = await fetchText('templates/jeopardy.template.html');
@@ -753,6 +954,9 @@
         findSomeoneWhoTemplate = await fetchText('templates/findSomeoneWho.template.html');
         showdownTemplate = await fetchText('templates/showdown.template.html');
         rallyCoachTemplate = await fetchText('templates/rallyCoach.template.html');
+        sentenceScrambleTemplate = await fetchText('templates/sentenceScramble.template.html');
+        gapFillTemplate = await fetchText('templates/gapFill.template.html');
+        writingCardsTemplate = await fetchText('templates/writingCards.template.html');
       } catch (e) {
         if (!jumpingOxTemplate || !jeopardyTemplate) {
           console.warn('Using embedded templates.');
@@ -874,6 +1078,27 @@
           throw new Error('Analyze the book first (Curriculum tab: upload PDF or photos, then Save).');
         }
         pack = vocabPackFromBreakdown(book, activityId, cefr, breakdown);
+        source = 'breakdown';
+      } else if (WRITING_TYPES[activityId] && mode === 'ai') {
+        if (!apiKey) throw new Error('Paste an API key, or use a built-in pack.');
+        if (typeof location !== 'undefined' && location.protocol === 'file:') {
+          throw new Error('API blocked — open via local server. Run node serve.js then open http://localhost:8080');
+        }
+        if (!breakdown) throw new Error('Analyze the book first (Curriculum tab: upload PDF or photos, then Save).');
+        const prompt = activityId === 'sentenceScramble'
+          ? sentenceScramblePrompt(book, cefr, breakdown)
+          : (activityId === 'gapFill' ? gapFillPrompt(book, cefr, breakdown) : writingCardsPrompt(book, cefr, breakdown));
+        pack = normalizeWritingPack(activityId, await callAiJson(provider, apiKey, model, prompt));
+        pack.title = book.title + ' ' + activityLabel(activityId);
+        pack.cefr = cefr;
+        pack.bookId = bookId;
+        pack.activityId = activityId;
+        source = 'ai-breakdown:' + provider;
+      } else if (WRITING_TYPES[activityId] && !this.hasBuiltinPack(bookId, activityId)) {
+        if (!breakdown) {
+          throw new Error('Analyze the book first (Curriculum tab), or paste an API key so AI can write the content.');
+        }
+        pack = writingPackFromBreakdown(book, activityId, cefr, breakdown);
         source = 'breakdown';
       } else if (mode === 'ai') {
         if (!apiKey) throw new Error('Paste an API key, or use a built-in pack.');

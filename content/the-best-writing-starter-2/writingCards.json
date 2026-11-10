@@ -1,0 +1,328 @@
+{
+  "title": "The Best Writing Starter 2 Writing Card Spinner",
+  "cefr": "A1",
+  "cards": [
+    {
+      "id": "teacher",
+      "title": "My Favorite Teacher",
+      "color": "#fbcfe8",
+      "lines": [
+        "At my school, there are many teachers.",
+        "My favorite teacher is {teacher}.",
+        "{He} has {looks}.",
+        "{He} is {trait} and {trait}.",
+        "{He} likes {ing}.",
+        "I like {his} class very much.",
+        "I can't wait for the next class!"
+      ]
+    },
+    {
+      "id": "thing",
+      "title": "My Favorite Thing",
+      "color": "#bfdbfe",
+      "lines": [
+        "I have a lot of things.",
+        "I have {thing}, {thing} and {thing}.",
+        "Among them, my favorite item is {among}.",
+        "It is very {thingadj} and {thingadj}.",
+        "It makes me {feel}.",
+        "I like it very much."
+      ]
+    },
+    {
+      "id": "buddy",
+      "title": "Playground Buddy",
+      "color": "#bbf7d0",
+      "lines": [
+        "My playground buddy is {name}.",
+        "We go to the playground every day.",
+        "We play on the {equip} and {equip}.",
+        "Our favorite thing is the {equip}.",
+        "We can both {pgact}.",
+        "It is so much fun!"
+      ]
+    },
+    {
+      "id": "weekdays",
+      "title": "My Weekdays",
+      "color": "#fed7aa",
+      "lines": [
+        "I am usually very busy during the weekdays.",
+        "I go to school every day.",
+        "After school, my busy day starts.",
+        "Here are some things I do after school.",
+        "At {time}, I {after}.",
+        "At {time}, I {after}.",
+        "At {time}, I {after}.",
+        "At {time}, I {after}.",
+        "Phew! How busy I am!"
+      ]
+    },
+    {
+      "id": "ride",
+      "title": "Least Favorite Ride",
+      "color": "#fbcfe8",
+      "lines": [
+        "My least favorite ride at the amusement park is {ride}.",
+        "It is {ridedesc}.",
+        "I don't like it because it makes me {ridefeel}.",
+        "However, my {person} really likes it.",
+        "{He} thinks it is {fun}.",
+        "How strange!"
+      ]
+    },
+    {
+      "id": "happy",
+      "title": "Feeling Happy",
+      "color": "#bfdbfe",
+      "lines": [
+        "There are some things that make me happy.",
+        "First, {ing} makes me happy.",
+        "Second, {ing} makes me happy, too.",
+        "Last but not least, {ing} makes me really happy!",
+        "These things make me happy and I love them all."
+      ]
+    },
+    {
+      "id": "friend",
+      "title": "My Best Friend",
+      "color": "#bbf7d0",
+      "lines": [
+        "My best friend is {name#bf}.",
+        "{He} is very {trait} and {trait}.",
+        "{He} has {hair} hair.",
+        "{He} likes {ing}.",
+        "{He} also likes {ing}.",
+        "We {weact} together.",
+        "{name#bf} is my best friend ever!",
+        "I love {him} so much."
+      ]
+    },
+    {
+      "id": "place",
+      "title": "A Perfect Place at School",
+      "color": "#fed7aa",
+      "lines": [
+        "I have some perfect places at my school.",
+        "The first one is {place}.",
+        "I can {placeact} there.",
+        "The second one is {place}.",
+        "I can {placeact} there.",
+        "The last one is {place}.",
+        "I can {placeact} there.",
+        "Where is your perfect place at school?"
+      ]
+    }
+  ],
+  "pools": {
+    "teacher": [
+      "Mr. Brown",
+      "Ms. Smith",
+      "Mr. Kim",
+      "Ms. Lee",
+      "Mr. Park",
+      "Ms. Jung"
+    ],
+    "name": [
+      "Olivia",
+      "Mark",
+      "Rachel",
+      "Fred",
+      "Tom",
+      "Lily",
+      "Daniel",
+      "Annie",
+      "Kevin",
+      "Taylor",
+      "Illia",
+      "Mia"
+    ],
+    "looks": [
+      "long black hair",
+      "short blonde hair",
+      "big round glasses",
+      "a nice smile",
+      "curly brown hair",
+      "a cool watch"
+    ],
+    "trait": [
+      "kind",
+      "funny",
+      "clever",
+      "brave",
+      "caring",
+      "polite",
+      "quiet",
+      "calm",
+      "cool",
+      "nice"
+    ],
+    "ing": [
+      "singing",
+      "dancing",
+      "drawing",
+      "writing",
+      "playing soccer",
+      "playing badminton",
+      "ice skating",
+      "reading storybooks",
+      "eating chocolate",
+      "playing mobile games",
+      "taking pictures",
+      "camping",
+      "playing tag",
+      "running fast",
+      "eating out"
+    ],
+    "thing": [
+      "a drone",
+      "a guitar",
+      "a tent",
+      "a comic book",
+      "a purple jacket",
+      "a blue backpack",
+      "a lollipop",
+      "a balloon",
+      "a soccer ball",
+      "a teddy bear"
+    ],
+    "thingadj": [
+      "cool",
+      "pretty",
+      "big",
+      "small",
+      "fast",
+      "soft",
+      "colorful",
+      "old",
+      "new"
+    ],
+    "feel": [
+      "happy",
+      "glad",
+      "excited",
+      "calm",
+      "sleepy",
+      "scared",
+      "bored",
+      "angry",
+      "sad",
+      "tired"
+    ],
+    "equip": [
+      "swing",
+      "slide",
+      "seesaw",
+      "jungle gym",
+      "merry-go-round",
+      "monkey bars"
+    ],
+    "pgact": [
+      "hang upside down",
+      "swing high",
+      "climb up the slide",
+      "stand on the swing",
+      "swing from bar to bar",
+      "jump off the swing"
+    ],
+    "time": [
+      "2 o'clock",
+      "3 o'clock",
+      "4 o'clock",
+      "5 o'clock",
+      "6 o'clock",
+      "7 o'clock",
+      "8 o'clock",
+      "9 o'clock"
+    ],
+    "after": [
+      "take a class",
+      "study English",
+      "do my homework",
+      "play badminton",
+      "eat out",
+      "meet my friend",
+      "play the piano",
+      "read storybooks",
+      "play tag",
+      "go to the library",
+      "play basketball",
+      "eat dinner"
+    ],
+    "ride": [
+      "the roller coaster",
+      "the Ferris wheel",
+      "the water ride",
+      "the bumper cars",
+      "the merry-go-round",
+      "the swing ride"
+    ],
+    "ridedesc": [
+      "very slow and boring",
+      "too fast and scary",
+      "too high",
+      "very wet",
+      "too loud",
+      "very bumpy"
+    ],
+    "ridefeel": [
+      "sleepy",
+      "scared",
+      "bored",
+      "tired",
+      "sick",
+      "angry"
+    ],
+    "person": [
+      "little brother",
+      "little sister",
+      "mom",
+      "dad",
+      "best friend",
+      "grandma"
+    ],
+    "fun": [
+      "fun",
+      "exciting",
+      "cool",
+      "great",
+      "amazing"
+    ],
+    "hair": [
+      "short blonde",
+      "long black",
+      "curly brown",
+      "short black",
+      "long red"
+    ],
+    "weact": [
+      "study English",
+      "play tag",
+      "play catch",
+      "have lunch",
+      "play basketball",
+      "read storybooks",
+      "play hide-and-seek",
+      "ride bikes"
+    ],
+    "place": [
+      "the library",
+      "the gym",
+      "the music room",
+      "the science lab",
+      "the cafeteria",
+      "the classroom",
+      "the playground"
+    ],
+    "placeact": [
+      "read my favorite books",
+      "play basketball",
+      "enjoy nice music",
+      "do an experiment",
+      "have lunch with friends",
+      "study English",
+      "play the drum",
+      "play tag"
+    ]
+  }
+}

@@ -11,7 +11,7 @@
   const STORAGE_KEY = 'activityLoader.geminiKey';
   const STORAGE_AI_SETTINGS = 'activityLoader.aiSettings.v1';
   const STORAGE_STYLES = 'activityLoader.activityStyles.v1';
-  const GENERATABLE_IDS = ['jumpingOx', 'jeopardy', 'vocabulary', 'teamMatch', 'charades', 'quizQuizTrade', 'fanNPick', 'findSomeoneWho', 'showdown', 'rallyCoach'];
+  const GENERATABLE_IDS = ['jumpingOx', 'jeopardy', 'vocabulary', 'teamMatch', 'charades', 'quizQuizTrade', 'fanNPick', 'findSomeoneWho', 'showdown', 'rallyCoach', 'sentenceScramble', 'gapFill', 'writingCards'];
   const CONTENT_SCHEMAS = ['vocabByUnit', 'matchPairs', 'unitQuestions', 'unitClues', 'genericPack'];
   const AI_PROVIDERS = [
     {
@@ -64,7 +64,10 @@
       { id: 'fanNPick', name: 'Fan-N-Pick', description: 'Numbered Q/A cards with 4 student roles.', template: 'templates/fanNPick.template.html', contentSchema: 'vocabByUnit', cefrAgnostic: true },
       { id: 'findSomeoneWho', name: 'Find Someone Who', description: 'Printable grid worksheet.', template: 'templates/findSomeoneWho.template.html', contentSchema: 'vocabByUnit', cefrAgnostic: true },
       { id: 'showdown', name: 'Showdown', description: 'Team question cards — Showdown and compare.', template: 'templates/showdown.template.html', contentSchema: 'vocabByUnit', cefrAgnostic: true },
-      { id: 'rallyCoach', name: 'RallyCoach', description: 'Pair cards — one solves, the other coaches.', template: 'templates/rallyCoach.template.html', contentSchema: 'vocabByUnit', cefrAgnostic: true }
+      { id: 'rallyCoach', name: 'RallyCoach', description: 'Pair cards — one solves, the other coaches.', template: 'templates/rallyCoach.template.html', contentSchema: 'vocabByUnit', cefrAgnostic: true },
+      { id: 'sentenceScramble', name: 'Sentence Scramble', description: 'Drag shuffled words into order; hint, check, team points.', template: 'templates/sentenceScramble.template.html', contentSchema: 'unitSentences', cefrAgnostic: true },
+      { id: 'gapFill', name: 'Gap Fill', description: 'Model writing passage with numbered blanks to reveal; word bank and teams.', template: 'templates/gapFill.template.html', contentSchema: 'unitPassages', cefrAgnostic: true },
+      { id: 'writingCards', name: 'Writing Card Spinner', description: 'Fill-in writing frames: spin silly words, say it, or type class ideas.', template: 'templates/writingCards.template.html', contentSchema: 'writingCards', cefrAgnostic: true }
     ]
   };
 

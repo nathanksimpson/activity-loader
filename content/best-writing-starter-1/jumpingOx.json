@@ -1,0 +1,376 @@
+{
+  "bookId": "best-writing-starter-1",
+  "cefr": "A1",
+  "activityId": "jumpingOx",
+  "title": "The Best Writing Starter 1 Jumping OX",
+  "units": {
+    "1": {
+      "title": "About Me",
+      "description": "I am / I am not + describing words.",
+      "questions": [
+        {
+          "text": "I am a student.",
+          "correct": true,
+          "explanation": "Correct: I am a student."
+        },
+        {
+          "text": "I is tall.",
+          "correct": false,
+          "explanation": "Use 'am' with I: I am tall."
+        },
+        {
+          "text": "I am not quiet.",
+          "correct": true,
+          "explanation": "Correct: I am not + adjective."
+        },
+        {
+          "text": "I not am short.",
+          "correct": false,
+          "explanation": "'not' comes after am: I am not short."
+        },
+        {
+          "text": "My name is Danny.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "I am eight year old.",
+          "correct": false,
+          "explanation": "Use 'years': I am eight years old."
+        },
+        {
+          "text": "I am a smart.",
+          "correct": false,
+          "explanation": "No 'a' before a describing word alone: I am smart."
+        },
+        {
+          "text": "I am funny and cool.",
+          "correct": true,
+          "explanation": "Correct!"
+        }
+      ]
+    },
+    "2": {
+      "title": "My Family",
+      "description": "He is / She is + jobs and describing words.",
+      "questions": [
+        {
+          "text": "My mother is a doctor.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "My father is a teacher. She is kind.",
+          "correct": false,
+          "explanation": "Father = he: He is kind."
+        },
+        {
+          "text": "My brother are a student.",
+          "correct": false,
+          "explanation": "One person uses 'is': My brother is a student."
+        },
+        {
+          "text": "I live with my family.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "My mother is police officer.",
+          "correct": false,
+          "explanation": "Use 'a': My mother is a police officer."
+        },
+        {
+          "text": "My father is an office worker.",
+          "correct": true,
+          "explanation": "Correct: 'an' before office."
+        },
+        {
+          "text": "My sister is a artist.",
+          "correct": false,
+          "explanation": "Use 'an' before a vowel sound: an artist."
+        },
+        {
+          "text": "She is smart and caring.",
+          "correct": true,
+          "explanation": "Correct!"
+        }
+      ]
+    },
+    "3": {
+      "title": "My Things",
+      "description": "I have... It is / They are + two adjectives.",
+      "questions": [
+        {
+          "text": "I have a pencil case.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "It is big and purple.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "I have shoes. It is small and cute.",
+          "correct": false,
+          "explanation": "Shoes = they: They are small and cute."
+        },
+        {
+          "text": "I has a computer.",
+          "correct": false,
+          "explanation": "Use 'have' with I: I have a computer."
+        },
+        {
+          "text": "They're new and cool.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "I have a glasses.",
+          "correct": false,
+          "explanation": "No 'a' with glasses: I have glasses."
+        },
+        {
+          "text": "It is old and slowly.",
+          "correct": false,
+          "explanation": "Use the adjective: It is old and slow."
+        },
+        {
+          "text": "It's new and cool.",
+          "correct": true,
+          "explanation": "Correct!"
+        }
+      ]
+    },
+    "4": {
+      "title": "Pets",
+      "description": "Pet names, colors, has a tail.",
+      "questions": [
+        {
+          "text": "Molly is my pet dog.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "She has a short tail.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "He have a long tail.",
+          "correct": false,
+          "explanation": "Use 'has' with he: He has a long tail."
+        },
+        {
+          "text": "Kitty is my friend's pet cat.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "Birdy is a yellow.",
+          "correct": false,
+          "explanation": "No 'a': Birdy is yellow."
+        },
+        {
+          "text": "He is a cat cute.",
+          "correct": false,
+          "explanation": "Adjective first: He is a cute cat."
+        },
+        {
+          "text": "Noel is my friends pet lizard.",
+          "correct": false,
+          "explanation": "Use 's: my friend's pet lizard."
+        },
+        {
+          "text": "She is a friendly dog.",
+          "correct": true,
+          "explanation": "Correct!"
+        }
+      ]
+    },
+    "5": {
+      "title": "Snacks",
+      "description": "like / likes / doesn't like.",
+      "questions": [
+        {
+          "text": "I like vanilla ice cream.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "Ella likes chocolate chip cookies.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "Ella don't like chips.",
+          "correct": false,
+          "explanation": "With she/Ella use doesn't: Ella doesn't like chips."
+        },
+        {
+          "text": "Justin and I like chips.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "Justin like cookies.",
+          "correct": false,
+          "explanation": "Add -s: Justin likes cookies."
+        },
+        {
+          "text": "Alex doesn't likes candies.",
+          "correct": false,
+          "explanation": "After doesn't, no -s: Alex doesn't like candies."
+        },
+        {
+          "text": "Stacy like sandwiches.",
+          "correct": false,
+          "explanation": "Add -s: Stacy likes sandwiches."
+        },
+        {
+          "text": "We all like snacks.",
+          "correct": true,
+          "explanation": "Correct!"
+        }
+      ]
+    },
+    "6": {
+      "title": "Birthday Invitation",
+      "description": "on + date/day, at + time, to + place.",
+      "questions": [
+        {
+          "text": "Please come to my birthday party.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "It's on April 22nd.",
+          "correct": true,
+          "explanation": "Correct: on + date."
+        },
+        {
+          "text": "It is in Saturday.",
+          "correct": false,
+          "explanation": "Days use 'on': It is on Saturday."
+        },
+        {
+          "text": "Please come at 3 p.m.",
+          "correct": true,
+          "explanation": "Correct: at + time."
+        },
+        {
+          "text": "Please come in my house.",
+          "correct": false,
+          "explanation": "Use 'to': Please come to my house."
+        },
+        {
+          "text": "Please come on 12:30 p.m.",
+          "correct": false,
+          "explanation": "Times use 'at': Please come at 12:30 p.m."
+        },
+        {
+          "text": "My birthday is in May 31st.",
+          "correct": false,
+          "explanation": "Dates use 'on': My birthday is on May 31st."
+        },
+        {
+          "text": "It's my 7th birthday.",
+          "correct": true,
+          "explanation": "Correct!"
+        }
+      ]
+    },
+    "7": {
+      "title": "We Are the Same",
+      "description": "You have... I have..., too. We have the same...",
+      "questions": [
+        {
+          "text": "You have big brown eyes.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "I have a round nose, too.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "You has a small mouth.",
+          "correct": false,
+          "explanation": "Use 'have' with you: You have a small mouth."
+        },
+        {
+          "text": "I have big ears, to.",
+          "correct": false,
+          "explanation": "Spelling: too."
+        },
+        {
+          "text": "We have the same eyes.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "I have eyes big.",
+          "correct": false,
+          "explanation": "Adjective first: I have big eyes."
+        },
+        {
+          "text": "You have a big ears.",
+          "correct": false,
+          "explanation": "No 'a' with ears: You have big ears."
+        },
+        {
+          "text": "I look like my mom.",
+          "correct": true,
+          "explanation": "Correct!"
+        }
+      ]
+    },
+    "8": {
+      "title": "My Room",
+      "description": "There is / There are + in, on, under.",
+      "questions": [
+        {
+          "text": "There is a teddy bear.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "There are clothes.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "There is slippers.",
+          "correct": false,
+          "explanation": "Slippers = many: There are slippers."
+        },
+        {
+          "text": "My teddy bear is on the bed.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "My clothes is in the closet.",
+          "correct": false,
+          "explanation": "Clothes = many: My clothes are in the closet."
+        },
+        {
+          "text": "My slippers are under the desk.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "There are a lamp.",
+          "correct": false,
+          "explanation": "One thing: There is a lamp."
+        },
+        {
+          "text": "My doll are on the dresser.",
+          "correct": false,
+          "explanation": "One doll: My doll is on the dresser."
+        }
+      ]
+    }
+  }
+}

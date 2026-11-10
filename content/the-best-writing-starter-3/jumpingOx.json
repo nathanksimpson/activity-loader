@@ -1,0 +1,376 @@
+{
+  "bookId": "the-best-writing-starter-3",
+  "cefr": "A1",
+  "activityId": "jumpingOx",
+  "title": "The Best Writing Starter 3 Jumping OX",
+  "units": {
+    "1": {
+      "title": "Dream Jobs",
+      "description": "want to be / like to + verb; wants / likes with he and she.",
+      "questions": [
+        {
+          "text": "I want to be a musician.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "I like to write songs.",
+          "correct": true,
+          "explanation": "Correct: like to + verb."
+        },
+        {
+          "text": "She want to be a vet.",
+          "correct": false,
+          "explanation": "Add -s with she: She wants to be a vet."
+        },
+        {
+          "text": "Kelly wants to be a content creator.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "He likes make videos.",
+          "correct": false,
+          "explanation": "Use 'to': He likes to make videos."
+        },
+        {
+          "text": "I want to be a artist.",
+          "correct": false,
+          "explanation": "Use 'an' before a vowel sound: an artist."
+        },
+        {
+          "text": "He like to try new foods.",
+          "correct": false,
+          "explanation": "Add -s with he: He likes to try new foods."
+        },
+        {
+          "text": "She's really good at it!",
+          "correct": true,
+          "explanation": "Correct!"
+        }
+      ]
+    },
+    "2": {
+      "title": "Tastes of Food",
+      "description": "It has ... in it, so it's + taste.",
+      "questions": [
+        {
+          "text": "The pizza is delicious.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "It has lemon in it, so it's sour.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "It have pepper in it, so it's spicy.",
+          "correct": false,
+          "explanation": "Use 'has' with it: It has pepper in it."
+        },
+        {
+          "text": "The cupcakes are tasty.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "The pasta are good.",
+          "correct": false,
+          "explanation": "One dish: The pasta is good."
+        },
+        {
+          "text": "They have chocolate in them, so they're sweet.",
+          "correct": true,
+          "explanation": "Correct: they + them."
+        },
+        {
+          "text": "The hamburgers is good.",
+          "correct": false,
+          "explanation": "Many: The hamburgers are good."
+        },
+        {
+          "text": "It has sugar in them, so it's sweet.",
+          "correct": false,
+          "explanation": "It goes with 'it': It has sugar in it."
+        }
+      ]
+    },
+    "3": {
+      "title": "My Daily Routine",
+      "description": "in the morning / at night; at + time, around + time.",
+      "questions": [
+        {
+          "text": "In the morning, I wake up at seven.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "I eat breakfast at seven thirty.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "I does my homework around three.",
+          "correct": false,
+          "explanation": "Use 'do' with I: I do my homework."
+        },
+        {
+          "text": "In the night, I write a diary.",
+          "correct": false,
+          "explanation": "Say 'At night': At night, I write a diary."
+        },
+        {
+          "text": "I take the school bus around eight twenty.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "In afternoon, I come home at two.",
+          "correct": false,
+          "explanation": "Use 'the': In the afternoon."
+        },
+        {
+          "text": "I have dinner on seven.",
+          "correct": false,
+          "explanation": "Times use 'at': I have dinner at seven."
+        },
+        {
+          "text": "I go to sleep around ten.",
+          "correct": true,
+          "explanation": "Correct!"
+        }
+      ]
+    },
+    "4": {
+      "title": "Animals vs. Humans",
+      "description": "..., but humans ...; Both ... and humans can ...",
+      "questions": [
+        {
+          "text": "Fish have scales, but humans have skin.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "Fish can't run, but humans can.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "Both fish and humans can swim.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "Fish lives in the water.",
+          "correct": false,
+          "explanation": "Fish (many) live: Fish live in the water."
+        },
+        {
+          "text": "Fish can't blink their eyes, but humans can't.",
+          "correct": false,
+          "explanation": "Humans CAN blink: but humans can."
+        },
+        {
+          "text": "Birds have feathers, but humans has skin.",
+          "correct": false,
+          "explanation": "Use 'have': humans have skin."
+        },
+        {
+          "text": "Both birds and humans can sings.",
+          "correct": false,
+          "explanation": "After can, no -s: can sing."
+        },
+        {
+          "text": "Humans live on land.",
+          "correct": true,
+          "explanation": "Correct!"
+        }
+      ]
+    },
+    "5": {
+      "title": "Fun Time with My Family",
+      "description": "When it's ..., we usually ... But sometimes, ...",
+      "questions": [
+        {
+          "text": "When it's snowy, we usually stay home.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "We watch TV and eat cookies.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "But sometimes, we go out and make a snowman.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "When it's windy, we stays home.",
+          "correct": false,
+          "explanation": "Use 'stay' with we: we stay home."
+        },
+        {
+          "text": "We usually goes out.",
+          "correct": false,
+          "explanation": "Use 'go' with we: We usually go out."
+        },
+        {
+          "text": "Sometimes we takes a walk.",
+          "correct": false,
+          "explanation": "Use 'take' with we: we take a walk."
+        },
+        {
+          "text": "When it windy, we stay home.",
+          "correct": false,
+          "explanation": "Add 'is': When it's windy."
+        },
+        {
+          "text": "We go on a picnic and eat sandwiches.",
+          "correct": true,
+          "explanation": "Correct!"
+        }
+      ]
+    },
+    "6": {
+      "title": "My Busy Weekend",
+      "description": "I'm going to + verb; First, Second ... Finally.",
+      "questions": [
+        {
+          "text": "I'm going to play soccer.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "First, I'm going to buy some books.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "I'm going to went to a party.",
+          "correct": false,
+          "explanation": "After 'going to' use the base verb: go."
+        },
+        {
+          "text": "Finally, I'm going to walk my dog.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "I going to see a movie.",
+          "correct": false,
+          "explanation": "Add 'am': I'm going to see a movie."
+        },
+        {
+          "text": "I'm going to helping around the house.",
+          "correct": false,
+          "explanation": "Use the base verb: help."
+        },
+        {
+          "text": "Second, I'm go to meet my friends.",
+          "correct": false,
+          "explanation": "Say 'I'm going to meet my friends.'"
+        },
+        {
+          "text": "What a weekend!",
+          "correct": true,
+          "explanation": "Correct!"
+        }
+      ]
+    },
+    "7": {
+      "title": "Packing List",
+      "description": "will / won't + verb; his and her.",
+      "questions": [
+        {
+          "text": "I will take my swimsuit and shorts.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "I won't take my books.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "She'll take her tablet to read e-books.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "He will takes his drone.",
+          "correct": false,
+          "explanation": "After will, no -s: He will take his drone."
+        },
+        {
+          "text": "Dad will take her sunglasses.",
+          "correct": false,
+          "explanation": "Dad = his: Dad will take his sunglasses."
+        },
+        {
+          "text": "I won't takes my RC car.",
+          "correct": false,
+          "explanation": "After won't, no -s: I won't take my RC car."
+        },
+        {
+          "text": "Mom will take his sundress.",
+          "correct": false,
+          "explanation": "Mom = her: Mom will take her sundress."
+        },
+        {
+          "text": "I'll take my laptop to play video games.",
+          "correct": true,
+          "explanation": "Correct!"
+        }
+      ]
+    },
+    "8": {
+      "title": "Gifts for Friends",
+      "description": "I'll give ... to ... because ...",
+      "questions": [
+        {
+          "text": "I'll give a flower pot to Jenny.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "I'll give gloves to Tom because the weather is very cold.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "I'll give socks for Leo.",
+          "correct": false,
+          "explanation": "Use 'to': I'll give socks to Leo."
+        },
+        {
+          "text": "I'll gives a book to Jenny.",
+          "correct": false,
+          "explanation": "After I'll, no -s: I'll give."
+        },
+        {
+          "text": "His mitt is too small.",
+          "correct": true,
+          "explanation": "Correct!"
+        },
+        {
+          "text": "I'll give a mitt to Jack because he mitt is too small.",
+          "correct": false,
+          "explanation": "Use 'his': because his mitt is too small."
+        },
+        {
+          "text": "She love drawing.",
+          "correct": false,
+          "explanation": "Add -s with she: She loves drawing."
+        },
+        {
+          "text": "Christmas is coming.",
+          "correct": true,
+          "explanation": "Correct!"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "bookId": "best-writing-starter-1",
+  "cefr": "A1",
+  "activityId": "sentenceScramble",
+  "title": "The Best Writing Starter 1 Sentence Scramble",
+  "units": [
+    {
+      "name": "Unit 01: About Me",
+      "sentences": [
+        "My name is Danny.",
+        "I am eight years old.",
+        "I am a student.",
+        "I am not quiet.",
+        "I am not short.",
+        "I am a girl.",
+        "I am funny.",
+        "I am not big.",
+        "I am smart."
+      ]
+    },
+    {
+      "name": "Unit 02: My Family",
+      "sentences": [
+        "I live with my family.",
+        "My mother is a doctor.",
+        "She is funny.",
+        "My father is a teacher.",
+        "He is kind.",
+        "My brother is a student.",
+        "My mother is a police officer.",
+        "My father is an office worker.",
+        "I love my family."
+      ]
+    },
+    {
+      "name": "Unit 03: My Things",
+      "sentences": [
+        "I have a pencil case.",
+        "It is big and purple.",
+        "It is old and slow.",
+        "They are small and cute.",
+        "They're new and cool.",
+        "I have a backpack.",
+        "It is big and yellow.",
+        "I have a smartphone.",
+        "It is small and red."
+      ]
+    },
+    {
+      "name": "Unit 04: Pets",
+      "sentences": [
+        "Molly is my pet dog.",
+        "She has a short tail.",
+        "She is a friendly dog.",
+        "Kitty is my friend's pet cat.",
+        "He has a long tail.",
+        "He is a cute cat.",
+        "Birdy is my pet bird.",
+        "He is a colorful bird.",
+        "My dream pet is a cat."
+      ]
+    },
+    {
+      "name": "Review 01: Colorful Family",
+      "sentences": [
+        "This is my family.",
+        "My mother has long brown hair.",
+        "She likes the color red.",
+        "My brother has short red hair.",
+        "He likes the color green.",
+        "My sister has straight orange hair.",
+        "I have short black hair.",
+        "We are a family with many colors!"
+      ]
+    },
+    {
+      "name": "Unit 05: Snacks",
+      "sentences": [
+        "My friends and I like snacks.",
+        "I like vanilla ice cream.",
+        "Ella likes chocolate chip cookies.",
+        "Ella doesn't like chips.",
+        "Justin doesn't like cookies.",
+        "Justin and I like chips.",
+        "We all like snacks.",
+        "Stacy likes sandwiches.",
+        "Alex doesn't like candies."
+      ]
+    },
+    {
+      "name": "Unit 06: Birthday Invitation",
+      "sentences": [
+        "You are invited!",
+        "Please come to my birthday party.",
+        "It's my 7th birthday.",
+        "It's on April 22nd.",
+        "It is on Saturday.",
+        "Please come at 3 p.m.",
+        "Please come to my house.",
+        "Hope to see you!",
+        "My birthday is on May 31st."
+      ]
+    },
+    {
+      "name": "Unit 07: We Are the Same",
+      "sentences": [
+        "I like you, Grandma.",
+        "You have big brown eyes.",
+        "I have big brown eyes, too.",
+        "We have the same eyes.",
+        "You have a round nose.",
+        "You have a small mouth.",
+        "I look like my mom.",
+        "I have small eyes.",
+        "I miss you!"
+      ]
+    },
+    {
+      "name": "Unit 08: My Room",
+      "sentences": [
+        "I like my room.",
+        "There is a teddy bear.",
+        "My teddy bear is on the bed.",
+        "There are clothes.",
+        "My clothes are in the closet.",
+        "My pictures are on the dresser.",
+        "My slippers are under the desk.",
+        "My doll is on the dresser.",
+        "My lamp is on the table."
+      ]
+    },
+    {
+      "name": "Review 02: My Classroom",
+      "sentences": [
+        "I like my classroom.",
+        "There are four orange desks in the classroom.",
+        "There are three blue globes on the desk.",
+        "There is one white screen on the wall.",
+        "There is one red clock on the wall.",
+        "I sit next to Hailey.",
+        "She has long brown hair.",
+        "Sera sits next to me."
+      ]
+    }
+  ]
+}

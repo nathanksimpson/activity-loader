@@ -1748,11 +1748,13 @@
       hint.textContent = 'Saved breakdown: ' + b.units.length + ' units, ' +
         Domain.countBreakdownWords(b) + ' words. ' +
         'Vocabulary / Team Match / Charades use these words directly. ' +
-        'Jumping OX / Jeopardy use built-in packs unless you pick AI mode.';
+        'Jumping OX / Jeopardy use built-in packs unless you pick AI mode. ' +
+        'Sentence Scramble / Gap Fill / Writing Card Spinner use AI when a key is pasted, otherwise the grammar examples.';
     } else {
       hint.textContent = 'No saved breakdown for this book. ' +
         'Vocabulary / Team Match / Charades need Analyze + Save first (Curriculum tab). ' +
-        'Jumping OX / Jeopardy can still generate from a built-in pack if one exists, or via AI mode.';
+        'Jumping OX / Jeopardy can still generate from a built-in pack if one exists, or via AI mode. ' +
+        'Sentence Scramble / Gap Fill / Writing Card Spinner need Analyze + Save (or a built-in pack).';
     }
   }
 
@@ -2077,7 +2079,10 @@
         fanNPick: 'vocabByUnit',
         findSomeoneWho: 'vocabByUnit',
         showdown: 'vocabByUnit',
-        rallyCoach: 'vocabByUnit'
+        rallyCoach: 'vocabByUnit',
+        sentenceScramble: 'unitSentences',
+        gapFill: 'unitPassages',
+        writingCards: 'writingCards'
       }[activityId] || '';
       const book = Domain.getBook(bookId) || Catalog.getBook(bookId);
       if (!book) throw new Error('Choose a book for this imported sample.');

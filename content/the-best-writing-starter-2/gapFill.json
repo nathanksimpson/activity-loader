@@ -1,0 +1,222 @@
+{
+  "title": "The Best Writing Starter 2 Gap Fill",
+  "cefr": "A1",
+  "units": [
+    {
+      "id": "u1",
+      "name": "Unit 01: Fun at the Playground",
+      "title": "Fun at the Playground",
+      "by": "By Lucas Parker",
+      "lines": [
+        "My friends and I go to the playground every day.",
+        "We play on the monkey bars.",
+        "",
+        "We all can hang on the [bars].",
+        "",
+        "[Rachel] can hang upside down.",
+        "I can, too. But Fred [can't].",
+        "",
+        "[Fred] and Rachel can swing from bar to bar.",
+        "But I can't swing from bar to [bar].",
+        "Fred and Rachel can help me.",
+        "",
+        "We have fun every day."
+      ]
+    },
+    {
+      "id": "u2",
+      "name": "Unit 02: Morning Routine",
+      "title": "Morning Routine",
+      "by": "",
+      "lines": [
+        "Every morning, I get up at 7 o'clock.",
+        "[First], I wash my face.",
+        "Then I get dressed.",
+        "Lastly, I [eat] breakfast.",
+        "",
+        "At 8 o'clock, I'm [ready] for school.",
+        "First, I walk to school.",
+        "Then I meet my friends.",
+        "[Lastly], I go to my classroom.",
+        "",
+        "[At 9 o'clock], I take a class."
+      ]
+    },
+    {
+      "id": "u3",
+      "name": "Unit 03: To My Teacher",
+      "title": "To My Teacher",
+      "by": "",
+      "lines": [
+        "Dear Mr. Brown,",
+        "",
+        "I'm Nicky Gray.",
+        "I want to know about you.",
+        "",
+        "Do you live in [town]?",
+        "Do you live near school?",
+        "Do you have a [hobby]?",
+        "Do you [have] a pet?",
+        "Do you like our [class]?",
+        "Do you like [camping]?",
+        "Do you like playing mobile games?",
+        "I'm happy to be in your class.",
+        "",
+        "Sincerely,",
+        "Nicky"
+      ]
+    },
+    {
+      "id": "u4",
+      "name": "Unit 04: My Favorite Things",
+      "title": "My Favorite Things",
+      "by": "",
+      "lines": [
+        "My favorite [color] is purple.",
+        "It makes me look cool.",
+        "I like my purple jacket.",
+        "",
+        "My favorite sport is [soccer].",
+        "It makes me feel excited.",
+        "I'm good at [running] fast.",
+        "I'm good at kicking a ball.",
+        "",
+        "My favorite [subject] is art.",
+        "It makes me feel [happy].",
+        "I'm good at drawing flowers."
+      ]
+    },
+    {
+      "id": "r1",
+      "name": "Review 01: Secret Santa",
+      "title": "Secret Santa",
+      "by": "",
+      "lines": [
+        "Dear Daniel,",
+        "",
+        "I'm your Secret [Santa].",
+        "I know a lot [about] you.",
+        "",
+        "You live [near] the subway station.",
+        "You come to school [at] 8:45 a.m.",
+        "You like the [color] green.",
+        "Your favorite [subject] is science.",
+        "Your favorite [sport] is baseball.",
+        "",
+        "This is a small [gift]. It's a comic book.",
+        "I [hope] you like it.",
+        "",
+        "Love,",
+        "Your Secret Santa"
+      ]
+    },
+    {
+      "id": "u5",
+      "name": "Unit 05: My Feelings",
+      "title": "My Feelings",
+      "by": "By Ella Hanson",
+      "lines": [
+        "Sometimes I feel [angry].",
+        "Homework makes me angry.",
+        "Loud music [makes] me angry.",
+        "Losing a game makes me angry.",
+        "",
+        "Sometimes I feel sad.",
+        "[Farewells] make me sad.",
+        "Sad movies make me sad.",
+        "Having no friends makes me sad.",
+        "",
+        "Sometimes I feel glad.",
+        "School holidays make me [glad].",
+        "Gifts make me glad.",
+        "[Eating] snacks makes me glad."
+      ]
+    },
+    {
+      "id": "u6",
+      "name": "Unit 06: At the Fair",
+      "title": "At the Fair",
+      "by": "",
+      "lines": [
+        "At the fair, I want to ride a [water] ride.",
+        "I like to cool off.",
+        "",
+        "I want to [watch] a parade.",
+        "I like to hear its music.",
+        "",
+        "I want to buy some [snacks].",
+        "I like to [eat] churros and cotton candy.",
+        "",
+        "I want to take pictures.",
+        "I like to [remember] the happy time."
+      ]
+    },
+    {
+      "id": "u7",
+      "name": "Unit 07: My Favorite Places",
+      "title": "Favorite Places at School",
+      "by": "By Tracy Simons",
+      "lines": [
+        "I have favorite places at school.",
+        "",
+        "My [first] favorite place is the cafeteria.",
+        "I can eat hamburgers.",
+        "I can have [lunch] with friends.",
+        "",
+        "My second favorite place is the [library].",
+        "I can read storybooks.",
+        "I can do my [homework].",
+        "",
+        "My [third] favorite place is the gym.",
+        "I can play catch.",
+        "I can play basketball.",
+        "",
+        "I love my school!"
+      ]
+    },
+    {
+      "id": "u8",
+      "name": "Unit 08: To My Classmate",
+      "title": "To My Classmate",
+      "by": "",
+      "lines": [
+        "Hi Terry,",
+        "",
+        "How are you doing?",
+        "I'm your classmate, Annie.",
+        "",
+        "You are [nice] and [polite].",
+        "You are [funny] and clever.",
+        "You often make me [laugh].",
+        "You are good at sports.",
+        "You are good at singing.",
+        "You are [good at] math.",
+        "",
+        "Let's be good friends.",
+        "See you at school.",
+        "",
+        "Yours,",
+        "Annie"
+      ]
+    },
+    {
+      "id": "r2",
+      "name": "Review 02: My Least Favorite Sport",
+      "title": "My Least Favorite Sport",
+      "by": "",
+      "lines": [
+        "My [least] favorite sport is baseball.",
+        "I don't like to [play] baseball.",
+        "It makes me [tired].",
+        "I'm not good at [hitting] a ball.",
+        "",
+        "My second least favorite sport is tennis.",
+        "I don't like to play tennis.",
+        "It [makes] me bored.",
+        "I'm not good at running [fast].",
+        "",
+        "I don't like sports that much."
+      ]
+    }
+  ]
+}

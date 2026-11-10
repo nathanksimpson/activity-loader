@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>__TITLE__</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap");
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body { font-family: Nunito, "Segoe UI", "Malgun Gothic", sans-serif; background: #f1f5f9; color: #0f172a; min-height: 100vh; }
+    select, button, input { font: inherit; font-weight: 800; }
+    .topbar { position: sticky; top: 0; z-index: 20; background: #fff; border-bottom: 1px solid #e2e8f0; box-shadow: 0 4px 14px rgba(15,23,42,.06); padding: .75rem 1.25rem; display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+    .topbar h1 { margin: 0 auto 0 0; font-size: 1.25rem; font-weight: 900; color: #be185d; }
+    select { padding: .5rem .8rem; border-radius: .6rem; border: 2px solid #e2e8f0; background: #f8fafc; color: #334155; }
+    .seg { display: inline-flex; border: 2px solid #e2e8f0; border-radius: .6rem; overflow: hidden; }
+    .seg button { border: 0; background: #f8fafc; color: #475569; padding: .45rem .8rem; cursor: pointer; }
+    .seg button.on { background: #db2777; color: #fff; }
+    .btn { border: 0; border-radius: .6rem; padding: .55rem 1rem; cursor: pointer; color: #fff; background: #db2777; }
+    .btn:hover { filter: brightness(1.07); }
+    .btn.slate { background: #e2e8f0; color: #334155; }
+    .btn.indigo { background: #6366f1; }
+    .wrap { max-width: 56rem; margin: 0 auto; padding: 1.25rem; }
+    .nav { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: .9rem; }
+    .nav .btn { font-size: 1.1rem; }
+    .nav .pos { color: #64748b; font-weight: 900; }
+    .card { background: #fff; border-radius: 1.1rem; box-shadow: 0 25px 50px -12px rgba(15,23,42,.18); overflow: hidden; }
+    .card-head { padding: 1.1rem 1.5rem; text-align: center; }
+    .card-head h2 { margin: 0; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 900; letter-spacing: .03em; text-transform: uppercase; }
+    .card-body { padding: 1.4rem 2rem 1.8rem; }
+    .card-body p { margin: 0; font-size: clamp(1.25rem, 2.8vw, 1.85rem); line-height: 2.15; font-weight: 700; }
+    .blank { display: inline-block; min-width: 6.5rem; margin: 0 .15rem; padding: 0 .55rem; border: 0; border-bottom: 3px solid #94a3b8; border-radius: .5rem .5rem 0 0; background: #f8fafc; color: #2563eb; font-size: inherit; font-weight: 900; cursor: pointer; text-align: center; line-height: 1.5; vertical-align: baseline; }
+    .blank:hover { background: #eff6ff; }
+    .blank.empty { color: #cbd5e1; }
+    .blank.spinning { color: #93c5fd; }
+    .blank.landed { animation: land .3s ease; }
+    .blank[contenteditable="true"] { outline: 3px solid #6366f1; background: #fff; cursor: text; }
+    .pron { border: 0; background: #fef9c3; color: #854d0e; border-radius: .4rem; padding: 0 .3rem; font-size: inherit; font-weight: 900; cursor: pointer; }
+    @keyframes land { 0% { transform: translateY(-8px) scale(1.1); } 100% { transform: none; } }
+    .footer { display: flex; flex-wrap: wrap; gap: .75rem; justify-content: center; align-items: center; margin-top: 1rem; }
+    .footer .btn { font-size: 1.1rem; padding: .75rem 1.4rem; }
+    .tip { text-align: center; color: #475569; font-weight: 800; margin: 1rem 0 0; font-size: 1.05rem; }
+    .tip small { display: block; color: #94a3b8; font-weight: 700; margin-top: .3rem; font-size: .85rem; }
+    @media (max-width: 640px) { .topbar h1 { width: 100%; } .wrap { padding: .75rem; } .card-body { padding: 1rem; } }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <h1>__TITLE__</h1>
+    <label>Card <select id="cardSel"></select></label>
+    <div class="seg" id="modeSeg">
+      <button type="button" data-mode="spin" class="on">🎰 Spin</button>
+      <button type="button" data-mode="blank">🗣 Say it</button>
+      <button type="button" data-mode="type">✎ Type</button>
+    </div>
+    <div class="seg" id="pronSeg">
+      <button type="button" data-p="he" class="on">He</button>
+      <button type="button" data-p="she">She</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="nav">
+      <button type="button" class="btn slate" id="prevBtn">◀</button>
+      <span class="pos" id="pos"></span>
+      <button type="button" class="btn slate" id="nextBtn">▶</button>
+    </div>
+    <div class="card">
+      <div class="card-head" id="cardHead"><h2 id="cardTitle"></h2></div>
+      <div class="card-body" id="cardBody"></div>
+    </div>
+    <div class="footer">
+      <button type="button" class="btn" id="spinAll">🎰 Spin all</button>
+      <button type="button" class="btn slate" id="clearBtn">Clear</button>
+      <button type="button" class="btn indigo" id="readBtn">🔊 Read aloud</button>
+    </div>
+    <p class="tip" id="tip"></p>
+  </div>
+
+  <script>
+    // Frames from the Writing Assignment Cards. {cat} = blank, {cat#id} = linked blank, {He}/{he}/{his}/{him} = pronoun.
+    var TITLE = __TITLE_JSON__;
+    var DATA = __ACTIVITY_DATA__;
+    var PALETTE = ["#fbcfe8", "#bfdbfe", "#bbf7d0", "#fed7aa"];
+    var CARDS = (DATA.cards || []).filter(function (c) { return c && Array.isArray(c.lines) && c.lines.length; }).map(function (c, i) { return { id: c.id || ("c" + (i + 1)), title: c.title || ("Card " + (i + 1)), color: c.color || PALETTE[i % PALETTE.length], lines: c.lines.map(String) }; });
+
+    // Word pools built from the unit word lists and model answers
+    var POOLS = DATA.pools || {};
+    var PRON = { he: { He: "He", he: "he", his: "his", him: "him" }, she: { He: "She", he: "she", his: "her", him: "her" } };
+    var TIPS = {
+      spin: "Read it aloud together. Does it make sense, or is it silly? 🤪 Fix the silly parts!<small>Click any blank to spin just that one.</small>",
+      blank: "Choose a student to say the card with their own words.<small>Stuck? Click a blank to spin an idea.</small>",
+      type: "Collect the class's ideas: click a blank and type. Press Enter to finish.<small>Use this to build a class model before writing.</small>"
+    };
+
+    function $(id) { return document.getElementById(id); }
+    var idx = 0, mode = "spin", pron = "he";
+    var stateByCard = {};
+    var spinning = 0;
+
+    function rand(a) { return a[Math.floor(Math.random() * a.length)]; }
+    function shuffle(a) {
+      a = a.slice();
+      for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+      return a;
+    }
+    function card() { return CARDS[idx]; }
+    function values() { var id = card().id; if (!stateByCard[id]) stateByCard[id] = {}; return stateByCard[id]; }
+
+    // Parse a card into a list of blanks {key, cat}
+    function blanksOf(c) {
+      var list = [], seen = {}, n = 0;
+      c.lines.forEach(function (line) {
+        line.replace(/\{(\w+)(?:#(\w+))?\}/g, function (m, cat, link) {
+          if (PRON.he[cat]) return m;
+          var key = link ? "L_" + link : "b" + (n++);
+          if (!seen[key]) { seen[key] = 1; list.push({ key: key, cat: cat }); }
+          return m;
+        });
+      });
+      return list;
+    }
+
+    function poolFor(cat) {
+      if (cat === "among") {
+        var v = values();
+        var picks = blanksOf(card()).filter(function (b) { return b.cat === "thing" && v[b.key]; }).map(function (b) { return v[b.key]; });
+        return picks.length ? picks : POOLS.thing;
+      }
+      return (POOLS[cat] && POOLS[cat].length) ? POOLS[cat] : ["…"];
+    }
+
+    function render() {
+      var c = card(), v = values();
+      $("cardTitle").textContent = c.title;
+      $("cardHead").style.background = c.color;
+      $("pos").textContent = (idx + 1) + " / " + CARDS.length;
+      $("cardSel").value = c.id;
+      var body = $("cardBody"); body.innerHTML = "";
+      var n = 0;
+      c.lines.forEach(function (line) {
+        var p = document.createElement("p");
+        var re = /\{(\w+)(?:#(\w+))?\}/g, last = 0, m;
+        while ((m = re.exec(line))) {
+          if (m.index > last) p.appendChild(document.createTextNode(line.slice(last, m.index)));
+          last = re.lastIndex;
+          var cat = m[1];
+          if (PRON.he[cat]) {
+            var pb = document.createElement("button");
+            pb.type = "button"; pb.className = "pron"; pb.textContent = PRON[pron][cat];
+            pb.title = "Switch He / She";
+            pb.addEventListener("click", function () { setPron(pron === "he" ? "she" : "he"); });
+            p.appendChild(pb);
+            continue;
+          }
+          var key = m[2] ? "L_" + m[2] : "b" + (n++);
+          p.appendChild(makeBlank(key, cat, v[key]));
+        }
+        if (last < line.length) p.appendChild(document.createTextNode(line.slice(last)));
+        body.appendChild(p);
+      });
+    }
+
+    function makeBlank(key, cat, val) {
+      var b = document.createElement("span");
+      b.className = "blank" + (val ? "" : " empty");
+      b.dataset.key = key; b.dataset.cat = cat;
+      b.textContent = val || "\u00a0";
+      b.tabIndex = 0;
+      b.addEventListener("click", function () {
+        if (b.isContentEditable) return;
+        if (mode === "type") startEdit(b);
+        else spinOne(key, cat);
+      });
+      return b;
+    }
+
+    function blankEls(key) { return document.querySelectorAll('.blank[data-key="' + key + '"]'); }
+
+    function startEdit(b) {
+      b.contentEditable = "true";
+      if (b.classList.contains("empty")) b.textContent = "";
+      b.focus();
+      var r = document.createRange(); r.selectNodeContents(b);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      function finish() {
+        b.removeEventListener("blur", finish);
+        b.contentEditable = "false";
+        var t = b.textContent.replace(/\s+/g, " ").trim();
+        var v = values();
+        if (t) v[b.dataset.key] = t; else delete v[b.dataset.key];
+        render();
+      }
+      b.addEventListener("blur", finish);
+      b.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); b.blur(); } });
+    }
+
+    function spinOne(key, cat, forced, delay) {
+      var pool = poolFor(cat);
+      var final = forced || rand(pool);
+      var els = blankEls(key);
+      spinning++;
+      setTimeout(function () {
+        var ticks = 0;
+        var t = setInterval(function () {
+          ticks++;
+          Array.prototype.forEach.call(els, function (el) { el.classList.remove("empty"); el.classList.add("spinning"); el.textContent = rand(pool); });
+          if (ticks >= 9) {
+            clearInterval(t);
+            values()[key] = final;
+            Array.prototype.forEach.call(els, function (el) {
+              el.classList.remove("spinning"); el.textContent = final;
+              el.classList.remove("landed"); void el.offsetWidth; el.classList.add("landed");
+            });
+            spinning--;
+          }
+        }, 60);
+      }, delay || 0);
+    }
+
+    function spinAll() {
+      var list = blanksOf(card());
+      var used = {};
+      // times go in order through the afternoon
+      var timeBlanks = list.filter(function (b) { return b.cat === "time"; });
+      var times = shuffle(POOLS.time || []).slice(0, timeBlanks.length).sort(function (a, b) { return parseInt(a, 10) - parseInt(b, 10); });
+      var thingPicks = [];
+      var step = 0;
+      list.forEach(function (b) {
+        if (b.cat === "among") return;
+        var pick;
+        if (b.cat === "time") pick = times.shift();
+        else {
+          var pool = (POOLS[b.cat] && POOLS[b.cat].length) ? POOLS[b.cat] : ["…"];
+          var avail = pool.filter(function (x) { return !(used[b.cat] || []).includes(x); });
+          pick = rand(avail.length ? avail : pool);
+          (used[b.cat] = used[b.cat] || []).push(pick);
+        }
+        if (b.cat === "thing") thingPicks.push(pick);
+        spinOne(b.key, b.cat, pick, step++ * 110);
+      });
+      list.filter(function (b) { return b.cat === "among"; }).forEach(function (b) {
+        spinOne(b.key, b.cat, rand(thingPicks.length ? thingPicks : POOLS.thing), step++ * 110);
+      });
+    }
+
+    function readAloud() {
+      if (!("speechSynthesis" in window)) return;
+      var text = card().title + ". " + Array.prototype.map.call($("cardBody").children, function (p) { return p.textContent.replace(/\u00a0/g, " blank "); }).join(" ");
+      speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = "en-US"; u.rate = 0.85;
+      speechSynthesis.speak(u);
+    }
+
+    function setMode(m) {
+      mode = m;
+      Array.prototype.forEach.call($("modeSeg").children, function (b) { b.classList.toggle("on", b.dataset.mode === m); });
+      $("tip").innerHTML = TIPS[m];
+      if (m === "blank") { stateByCard[card().id] = {}; render(); }
+      else if (m === "spin" && !Object.keys(values()).length) { render(); spinAll(); }
+      else render();
+    }
+
+    function setPron(p) {
+      pron = p;
+      Array.prototype.forEach.call($("pronSeg").children, function (b) { b.classList.toggle("on", b.dataset.p === p); });
+      render();
+    }
+
+    function go(i) {
+      idx = (i + CARDS.length) % CARDS.length;
+      render();
+      if (mode === "spin" && !Object.keys(values()).length) spinAll();
+    }
+
+    CARDS.forEach(function (c) { var o = document.createElement("option"); o.value = c.id; o.textContent = c.title; $("cardSel").appendChild(o); });
+    $("cardSel").addEventListener("change", function () { go(CARDS.map(function (c) { return c.id; }).indexOf(this.value)); });
+    $("prevBtn").addEventListener("click", function () { go(idx - 1); });
+    $("nextBtn").addEventListener("click", function () { go(idx + 1); });
+    Array.prototype.forEach.call($("modeSeg").children, function (b) { b.addEventListener("click", function () { setMode(b.dataset.mode); }); });
+    Array.prototype.forEach.call($("pronSeg").children, function (b) { b.addEventListener("click", function () { setPron(b.dataset.p); }); });
+    $("spinAll").addEventListener("click", function () { render(); spinAll(); });
+    $("clearBtn").addEventListener("click", function () { stateByCard[card().id] = {}; render(); });
+    $("readBtn").addEventListener("click", readAloud);
+
+    $("tip").innerHTML = TIPS.spin;
+    render();
+    spinAll();
+  </script>
+</body>
+</html>

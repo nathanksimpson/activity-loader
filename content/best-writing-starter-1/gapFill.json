@@ -1,0 +1,209 @@
+{
+  "bookId": "best-writing-starter-1",
+  "cefr": "A1",
+  "activityId": "gapFill",
+  "title": "The Best Writing Starter 1 Gap Fill",
+  "units": [
+    {
+      "name": "Unit 01: About Me",
+      "title": "About Me",
+      "by": "",
+      "lines": [
+        "My name is Danny.",
+        "I am eight [years] old.",
+        "I am a [student].",
+        "",
+        "I am [funny].",
+        "I am [cool].",
+        "I am [not] quiet.",
+        "",
+        "I am [tall].",
+        "I am not [short].",
+        "I am not [big]."
+      ]
+    },
+    {
+      "name": "Unit 02: My Family",
+      "title": "My Family",
+      "by": "By Amy Lee",
+      "lines": [
+        "I am Amy.",
+        "I live with my [family].",
+        "",
+        "My [mother] is a doctor.",
+        "[She] is funny.",
+        "",
+        "My father is a [teacher].",
+        "He is [kind].",
+        "",
+        "My brother is a [student].",
+        "He is [smart].",
+        "",
+        "I love my family."
+      ]
+    },
+    {
+      "name": "Unit 03: My Things",
+      "title": "My Things",
+      "by": "",
+      "lines": [
+        "I have a [pencil case].",
+        "It is big [and] purple.",
+        "",
+        "I have a computer.",
+        "It is old and [slow].",
+        "",
+        "I have [shoes].",
+        "[They are] small and cute.",
+        "",
+        "I have glasses.",
+        "They're [new] and cool."
+      ]
+    },
+    {
+      "name": "Unit 04: Pets",
+      "title": "Pets",
+      "by": "",
+      "lines": [
+        "Molly is my pet [dog].",
+        "Molly is brown.",
+        "She [has] a short tail.",
+        "She is a [friendly] dog.",
+        "",
+        "Kitty is my [friend's] pet cat.",
+        "Kitty is gray.",
+        "He has a long [tail].",
+        "He is a [cute] cat."
+      ]
+    },
+    {
+      "name": "Review 01: Colorful Family",
+      "title": "My Colorful Family",
+      "by": "",
+      "lines": [
+        "My name is Leo.",
+        "This is my [family].",
+        "",
+        "My mother has long brown [hair].",
+        "She likes the [color] red.",
+        "My brother has short red hair.",
+        "He [likes] the color green.",
+        "My sister has [straight] orange hair.",
+        "She likes the color blue.",
+        "I have short black hair.",
+        "I like the color white.",
+        "",
+        "We are a family with many [colors]!"
+      ]
+    },
+    {
+      "name": "Unit 05: Snacks",
+      "title": "Snacks",
+      "by": "By Jamie Spark",
+      "lines": [
+        "My friends and I like [snacks].",
+        "",
+        "I like vanilla [ice cream].",
+        "I like butter cookies.",
+        "",
+        "Ella [likes] chocolate chip cookies.",
+        "Ella [doesn't] like chips.",
+        "",
+        "Justin doesn't like [cookies].",
+        "Justin and I [like] chips.",
+        "Justin and Ella like mint ice cream.",
+        "",
+        "We all like snacks.",
+        "But we all like [different] snacks."
+      ]
+    },
+    {
+      "name": "Unit 06: Birthday Invitation",
+      "title": "To Jessica",
+      "by": "",
+      "lines": [
+        "You are [invited]!",
+        "Please come to my birthday [party].",
+        "",
+        "It's my 7th birthday.",
+        "It's [on] April 22nd.",
+        "It is on [Saturday].",
+        "",
+        "Please come [at] 3 p.m.",
+        "Please come to my [house].",
+        "Hope to see you!",
+        "",
+        "From Emily"
+      ]
+    },
+    {
+      "name": "Unit 07: We Are the Same",
+      "title": "Dear Grandma",
+      "by": "",
+      "lines": [
+        "Dear Grandma,",
+        "",
+        "I like you, Grandma.",
+        "",
+        "You have big brown [eyes].",
+        "I have big brown eyes, [too].",
+        "We have the [same] eyes.",
+        "",
+        "You have a [round] nose.",
+        "I have a round [nose], too.",
+        "We have the same nose.",
+        "",
+        "I miss you!",
+        "",
+        "Love,",
+        "Luke"
+      ]
+    },
+    {
+      "name": "Unit 08: My Room",
+      "title": "Dear Diary",
+      "by": "",
+      "lines": [
+        "Friday, July 1st",
+        "Dear Diary,",
+        "",
+        "I like my [room].",
+        "",
+        "There [is] a teddy bear.",
+        "My teddy bear is [on] the bed.",
+        "",
+        "There [are] clothes.",
+        "My clothes are [in] the closet.",
+        "",
+        "There are pictures.",
+        "My pictures are on the [dresser].",
+        "",
+        "There are slippers.",
+        "My slippers are [under] the desk.",
+        "",
+        "Rachel"
+      ]
+    },
+    {
+      "name": "Review 02: My Classroom",
+      "title": "My Classroom",
+      "by": "",
+      "lines": [
+        "Friday, September 7th",
+        "Dear Diary,",
+        "",
+        "I like my [classroom].",
+        "",
+        "There are four orange [desks] in the classroom.",
+        "There are three blue [globes] on the desk.",
+        "There is one white screen on the [wall].",
+        "There is one red [clock] on the wall.",
+        "",
+        "I sit [next to] Hailey.",
+        "She has long brown hair.",
+        "",
+        "Sam"
+      ]
+    }
+  ]
+}

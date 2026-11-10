@@ -83,6 +83,7 @@ The saved breakdown is a list of units, grammar points, and vocabulary extracted
 | Quiz-Quiz-Trade, Fan-N-Pick, Find Someone Who, Showdown, RallyCoach | **Yes — required** | Uses the breakdown's word list directly (no AI call, print-first) |
 | Jumping OX / Jeopardy (built-in) | No | Pre-made JSON packs in `content/` |
 | Jumping OX / Jeopardy (AI mode) | Optional but recommended | AI prompt includes the full breakdown if saved; otherwise uses unit titles only |
+| Sentence Scramble, Gap Fill, Writing Card Spinner | **Yes — required** (unless a built-in pack exists) | With an API key: AI writes model sentences, a model passage with [blanks], and fill-in writing cards from the breakdown. Without a key: built from the breakdown's grammar examples. Built-in packs: The Best Writing Starter 1, 2 and 3 |
 
 ## Generate games
 
@@ -93,7 +94,8 @@ The saved breakdown is a list of units, grammar points, and vocabulary extracted
    - **Built-in pack** — Write Now / Early Writers Jumping OX (and Write Now 1 Jeopardy). No internet.
    - **AI API** — builds Jumping OX / Jeopardy from your saved breakdown.
 5. Vocabulary, Team Match, Charades, Quiz-Quiz-Trade, Fan-N-Pick, Find Someone Who, Showdown, and RallyCoach always use the saved word list (no second API call). The Kagan activities are print-first: open the file, pick a unit, then click **Print**.
-6. Click **Generate**. Files download. **Open last result** to try one. Put downloaded HTML in the `activities/...` folder if you want Loader to open it from disk later.
+6. Sentence Scramble, Gap Fill and Writing Card Spinner are writing-practice games. They use a built-in pack when the book has one (The Best Writing Starter 1–3), AI when you paste a key, and otherwise the grammar examples in the saved breakdown.
+7. Click **Generate**. Files download. **Open last result** to try one. Put downloaded HTML in the `activities/...` folder if you want Loader to open it from disk later.
 
 The Generate tab shows a hint below the book selector telling you how many units and words are saved, and which activity types will use them.
 

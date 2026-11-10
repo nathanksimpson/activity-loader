@@ -1,0 +1,280 @@
+{
+  "bookId": "the-best-writing-starter-3",
+  "cefr": "A1",
+  "activityId": "jeopardy",
+  "title": "The Best Writing Starter 3",
+  "units": {
+    "Dream Jobs": [
+      {
+        "q": "A doctor for animals.",
+        "a": "vet"
+      },
+      {
+        "q": "A person who acts in movies and plays.",
+        "a": "actor"
+      },
+      {
+        "q": "A person who plays and writes music.",
+        "a": "musician"
+      },
+      {
+        "q": "A person who makes videos for YouTube.",
+        "a": "content creator"
+      },
+      {
+        "q": "A person who paints and draws pictures.",
+        "a": "artist"
+      },
+      {
+        "q": "A person who keeps people safe.",
+        "a": "police officer"
+      },
+      {
+        "q": "To make new songs.",
+        "a": "write songs"
+      },
+      {
+        "q": "To look after pets and other animals.",
+        "a": "take care of animals"
+      }
+    ],
+    "Tastes of Food": [
+      {
+        "q": "Lemons taste like this.",
+        "a": "sour"
+      },
+      {
+        "q": "Candy and cake taste like this.",
+        "a": "sweet"
+      },
+      {
+        "q": "Chips and bacon taste like this.",
+        "a": "salty"
+      },
+      {
+        "q": "Food with lots of pepper tastes like this.",
+        "a": "spicy"
+      },
+      {
+        "q": "Just picked or made; not old.",
+        "a": "fresh"
+      },
+      {
+        "q": "Meat that comes from a cow.",
+        "a": "beef"
+      },
+      {
+        "q": "A small cake for one person.",
+        "a": "cupcake"
+      },
+      {
+        "q": "A red fruit used in salads and sauce.",
+        "a": "tomato"
+      }
+    ],
+    "My Daily Routine": [
+      {
+        "q": "To stop sleeping and open your eyes.",
+        "a": "wake up"
+      },
+      {
+        "q": "To eat the evening meal.",
+        "a": "have dinner"
+      },
+      {
+        "q": "To write about your day in a book.",
+        "a": "write a diary"
+      },
+      {
+        "q": "To ride the bus to school.",
+        "a": "take the school bus"
+      },
+      {
+        "q": "To go back to your house.",
+        "a": "come home"
+      },
+      {
+        "q": "To go to bed.",
+        "a": "go to sleep"
+      },
+      {
+        "q": "The time from noon until evening.",
+        "a": "in the afternoon"
+      },
+      {
+        "q": "The time when it is dark and you sleep.",
+        "a": "at night"
+      }
+    ],
+    "Animals vs. Humans": [
+      {
+        "q": "Small hard plates on a fish's body.",
+        "a": "scales"
+      },
+      {
+        "q": "Fish breathe with these.",
+        "a": "gills"
+      },
+      {
+        "q": "Humans breathe with these.",
+        "a": "lungs"
+      },
+      {
+        "q": "Fish swim with these.",
+        "a": "fins"
+      },
+      {
+        "q": "It covers the outside of your body.",
+        "a": "skin"
+      },
+      {
+        "q": "To close and open your eyes very fast.",
+        "a": "blink"
+      },
+      {
+        "q": "The dry ground, not water.",
+        "a": "land"
+      },
+      {
+        "q": "The two together.",
+        "a": "both"
+      }
+    ],
+    "Fun Time with My Family": [
+      {
+        "q": "To eat food outside in the park.",
+        "a": "go on a picnic"
+      },
+      {
+        "q": "To build a man out of snow.",
+        "a": "make a snowman"
+      },
+      {
+        "q": "To walk slowly for fun.",
+        "a": "take a walk"
+      },
+      {
+        "q": "To play a game on a board with family.",
+        "a": "play a board game"
+      },
+      {
+        "q": "Weather with lots of wind.",
+        "a": "windy"
+      },
+      {
+        "q": "Weather with lots of snow.",
+        "a": "snowy"
+      },
+      {
+        "q": "To not go out; to stay in the house.",
+        "a": "stay home"
+      },
+      {
+        "q": "Most of the time.",
+        "a": "usually"
+      }
+    ],
+    "My Busy Weekend": [
+      {
+        "q": "To clean and do chores at home.",
+        "a": "help around the house"
+      },
+      {
+        "q": "To take your dog outside for a walk.",
+        "a": "walk my dog"
+      },
+      {
+        "q": "To watch a film at the theater.",
+        "a": "see a movie"
+      },
+      {
+        "q": "To go to a fun event with music and cake.",
+        "a": "go to a party"
+      },
+      {
+        "q": "The number word after fourth.",
+        "a": "fifth"
+      },
+      {
+        "q": "At the end; the last one.",
+        "a": "finally"
+      },
+      {
+        "q": "To go and see a person or place.",
+        "a": "visit"
+      },
+      {
+        "q": "To kick a ball with a team.",
+        "a": "play soccer"
+      }
+    ],
+    "Packing List": [
+      {
+        "q": "A light summer dress.",
+        "a": "sundress"
+      },
+      {
+        "q": "You wear these to see underwater.",
+        "a": "swimming goggles"
+      },
+      {
+        "q": "Clothes you wear to swim.",
+        "a": "swimsuit"
+      },
+      {
+        "q": "A small flying machine with a camera.",
+        "a": "drone"
+      },
+      {
+        "q": "A toy car you drive with a remote.",
+        "a": "RC car"
+      },
+      {
+        "q": "A flat touch computer for e-books.",
+        "a": "tablet"
+      },
+      {
+        "q": "Short pants for hot weather.",
+        "a": "shorts"
+      },
+      {
+        "q": "To record a movie with a camera.",
+        "a": "shoot a video"
+      }
+    ],
+    "Gifts for Friends": [
+      {
+        "q": "You wear these on your hands in winter.",
+        "a": "gloves"
+      },
+      {
+        "q": "You wear it around your neck.",
+        "a": "scarf"
+      },
+      {
+        "q": "You wear these on your feet inside shoes.",
+        "a": "socks"
+      },
+      {
+        "q": "A baseball player catches with it.",
+        "a": "baseball mitt"
+      },
+      {
+        "q": "You grow a plant in it.",
+        "a": "flower pot"
+      },
+      {
+        "q": "A can of fish.",
+        "a": "tuna can"
+      },
+      {
+        "q": "A word that gives a reason.",
+        "a": "because"
+      },
+      {
+        "q": "To hand something to a person.",
+        "a": "give"
+      }
+    ]
+  }
+}

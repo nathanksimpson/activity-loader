@@ -163,6 +163,14 @@
     { "id": "charades", "label": "Charades" },
     { "id": "jeopardy", "label": "Jeopardy" },
     { "id": "jumpingOx", "label": "Jumping OX" },
+    { "id": "quizQuizTrade", "label": "Quiz-Quiz-Trade" },
+    { "id": "fanNPick", "label": "Fan-N-Pick" },
+    { "id": "findSomeoneWho", "label": "Find Someone Who" },
+    { "id": "showdown", "label": "Showdown" },
+    { "id": "rallyCoach", "label": "RallyCoach" },
+    { "id": "sentenceScramble", "label": "Sentence Scramble" },
+    { "id": "gapFill", "label": "Gap Fill" },
+    { "id": "writingCards", "label": "Writing Card Spinner" },
     { "id": "lexiQuest", "label": "LexiQuest" }
   ]
 }

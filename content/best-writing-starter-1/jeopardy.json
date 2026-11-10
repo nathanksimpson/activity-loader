@@ -1,0 +1,280 @@
+{
+  "bookId": "best-writing-starter-1",
+  "cefr": "A1",
+  "activityId": "jeopardy",
+  "title": "The Best Writing Starter 1",
+  "units": {
+    "About Me": [
+      {
+        "q": "A young male child.",
+        "a": "boy"
+      },
+      {
+        "q": "A young female child.",
+        "a": "girl"
+      },
+      {
+        "q": "A person who learns at school.",
+        "a": "student"
+      },
+      {
+        "q": "A person who teaches a class.",
+        "a": "teacher"
+      },
+      {
+        "q": "Not tall.",
+        "a": "short"
+      },
+      {
+        "q": "Good at thinking; clever.",
+        "a": "smart"
+      },
+      {
+        "q": "This person makes you laugh.",
+        "a": "funny"
+      },
+      {
+        "q": "Does not talk much.",
+        "a": "quiet"
+      }
+    ],
+    "My Family": [
+      {
+        "q": "Your mom's or dad's father.",
+        "a": "grandfather"
+      },
+      {
+        "q": "Your mom's or dad's mother.",
+        "a": "grandmother"
+      },
+      {
+        "q": "A person who helps sick people.",
+        "a": "doctor"
+      },
+      {
+        "q": "A person who paints and draws.",
+        "a": "artist"
+      },
+      {
+        "q": "A person who keeps the town safe.",
+        "a": "police officer"
+      },
+      {
+        "q": "A person who works in an office.",
+        "a": "office worker"
+      },
+      {
+        "q": "Nice and good to others.",
+        "a": "kind"
+      },
+      {
+        "q": "Thinks about others and helps them.",
+        "a": "caring"
+      }
+    ],
+    "My Things": [
+      {
+        "q": "You wear these to see better.",
+        "a": "glasses"
+      },
+      {
+        "q": "You keep your pencils in it.",
+        "a": "pencil case"
+      },
+      {
+        "q": "A phone that can use apps.",
+        "a": "smartphone"
+      },
+      {
+        "q": "You carry books to school in it.",
+        "a": "backpack"
+      },
+      {
+        "q": "You wear these on your feet.",
+        "a": "shoes"
+      },
+      {
+        "q": "The opposite of old.",
+        "a": "new"
+      },
+      {
+        "q": "The opposite of fast.",
+        "a": "slow"
+      },
+      {
+        "q": "It has many colors.",
+        "a": "colorful"
+      }
+    ],
+    "Pets": [
+      {
+        "q": "This animal says meow.",
+        "a": "cat"
+      },
+      {
+        "q": "This animal says woof.",
+        "a": "dog"
+      },
+      {
+        "q": "This animal can fly and sing.",
+        "a": "bird"
+      },
+      {
+        "q": "This animal swims in water.",
+        "a": "fish"
+      },
+      {
+        "q": "A small animal with long ears that hops.",
+        "a": "rabbit"
+      },
+      {
+        "q": "A small animal with scales and a long tail.",
+        "a": "lizard"
+      },
+      {
+        "q": "An animal that lives with you at home.",
+        "a": "pet"
+      },
+      {
+        "q": "The long part at the back of a dog.",
+        "a": "tail"
+      }
+    ],
+    "Snacks": [
+      {
+        "q": "A cold, sweet snack in a cone.",
+        "a": "ice cream"
+      },
+      {
+        "q": "You eat this at the movies. It pops!",
+        "a": "popcorn"
+      },
+      {
+        "q": "Thin, crunchy snacks made from potatoes.",
+        "a": "potato chips"
+      },
+      {
+        "q": "Sweet baked snacks, sometimes with chocolate chips.",
+        "a": "cookies"
+      },
+      {
+        "q": "Bread with ham or cheese inside.",
+        "a": "sandwiches"
+      },
+      {
+        "q": "A green, cool flavor of ice cream.",
+        "a": "mint ice cream"
+      },
+      {
+        "q": "Small, hard, sweet snacks.",
+        "a": "candies"
+      },
+      {
+        "q": "A sausage in a bun.",
+        "a": "hot dogs"
+      }
+    ],
+    "Birthday Invitation": [
+      {
+        "q": "The first month of the year.",
+        "a": "January"
+      },
+      {
+        "q": "The last month of the year.",
+        "a": "December"
+      },
+      {
+        "q": "The day after Friday.",
+        "a": "Saturday"
+      },
+      {
+        "q": "The day before Monday.",
+        "a": "Sunday"
+      },
+      {
+        "q": "You eat a meal here and pay.",
+        "a": "restaurant"
+      },
+      {
+        "q": "You swim here.",
+        "a": "pool"
+      },
+      {
+        "q": "You watch movies or plays here.",
+        "a": "theater"
+      },
+      {
+        "q": "You skate on ice here.",
+        "a": "ice rink"
+      }
+    ],
+    "We Are the Same": [
+      {
+        "q": "You see with these.",
+        "a": "eyes"
+      },
+      {
+        "q": "You hear with these.",
+        "a": "ears"
+      },
+      {
+        "q": "You smell with this.",
+        "a": "nose"
+      },
+      {
+        "q": "You eat and talk with this.",
+        "a": "mouth"
+      },
+      {
+        "q": "The part of your face under your mouth.",
+        "a": "chin"
+      },
+      {
+        "q": "The part of your face above your eyes.",
+        "a": "forehead"
+      },
+      {
+        "q": "Shaped like a circle.",
+        "a": "round"
+      },
+      {
+        "q": "Not different.",
+        "a": "same"
+      }
+    ],
+    "My Room": [
+      {
+        "q": "You sleep on it.",
+        "a": "bed"
+      },
+      {
+        "q": "You sit on it.",
+        "a": "chair"
+      },
+      {
+        "q": "You keep your clothes in it.",
+        "a": "closet"
+      },
+      {
+        "q": "You study and write at it.",
+        "a": "desk"
+      },
+      {
+        "q": "A soft toy bear.",
+        "a": "teddy bear"
+      },
+      {
+        "q": "Soft shoes you wear at home.",
+        "a": "slippers"
+      },
+      {
+        "q": "The cat is ___ the table. (below it)",
+        "a": "under"
+      },
+      {
+        "q": "Shirts, pants and dresses.",
+        "a": "clothes"
+      }
+    ]
+  }
+}

@@ -136,6 +136,9 @@
       { id: 'findSomeoneWho', label: 'Find Someone Who' },
       { id: 'showdown', label: 'Showdown' },
       { id: 'rallyCoach', label: 'RallyCoach' },
+      { id: 'sentenceScramble', label: 'Sentence Scramble' },
+      { id: 'gapFill', label: 'Gap Fill' },
+      { id: 'writingCards', label: 'Writing Card Spinner' },
       { id: 'lexiQuest', label: 'LexiQuest' }
     ]
   };

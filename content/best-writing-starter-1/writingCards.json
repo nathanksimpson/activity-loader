@@ -1,0 +1,252 @@
+{
+  "bookId": "best-writing-starter-1",
+  "cefr": "A1",
+  "activityId": "writingCards",
+  "title": "The Best Writing Starter 1 Writing Card Spinner",
+  "cards": [
+    {
+      "title": "The Best Cook",
+      "lines": [
+        "The best cook in my family is {cook}.",
+        "The dishes {he} can make are {thing}, {thing}, and {thing}.",
+        "The best one is {among}."
+      ]
+    },
+    {
+      "title": "About Me",
+      "lines": [
+        "I can describe myself with these three words.",
+        "1. {trait}",
+        "2. {trait}",
+        "3. {trait}"
+      ]
+    },
+    {
+      "title": "My Favorite Animal",
+      "lines": [
+        "My favorite animal is the {animal}.",
+        "I like it because it is very {animaladj}.",
+        "It has {feature}.",
+        "It looks {look}."
+      ]
+    },
+    {
+      "title": "What's in My Bag",
+      "lines": [
+        "I packed a few things in my schoolbag today.",
+        "I packed {bagthing}, {bagthing}, and {bagthing}.",
+        "Tomorrow, I will pack {bagthing} and {bagthing}."
+      ]
+    },
+    {
+      "title": "Birthday Invitation List",
+      "lines": [
+        "My birthday is on {month} {date}.",
+        "I want to invite my friends to my birthday party.",
+        "Here is the list.",
+        "1. {guest}",
+        "2. {guest}",
+        "3. {guest}",
+        "4. {guest}"
+      ]
+    },
+    {
+      "title": "Healthy and Unhealthy Snacks",
+      "lines": [
+        "The {healthy} is a healthy snack.",
+        "It is healthy because it has {good}.",
+        "The {unhealthy} is an unhealthy snack.",
+        "It is unhealthy because it is {bad}."
+      ]
+    },
+    {
+      "title": "My Closet",
+      "lines": [
+        "My closet is full of outfits.",
+        "I have these in my closet.",
+        "1. {clothes}",
+        "2. {clothes}",
+        "3. {clothes}",
+        "4. {clothes}"
+      ]
+    },
+    {
+      "title": "We Look Alike",
+      "lines": [
+        "Some of my friends look like me.",
+        "{name#f1} has {face#x1}.",
+        "I have {face#x1}, too.",
+        "{name#f2} has {face#x2}.",
+        "I have {face#x2}, too.",
+        "I like my friends!"
+      ]
+    }
+  ],
+  "pools": {
+    "cook": [
+      "my father",
+      "my mother",
+      "my grandmother",
+      "my grandfather",
+      "my big sister",
+      "my uncle"
+    ],
+    "thing": [
+      "pizza",
+      "cookies",
+      "steak",
+      "fried rice",
+      "spaghetti",
+      "pancakes",
+      "curry",
+      "sandwiches"
+    ],
+    "trait": [
+      "tall",
+      "smart",
+      "friendly",
+      "funny",
+      "kind",
+      "quiet",
+      "cool",
+      "caring",
+      "short"
+    ],
+    "animal": [
+      "giant panda",
+      "rabbit",
+      "penguin",
+      "dolphin",
+      "tiger",
+      "koala",
+      "lizard",
+      "hamster"
+    ],
+    "animaladj": [
+      "funny",
+      "cute",
+      "smart",
+      "friendly",
+      "fast",
+      "big",
+      "pretty"
+    ],
+    "feature": [
+      "black and white fur",
+      "long ears",
+      "a long tail",
+      "big eyes",
+      "soft fur",
+      "a short tail"
+    ],
+    "look": [
+      "cute",
+      "funny",
+      "cool",
+      "strong",
+      "pretty",
+      "friendly"
+    ],
+    "bagthing": [
+      "my homework",
+      "colored pencils",
+      "a water bottle",
+      "my pencil case",
+      "my glasses",
+      "a notebook",
+      "my smartphone",
+      "candies",
+      "cookies",
+      "a book"
+    ],
+    "month": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "date": [
+      "1st",
+      "3rd",
+      "7th",
+      "12th",
+      "22nd",
+      "25th",
+      "31st"
+    ],
+    "guest": [
+      "Mr. Johnson, my teacher",
+      "Samuel Brown",
+      "Olivia Anderson",
+      "Emily Grace",
+      "Peter Jackson",
+      "my best friend Mia",
+      "my cousin Leo"
+    ],
+    "healthy": [
+      "fruit",
+      "salad",
+      "milk",
+      "yogurt",
+      "carrot",
+      "banana"
+    ],
+    "good": [
+      "vitamins",
+      "calcium",
+      "protein",
+      "fiber"
+    ],
+    "unhealthy": [
+      "soda",
+      "candy bar",
+      "chocolate cake",
+      "hot dog",
+      "donut"
+    ],
+    "bad": [
+      "too sweet",
+      "too salty",
+      "too oily",
+      "full of sugar"
+    ],
+    "clothes": [
+      "many shirts",
+      "three jackets",
+      "many sweaters",
+      "four bags",
+      "two pairs of jeans",
+      "five caps",
+      "many socks",
+      "two dresses"
+    ],
+    "name": [
+      "Rina",
+      "Jake",
+      "Mia",
+      "Leo",
+      "Amy",
+      "Sam",
+      "Hailey",
+      "Ted"
+    ],
+    "face": [
+      "big eyes",
+      "a round nose",
+      "small ears",
+      "a big smile",
+      "curly hair",
+      "short black hair",
+      "brown eyes",
+      "a small mouth"
+    ]
+  }
+}

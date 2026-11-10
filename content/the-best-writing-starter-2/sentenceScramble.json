@@ -1,0 +1,155 @@
+{
+  "title": "The Best Writing Starter 2 Sentence Scramble",
+  "cefr": "A1",
+  "units": [
+    {
+      "id": "u1",
+      "name": "Unit 01: Fun at the Playground",
+      "sentences": [
+        "We play on the monkey bars.",
+        "Rachel can hang upside down.",
+        "Fred and Rachel can swing from bar to bar.",
+        "But I can't swing from bar to bar.",
+        "We have fun every day.",
+        "I can't climb up the slide.",
+        "Rachel can't stand on the jungle gym.",
+        "Fred can't stand on the swing.",
+        "Olivia can stand on the swing.",
+        "Tom and Lily can hang on the bars."
+      ]
+    },
+    {
+      "id": "u2",
+      "name": "Unit 02: Morning Routine",
+      "sentences": [
+        "Every morning, I get up at 7 o'clock.",
+        "First, I wash my face.",
+        "Then I get dressed.",
+        "Lastly, I eat breakfast.",
+        "At 8 o'clock, I'm ready for school.",
+        "At 6 o'clock, I get up.",
+        "At 9 o'clock, the class begins.",
+        "Then I meet my friend.",
+        "First, I walk to school.",
+        "Lastly, I go to my classroom."
+      ]
+    },
+    {
+      "id": "u3",
+      "name": "Unit 03: To My Teacher",
+      "sentences": [
+        "I want to know about you.",
+        "Do you live near school?",
+        "Do you have a pet?",
+        "Do you like our class?",
+        "Do you like playing mobile games?",
+        "Do you like teaching?",
+        "Do you live in an apartment?",
+        "I'm happy to be in your class.",
+        "Do you have a hobby?"
+      ]
+    },
+    {
+      "id": "r1",
+      "name": "Review 01: Secret Santa",
+      "sentences": [
+        "I'm your Secret Santa.",
+        "I know a lot about you.",
+        "You live near the subway station.",
+        "You come to school at 8:45 a.m.",
+        "Your favorite subject is science.",
+        "You like the color green.",
+        "This is a small gift.",
+        "I hope you like it."
+      ]
+    },
+    {
+      "id": "u4",
+      "name": "Unit 04: My Favorite Things",
+      "sentences": [
+        "My favorite color is purple.",
+        "It makes me look cool.",
+        "It makes me feel excited.",
+        "I'm good at kicking a ball.",
+        "I'm good at catching a ball.",
+        "I'm good at throwing a ball.",
+        "My favorite subject is art.",
+        "I like my blue backpack.",
+        "It makes me feel calm."
+      ]
+    },
+    {
+      "id": "u5",
+      "name": "Unit 05: My Feelings",
+      "sentences": [
+        "Sometimes I feel angry.",
+        "Loud music makes me angry.",
+        "Farewells make me sad.",
+        "Having no friends makes me sad.",
+        "Eating out makes me glad.",
+        "Losing a game makes me angry.",
+        "School holidays make me glad.",
+        "Gifts make me glad.",
+        "Sometimes I feel bored."
+      ]
+    },
+    {
+      "id": "u6",
+      "name": "Unit 06: At the Fair",
+      "sentences": [
+        "At the fair, I want to ride a water ride.",
+        "I like to cool off.",
+        "I want to watch a parade.",
+        "I like to hear its music.",
+        "I like to eat churros and cotton candy.",
+        "I like to remember the happy time.",
+        "I want to drive a bumper car.",
+        "I want to buy a balloon.",
+        "I want to ride a Ferris wheel."
+      ]
+    },
+    {
+      "id": "u7",
+      "name": "Unit 07: My Favorite Places",
+      "sentences": [
+        "I have favorite places at school.",
+        "My first favorite place is the cafeteria.",
+        "I can have lunch with friends.",
+        "I can read storybooks.",
+        "I can play hide-and-seek.",
+        "I can play basketball.",
+        "I can do an experiment.",
+        "My favorite place is the music room.",
+        "I love my school!"
+      ]
+    },
+    {
+      "id": "u8",
+      "name": "Unit 08: To My Classmate",
+      "sentences": [
+        "You are nice and polite.",
+        "You often make me laugh.",
+        "You often make me giggle.",
+        "You often make me cry.",
+        "You are good at singing.",
+        "Let's be good friends.",
+        "See you at school.",
+        "You are clever and quiet.",
+        "You are nice and caring."
+      ]
+    },
+    {
+      "id": "r2",
+      "name": "Review 02: My Least Favorite Sport",
+      "sentences": [
+        "My least favorite sport is baseball.",
+        "I don't like to play baseball.",
+        "It makes me tired.",
+        "I'm not good at hitting a ball.",
+        "My second least favorite sport is tennis.",
+        "I don't like sports that much.",
+        "It makes me bored."
+      ]
+    }
+  ]
+}

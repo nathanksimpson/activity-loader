@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>__TITLE__</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap");
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body { font-family: Nunito, "Segoe UI", "Malgun Gothic", sans-serif; background: #f1f5f9; color: #0f172a; min-height: 100vh; }
+    select, button, input { font: inherit; font-weight: 800; }
+    .topbar { position: sticky; top: 0; z-index: 20; background: #fff; border-bottom: 1px solid #e2e8f0; box-shadow: 0 4px 14px rgba(15,23,42,.06); padding: .75rem 1.25rem; display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+    .topbar h1 { margin: 0 auto 0 0; font-size: 1.25rem; font-weight: 900; color: #be185d; }
+    select { padding: .5rem .8rem; border-radius: .6rem; border: 2px solid #e2e8f0; background: #f8fafc; color: #334155; }
+    .toggle { display: inline-flex; align-items: center; gap: .35rem; color: #475569; font-size: .95rem; cursor: pointer; }
+    .toggle input { width: 1.1rem; height: 1.1rem; accent-color: #db2777; }
+    .btn { border: 0; border-radius: .6rem; padding: .55rem 1rem; cursor: pointer; color: #fff; background: #db2777; }
+    .btn:hover { filter: brightness(1.07); }
+    .btn.slate { background: #e2e8f0; color: #334155; }
+    .btn.amber { background: #f59e0b; }
+    .btn.indigo { background: #6366f1; }
+    .wrap { max-width: 76rem; margin: 0 auto; padding: 1.25rem; display: grid; grid-template-columns: 1fr 17rem; gap: 1.25rem; align-items: start; }
+    .paper { background: #fff; border-radius: 1rem; box-shadow: 0 25px 50px -12px rgba(15,23,42,.15); padding: 1.75rem 2rem; }
+    .paper-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: .5rem; border-bottom: 3px solid #fbcfe8; padding-bottom: .6rem; margin-bottom: 1rem; }
+    .paper-head h2 { margin: 0; font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 900; }
+    .by { color: #64748b; font-weight: 800; }
+    .lines p { margin: 0; font-size: clamp(1.25rem, 2.6vw, 1.8rem); line-height: 2.1; font-weight: 700; }
+    .lines p.gap { height: .9rem; }
+    .blank { display: inline-flex; align-items: center; justify-content: center; position: relative; vertical-align: middle; height: 2.6rem; padding: 0 .6rem; margin: 0 .15rem; border: 0; border-radius: .55rem; cursor: pointer; background: #fce7f3; box-shadow: inset 0 -4px 0 #f9a8d4; color: #9d174d; font-size: inherit; font-weight: 900; transition: transform .15s; }
+    .blank:hover { transform: translateY(-2px); }
+    .blank .num { position: absolute; top: -.55rem; left: -.35rem; background: #db2777; color: #fff; border-radius: 999px; font-size: .75rem; min-width: 1.35rem; height: 1.35rem; display: grid; place-items: center; padding: 0 .25rem; }
+    .blank .mask { letter-spacing: .12em; color: #be185d; opacity: .8; }
+    .blank .word { display: none; color: #dc2626; text-decoration: underline; text-underline-offset: 4px; }
+    .blank.open { background: transparent; box-shadow: none; animation: pop .35s ease; }
+    .blank.open .mask { display: none; }
+    .blank.open .word { display: inline; }
+    .blank.open .num { background: #94a3b8; }
+    .blank.pick { animation: pulse 1s ease-in-out infinite; background: #fde68a; box-shadow: inset 0 -4px 0 #f59e0b, 0 0 0 4px #fcd34d; }
+    @keyframes pop { 0% { transform: scale(.6); } 70% { transform: scale(1.12); } 100% { transform: scale(1); } }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+    .bar { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; }
+    .bar .count { margin-left: auto; color: #64748b; font-weight: 900; }
+    .side { display: flex; flex-direction: column; gap: 1rem; position: sticky; top: 5.5rem; }
+    .panel { background: #fff; border-radius: 1rem; padding: 1rem; box-shadow: 0 10px 25px -10px rgba(15,23,42,.12); }
+    .panel h3 { margin: 0 0 .6rem; font-size: 1.05rem; color: #334155; }
+    .bank { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .bank span { background: #f1f5f9; border: 2px solid #e2e8f0; border-radius: .5rem; padding: .2rem .55rem; font-weight: 900; font-size: 1.05rem; }
+    .bank span.used { text-decoration: line-through; opacity: .4; }
+    .team { border-radius: .7rem; padding: .55rem .7rem; display: flex; align-items: center; gap: .5rem; margin-bottom: .5rem; }
+    .team input { flex: 1; min-width: 0; border: 0; background: transparent; font-weight: 900; color: inherit; }
+    .team .score { font-size: 1.6rem; font-weight: 900; min-width: 2rem; text-align: center; }
+    .team button { border: 0; border-radius: .45rem; width: 2rem; height: 2rem; cursor: pointer; color: #fff; font-size: 1.1rem; }
+    .team-tools { display: flex; gap: .4rem; }
+    .team-tools .btn { flex: 1; padding: .4rem; font-size: .85rem; }
+    .hidden { display: none !important; }
+    @media (max-width: 900px) { .wrap { grid-template-columns: 1fr; } .side { position: static; } }
+    @media (max-width: 640px) { .topbar h1 { width: 100%; } .wrap { padding: .75rem; } .paper { padding: 1.1rem; } }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <h1>__TITLE__</h1>
+    <label>Unit <select id="unit"></select></label>
+    <label>Blanks <select id="level"><option value="book">Book blanks</option><option value="more">Book + extra blanks</option></select></label>
+    <label class="toggle"><input type="checkbox" id="bankToggle" checked> Word bank</label>
+    <label class="toggle"><input type="checkbox" id="letterToggle"> First-letter hint</label>
+    <button type="button" class="btn slate" id="reset">↺ New board</button>
+  </div>
+
+  <div class="wrap">
+    <div class="paper">
+      <div class="paper-head"><h2 id="ptitle"></h2><span class="by" id="pby"></span></div>
+      <div class="lines" id="lines"></div>
+      <div class="bar">
+        <button type="button" class="btn amber" id="randomBtn">🎯 Random blank</button>
+        <button type="button" class="btn indigo" id="allBtn">👀 Reveal all</button>
+        <button type="button" class="btn slate" id="hideBtn">🙈 Hide all</button>
+        <span class="count" id="count"></span>
+      </div>
+    </div>
+    <div class="side">
+      <div class="panel" id="bankPanel">
+        <h3>Word bank</h3>
+        <div class="bank" id="bank"></div>
+      </div>
+      <div class="panel">
+        <h3>Teams</h3>
+        <div id="teams"></div>
+        <div class="team-tools">
+          <button type="button" class="btn slate" id="addTeam">+ Team</button>
+          <button type="button" class="btn slate" id="removeTeam">− Team</button>
+          <button type="button" class="btn slate" id="resetScores">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Model Writing passages from the answer key; [brackets] = the red blanks in the book
+    var TITLE = __TITLE_JSON__;
+    var DATA = __ACTIVITY_DATA__;
+    var UNITS = (DATA.units || []).map(function (u, i) { return { id: u.id || ("u" + (i + 1)), name: u.name || ("Unit " + (i + 1)), title: u.title || u.name || ("Unit " + (i + 1)), by: u.by || "", lines: (u.lines || []).map(function (l) { return String(l == null ? "" : l); }) }; }).filter(function (u) { return u.lines.length; });
+    var STOP = { the: 1, and: 1, but: 1, you: 1, are: 1, can: 1, too: 1, with: 1, our: 1, your: 1, its: 1, i: 1, "i'm": 1, dear: 1 };
+    var TONES = [["#dbeafe", "#1e40af", "#3b82f6"], ["#ffe4e6", "#9f1239", "#f43f5e"], ["#fef3c7", "#92400e", "#f59e0b"],
+                 ["#ccfbf1", "#115e59", "#14b8a6"], ["#ede9fe", "#5b21b6", "#8b5cf6"], ["#ecfccb", "#3f6212", "#84cc16"]];
+
+    function $(id) { return document.getElementById(id); }
+    var blanks = [];
+    var teams = [{ name: "Team 1", score: 0 }, { name: "Team 2", score: 0 }];
+
+    function shuffle(a) {
+      a = a.slice();
+      for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+      return a;
+    }
+
+    function addExtra(line) {
+      var words = line.split(" "), cand = [];
+      words.forEach(function (w, i) {
+        var core = w.replace(/[^A-Za-z'’-]/g, "");
+        if (core.length >= 3 && !STOP[core.toLowerCase()]) cand.push(i);
+      });
+      if (!cand.length) return [line];
+      var i = cand[Math.floor(Math.random() * cand.length)];
+      var m = words[i].match(/^([^A-Za-z']*)([A-Za-z'’-]+)(.*)$/);
+      if (!m) return [line];
+      var before = words.slice(0, i).join(" ") + (i ? " " : "") + m[1];
+      var after = m[3] + (i < words.length - 1 ? " " : "") + words.slice(i + 1).join(" ");
+      return [before, m[2], after];
+    }
+
+    function mask(ans) {
+      var showFirst = $("letterToggle").checked;
+      return ans.split("").map(function (ch, i) {
+        if (ch === " ") return "\u00a0\u00a0";
+        if (/[^A-Za-z0-9]/.test(ch)) return ch;
+        return (showFirst && i === 0) ? ch : "_";
+      }).join("");
+    }
+
+    function makeBlank(ans) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "blank";
+      var n = blanks.length + 1;
+      b.innerHTML = '<span class="num">' + n + '</span><span class="mask"></span><span class="word"></span>';
+      b.querySelector(".mask").textContent = mask(ans);
+      b.querySelector(".word").textContent = ans;
+      var item = { ans: ans, el: b, open: false };
+      b.addEventListener("click", function () { setOpen(item, !item.open); });
+      blanks.push(item);
+      return b;
+    }
+
+    function setOpen(item, open) {
+      item.open = open;
+      item.el.classList.toggle("open", open);
+      item.el.classList.remove("pick");
+      update();
+    }
+
+    function render() {
+      var u = UNITS.filter(function (x) { return x.id === $("unit").value; })[0];
+      var extra = $("level").value === "more";
+      $("ptitle").textContent = u.title;
+      $("pby").textContent = u.by;
+      var box = $("lines"); box.innerHTML = ""; blanks = [];
+      u.lines.forEach(function (line) {
+        var p = document.createElement("p");
+        if (!line) { p.className = "gap"; box.appendChild(p); return; }
+        var parts = line.split(/\[([^\]]+)\]/);
+        if (extra && parts.length === 1) parts = addExtra(line);
+        parts.forEach(function (t, i) {
+          if (i % 2 === 0) { if (t) p.appendChild(document.createTextNode(t)); }
+          else p.appendChild(makeBlank(t));
+        });
+        box.appendChild(p);
+      });
+      renderBank();
+      update();
+    }
+
+    function renderBank() {
+      var bank = $("bank"); bank.innerHTML = "";
+      shuffle(blanks.map(function (b) { return b.ans; })).forEach(function (w) {
+        var s = document.createElement("span"); s.textContent = w; bank.appendChild(s);
+      });
+    }
+
+    function update() {
+      var opened = blanks.filter(function (b) { return b.open; });
+      $("count").textContent = opened.length + " / " + blanks.length + " revealed";
+      var used = {};
+      opened.forEach(function (b) { used[b.ans] = (used[b.ans] || 0) + 1; });
+      Array.prototype.forEach.call($("bank").children, function (s) {
+        var w = s.textContent;
+        if (used[w]) { s.classList.add("used"); used[w]--; } else s.classList.remove("used");
+      });
+    }
+
+    function randomBlank() {
+      var closed = blanks.filter(function (b) { return !b.open; });
+      blanks.forEach(function (b) { b.el.classList.remove("pick"); });
+      if (!closed.length) return;
+      var pick = closed[Math.floor(Math.random() * closed.length)];
+      pick.el.classList.add("pick");
+      pick.el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function renderTeams() {
+      var box = $("teams"); box.innerHTML = "";
+      teams.forEach(function (t, i) {
+        var tone = TONES[i % TONES.length];
+        var d = document.createElement("div");
+        d.className = "team"; d.style.background = tone[0]; d.style.color = tone[1];
+        d.innerHTML = '<input type="text"><button type="button">−</button><span class="score"></span><button type="button">+</button>';
+        var inp = d.querySelector("input"); inp.value = t.name;
+        inp.addEventListener("input", function () { t.name = inp.value; });
+        d.querySelector(".score").textContent = t.score;
+        var btns = d.querySelectorAll("button");
+        btns[0].style.background = tone[1]; btns[1].style.background = tone[2];
+        btns[0].addEventListener("click", function () { if (t.score > 0) t.score--; renderTeams(); });
+        btns[1].addEventListener("click", function () { t.score++; renderTeams(); });
+        box.appendChild(d);
+      });
+    }
+
+    UNITS.forEach(function (u) { var o = document.createElement("option"); o.value = u.id; o.textContent = u.name; $("unit").appendChild(o); });
+    $("unit").addEventListener("change", render);
+    $("level").addEventListener("change", render);
+    $("reset").addEventListener("click", render);
+    $("bankToggle").addEventListener("change", function () { $("bankPanel").classList.toggle("hidden", !this.checked); });
+    $("letterToggle").addEventListener("change", function () {
+      blanks.forEach(function (b) { b.el.querySelector(".mask").textContent = mask(b.ans); });
+    });
+    $("randomBtn").addEventListener("click", randomBlank);
+    $("allBtn").addEventListener("click", function () { blanks.forEach(function (b) { if (!b.open) setOpen(b, true); }); });
+    $("hideBtn").addEventListener("click", function () { blanks.forEach(function (b) { if (b.open) setOpen(b, false); }); });
+    $("addTeam").addEventListener("click", function () { if (teams.length < 6) { teams.push({ name: "Team " + (teams.length + 1), score: 0 }); renderTeams(); } });
+    $("removeTeam").addEventListener("click", function () { if (teams.length > 1) { teams.pop(); renderTeams(); } });
+    $("resetScores").addEventListener("click", function () { teams.forEach(function (t) { t.score = 0; }); renderTeams(); });
+
+    renderTeams();
+    render();
+  </script>
+</body>
+</html>
