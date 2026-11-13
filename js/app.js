@@ -182,7 +182,7 @@
       'add-book-form', 'new-book-title', 'new-book-level', 'new-book-cefr',
       'add-level-form', 'new-level-name', 'new-level-band', 'new-level-color', 'custom-level-list',
       'generate-form', 'gen-activity-list', 'gen-all', 'gen-book', 'gen-cefr', 'gen-save-cefr', 'gen-mode', 'gen-ai-provider', 'gen-ai-model',
-      'api-key-field', 'gen-api-key', 'generate-btn', 'open-generated-btn', 'generate-status', 'gen-breakdown-hint',
+      'api-key-field', 'gen-api-key', 'generate-btn', 'open-generated-btn', 'generate-status', 'gen-breakdown-hint', 'gen-units-btn',
       'gen-output-folder-label', 'gen-output-folder-hint', 'gen-change-folder-btn',
       'gen-online-field', 'gen-also-download', 'gen-folder-field', 'gen-online-results',
       'gen-custom-fields', 'gen-custom-url', 'gen-custom-model', 'gen-custom-header-name', 'gen-custom-header-value',
@@ -1447,6 +1447,12 @@
       parseNote.className = 'parse-meta';
       if (pending) {
         parseNote.textContent = 'New list is ready to review. Scroll this card and click Save if it looks right.';
+        const pendingWrong = Domain.breakdownBookMismatch(book, pending);
+        if (pendingWrong) {
+          parseNote.textContent = 'Careful: these pages look like ' + pendingWrong + ', not ' + book.title +
+            '. Saving them here would make this book\'s games test the wrong units. Check the PDF before you Save.';
+          parseNote.classList.add('unit-warn');
+        }
       } else if (saved) {
         parseNote.textContent = 'Word list is already saved. Generate can use this book now.';
       } else {
@@ -1705,9 +1711,237 @@
       card.appendChild(head);
       card.appendChild(p);
       card.appendChild(parseNote);
+      if (saved) {
+        const wrong = Domain.breakdownBookMismatch(book, saved);
+        if (wrong) {
+          const warn = document.createElement('p');
+          warn.className = 'unit-warn';
+          warn.textContent = 'Check this list: the pages look like ' + wrong + ', not ' + book.title + '. Games are blocked until you fix it.';
+          card.appendChild(warn);
+        }
+        const unitsBtn = document.createElement('button');
+        unitsBtn.type = 'button';
+        unitsBtn.className = 'btn btn-primary unit-open-btn';
+        unitsBtn.textContent = 'Units: grammar & vocab';
+        unitsBtn.addEventListener('click', () => openUnitView(book.id, 0));
+        card.appendChild(unitsBtn);
+      }
       card.appendChild(field);
       card.appendChild(box);
       return card;
+  }
+
+  // ---- Unit view: each unit's target grammar and vocabulary (what every game tests) ----
+
+  let unitDialog = null;
+  let unitState = null; // { bookId, index, draft, dirty }
+
+  function unitRowInput(value, placeholder, onInput, cls) {
+    const inp = document.createElement('input');
+    inp.className = 'input' + (cls ? ' ' + cls : '');
+    inp.value = value || '';
+    inp.placeholder = placeholder;
+    inp.setAttribute('aria-label', placeholder);
+    inp.addEventListener('input', () => { onInput(inp.value); markUnitDirty(); });
+    return inp;
+  }
+
+  function unitRemoveBtn(label, onClick) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'btn btn-ghost unit-remove';
+    b.textContent = '✕';
+    b.setAttribute('aria-label', label);
+    b.addEventListener('click', () => { onClick(); markUnitDirty(); renderUnitBody(); });
+    return b;
+  }
+
+  function markUnitDirty() {
+    if (!unitState) return;
+    unitState.dirty = true;
+    const save = unitDialog.querySelector('.unit-save');
+    save.disabled = false;
+    unitDialog.querySelector('.unit-note').textContent = 'Unsaved changes.';
+  }
+
+  function ensureUnitDialog() {
+    if (unitDialog) return unitDialog;
+    unitDialog = document.createElement('dialog');
+    unitDialog.className = 'share-dialog unit-dialog';
+    unitDialog.innerHTML =
+      '<div class="unit-dialog-inner">' +
+      '<div class="unit-topbar">' +
+      '<div class="unit-topbar-row"><h2 class="section-title unit-book"></h2>' +
+      '<button type="button" class="btn btn-ghost unit-close" aria-label="Close">✕</button></div>' +
+      '<div class="unit-topbar-row unit-picker">' +
+      '<button type="button" class="btn unit-prev" aria-label="Previous unit">‹</button>' +
+      '<select class="select unit-select" aria-label="Unit"></select>' +
+      '<button type="button" class="btn unit-next" aria-label="Next unit">›</button>' +
+      '</div></div>' +
+      '<div class="unit-mismatch" hidden><p></p>' +
+      '<button type="button" class="btn unit-right-book">This is the right book</button></div>' +
+      '<p class="hint unit-explain">Every Jumping OX, Jeopardy, Sentence Scramble, Gap Fill and Writing Card item must practise one of these grammar patterns or the meaning of one of these words. ' +
+      'Items that use words from outside the unit are thrown out. Edit the lists to change what the games ask.</p>' +
+      '<div class="unit-body"></div>' +
+      '<div class="unit-footer"><p class="unit-note"></p>' +
+      '<button type="button" class="btn btn-primary unit-save" disabled>Save changes</button></div>' +
+      '</div>';
+    document.body.appendChild(unitDialog);
+    unitDialog.querySelector('.unit-close').addEventListener('click', closeUnitView);
+    unitDialog.addEventListener('cancel', (e) => { e.preventDefault(); closeUnitView(); });
+    unitDialog.querySelector('.unit-select').addEventListener('change', (e) => {
+      unitState.index = Number(e.target.value) || 0;
+      renderUnitBody();
+    });
+    unitDialog.querySelector('.unit-prev').addEventListener('click', () => stepUnit(-1));
+    unitDialog.querySelector('.unit-next').addEventListener('click', () => stepUnit(1));
+    unitDialog.querySelector('.unit-save').addEventListener('click', saveUnitView);
+    unitDialog.querySelector('.unit-right-book').addEventListener('click', () => {
+      const book = Domain.getBook(unitState.bookId);
+      unitState.draft.detectedTitle = book.title;
+      markUnitDirty();
+      renderUnitView();
+    });
+    return unitDialog;
+  }
+
+  function stepUnit(delta) {
+    const n = unitState.draft.units.length;
+    unitState.index = Math.max(0, Math.min(n - 1, unitState.index + delta));
+    renderUnitView();
+  }
+
+  function openUnitView(bookId, index) {
+    const saved = Domain.getBreakdown(bookId);
+    if (!saved || !saved.units || !saved.units.length) {
+      setStatus(els['curriculum-status'], 'Analyze and save this book first.', { isError: true, toast: true, toastType: 'error' });
+      return;
+    }
+    ensureUnitDialog();
+    unitState = { bookId: bookId, index: Math.min(index || 0, saved.units.length - 1), draft: JSON.parse(JSON.stringify(saved)), dirty: false };
+    unitDialog.querySelector('.unit-save').disabled = true;
+    unitDialog.querySelector('.unit-note').textContent = '';
+    renderUnitView();
+    if (!unitDialog.open) unitDialog.showModal();
+  }
+
+  function closeUnitView() {
+    if (unitState && unitState.dirty && !window.confirm('Close without saving your changes?')) return;
+    unitState = null;
+    if (unitDialog && unitDialog.open) unitDialog.close();
+  }
+
+  function renderUnitView() {
+    const book = Domain.getBook(unitState.bookId);
+    const d = unitState.draft;
+    unitDialog.querySelector('.unit-book').textContent = book.title;
+    const sel = unitDialog.querySelector('.unit-select');
+    sel.innerHTML = '';
+    d.units.forEach((u, i) => {
+      const o = document.createElement('option');
+      o.value = String(i);
+      o.textContent = u.title || ('Unit ' + (i + 1));
+      sel.appendChild(o);
+    });
+    sel.value = String(unitState.index);
+    unitDialog.querySelector('.unit-prev').disabled = unitState.index <= 0;
+    unitDialog.querySelector('.unit-next').disabled = unitState.index >= d.units.length - 1;
+    const wrong = Domain.breakdownBookMismatch(book, d);
+    const mm = unitDialog.querySelector('.unit-mismatch');
+    mm.hidden = !wrong;
+    if (wrong) {
+      mm.querySelector('p').textContent = 'These pages were read as “' + wrong + '”, but this card is ' + book.title +
+        '. If that is wrong, re-Analyze this card with the right PDF. If the list is right, confirm it here.';
+    }
+    renderUnitBody();
+  }
+
+  function renderUnitBody() {
+    const body = unitDialog.querySelector('.unit-body');
+    const unit = unitState.draft.units[unitState.index];
+    unit.grammar = unit.grammar || [];
+    unit.vocabulary = unit.vocabulary || [];
+    unitDialog.querySelector('.unit-prev').disabled = unitState.index <= 0;
+    unitDialog.querySelector('.unit-next').disabled = unitState.index >= unitState.draft.units.length - 1;
+    unitDialog.querySelector('.unit-select').value = String(unitState.index);
+    body.innerHTML = '';
+
+    const gHead = document.createElement('div');
+    gHead.className = 'unit-section-head';
+    gHead.innerHTML = '<h3>Grammar patterns <span class="unit-count"></span></h3>';
+    gHead.querySelector('.unit-count').textContent = unit.grammar.length;
+    body.appendChild(gHead);
+    const gList = document.createElement('div');
+    gList.className = 'unit-rows unit-rows-grammar';
+    unit.grammar.forEach((g, i) => {
+      const row = document.createElement('div');
+      row.className = 'unit-row';
+      row.appendChild(unitRowInput(g.point, 'Pattern, e.g. He/She + has + noun', (v) => { g.point = v; }, 'unit-point'));
+      row.appendChild(unitRowInput(g.example, 'Example sentence', (v) => { g.example = v; }));
+      row.appendChild(unitRemoveBtn('Remove pattern', () => { unit.grammar.splice(i, 1); }));
+      gList.appendChild(row);
+    });
+    if (!unit.grammar.length) gList.innerHTML = '<p class="hint">No grammar patterns yet. Grammar questions for this unit need at least one.</p>';
+    body.appendChild(gList);
+    const addG = document.createElement('button');
+    addG.type = 'button';
+    addG.className = 'btn unit-add';
+    addG.textContent = '+ Add pattern';
+    addG.addEventListener('click', () => { unit.grammar.push({ point: '', example: '' }); markUnitDirty(); renderUnitBody(); focusLast('.unit-rows-grammar .unit-point'); });
+    body.appendChild(addG);
+
+    const vHead = document.createElement('div');
+    vHead.className = 'unit-section-head';
+    vHead.innerHTML = '<h3>Vocabulary <span class="unit-count"></span></h3>';
+    vHead.querySelector('.unit-count').textContent = unit.vocabulary.length;
+    body.appendChild(vHead);
+    const vList = document.createElement('div');
+    vList.className = 'unit-rows unit-rows-vocab';
+    unit.vocabulary.forEach((w, i) => {
+      const row = document.createElement('div');
+      row.className = 'unit-row unit-row-word';
+      row.appendChild(unitRowInput(w.en, 'English', (v) => { w.en = v; }, 'unit-en'));
+      row.appendChild(unitRowInput(w.ko, '한국어', (v) => { w.ko = v; }));
+      row.appendChild(unitRowInput(w.pos, 'pos', (v) => { w.pos = v; }, 'unit-pos'));
+      row.appendChild(unitRemoveBtn('Remove word', () => { unit.vocabulary.splice(i, 1); }));
+      vList.appendChild(row);
+    });
+    if (!unit.vocabulary.length) vList.innerHTML = '<p class="hint">No words yet.</p>';
+    body.appendChild(vList);
+    const addV = document.createElement('button');
+    addV.type = 'button';
+    addV.className = 'btn unit-add';
+    addV.textContent = '+ Add word';
+    addV.addEventListener('click', () => { unit.vocabulary.push({ en: '', ko: '', pos: '' }); markUnitDirty(); renderUnitBody(); focusLast('.unit-rows-vocab .unit-en'); });
+    body.appendChild(addV);
+  }
+
+  function focusLast(selector) {
+    const all = unitDialog.querySelectorAll(selector);
+    if (all.length) all[all.length - 1].focus();
+  }
+
+  function saveUnitView() {
+    const st = unitState;
+    if (!st) return;
+    const btn = unitDialog.querySelector('.unit-save');
+    const note = unitDialog.querySelector('.unit-note');
+    const next = JSON.parse(JSON.stringify(st.draft));
+    next.units = next.units.map((u) => Domain.cleanBreakdownUnit(u));
+    next.source = 'edited';
+    btn.disabled = true;
+    note.textContent = 'Saving…';
+    persistBreakdown(st.bookId, next, false).then((savedBreakdown) => {
+      st.dirty = false;
+      st.draft = JSON.parse(JSON.stringify(savedBreakdown || next));
+      note.textContent = 'Saved. Generate again to rebuild games from these lists.';
+      renderUnitView();
+      renderCurriculum();
+      fillGenerateForm();
+    }).catch((err) => {
+      btn.disabled = false;
+      note.textContent = err.message || String(err);
+    });
   }
 
   function fillActivityChecks(bookId) {
@@ -1743,13 +1977,17 @@
     const hint = els['gen-breakdown-hint'];
     if (!hint) return;
     var bookId = els['gen-book'].value;
+    if (els['gen-units-btn']) els['gen-units-btn'].hidden = !Domain.hasBreakdown(bookId);
     if (Domain.hasBreakdown(bookId)) {
       var b = Domain.getBreakdown(bookId);
       hint.textContent = 'Saved breakdown: ' + b.units.length + ' units, ' +
         Domain.countBreakdownWords(b) + ' words. ' +
         'Vocabulary / Team Match / Charades use these words directly. ' +
         'Jumping OX / Jeopardy use built-in packs unless you pick AI mode. ' +
-        'Sentence Scramble / Gap Fill / Writing Card Spinner use AI when a key is pasted, otherwise the grammar examples.';
+        'Sentence Scramble / Gap Fill / Writing Card Spinner use AI when a key is pasted, otherwise the grammar examples. ' +
+        'Every question must practise a word or grammar pattern from its own unit.';
+      var wrong = Domain.breakdownBookMismatch(Domain.getBook(bookId), b);
+      if (wrong) hint.textContent = 'Check the word list first: these pages look like ' + wrong + '. ' + hint.textContent;
     } else {
       hint.textContent = 'No saved breakdown for this book. ' +
         'Vocabulary / Team Match / Charades need Analyze + Save first (Curriculum tab). ' +
@@ -2510,6 +2748,9 @@
     if (els['gen-also-download']) els['gen-also-download'].addEventListener('change', onAlsoDownloadChanged);
     if (els['gen-change-folder-btn']) {
       els['gen-change-folder-btn'].addEventListener('click', onChangeOutputFolder);
+    }
+    if (els['gen-units-btn']) {
+      els['gen-units-btn'].addEventListener('click', () => openUnitView(els['gen-book'].value, 0));
     }
     els['gen-book'].addEventListener('change', () => {
       fillActivityChecks(els['gen-book'].value);
