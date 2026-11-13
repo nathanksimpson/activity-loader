@@ -85,6 +85,14 @@ The saved breakdown is a list of units, grammar points, and vocabulary extracted
 | Jumping OX / Jeopardy (AI mode) | Optional but recommended | AI prompt includes the full breakdown if saved; otherwise uses unit titles only |
 | Sentence Scramble, Gap Fill, Writing Card Spinner | **Yes — required** (unless a built-in pack exists) | With an API key: AI writes model sentences, a model passage with [blanks], and fill-in writing cards from the breakdown. Without a key: built from the breakdown's grammar examples. Built-in packs: The Best Writing Starter 1, 2 and 3 |
 
+## Unit grammar and vocabulary (what the games test)
+
+Every game question practises the unit's **target language**: the meaning of one of its words, or one of its grammar patterns. Questions never ask about details of the reading passage (who has what, colours, names), so a student who knows the words and patterns can answer without remembering the story.
+
+- On **2. Curriculum**, click **Units: grammar & vocab** on a parsed book (or **See unit grammar & vocab** on **3. Generate**). Pick a unit at the top, then check, fix, add or remove its grammar patterns and words. **Save changes**, then Generate again.
+- When the AI writes Jumping OX, Jeopardy, Sentence Scramble, Gap Fill or Writing Card items, any item that doesn't practise a word or pattern from **its own unit**, or leans on words from outside the unit, is thrown out.
+- If the pages you analyzed look like a different book than the card (for example Starter 3 pages on the Starter 2 card), the card shows a warning and Generate stops until you re-Analyze with the right PDF or click **This is the right book** in the unit view.
+
 ## Generate games
 
 1. Click **3. Generate**.
@@ -185,4 +193,5 @@ Or connect the repo in Cloudflare (Workers → activity-loader → Settings → 
 node tests/dev-server.mjs 8787         (the site on http://localhost:8787; admin / admin-pass)
 node tests/play-api-check.mjs          (server checks)
 node tests/play-browser-check.mjs      (browser checks; needs Google Chrome)
+node tests/unit-view-check.mjs         (unit view and wrong-book checks; needs Google Chrome)
 ```

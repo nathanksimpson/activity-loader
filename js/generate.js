@@ -651,18 +651,217 @@
     }).join('\n\n');
   }
 
+  // ---- Unit focus: every item practises a word or grammar pattern from its unit ----
+
+  function focusRules() {
+    return [
+      'FOCUS RULES (most important):',
+      '- Every item practises the target language of its unit: the MEANING of one word from that unit\'s Vocabulary list, or ONE pattern from that unit\'s Grammar list.',
+      '- A student who never read the book\'s story or model text must still be able to answer, using only word meaning and grammar. Never ask about details of a reading passage (names, colours, ages, what someone has, likes or does in the text). Never make an item wrong because it disagrees with the reading.',
+      '- Use only content words from that unit\'s Vocabulary list, plus very basic words (I, you, he, she, it, we, they, a, an, the, my, is, are, and, very, have, like, go). Do not bring in words, topics or grammar from other units or from outside the lists.',
+      '- Copy the word or grammar point being practised into "target", exactly as it is written in the lists.'
+    ].join('\n');
+  }
+
+  function normText(s) {
+    return String(s == null ? '' : s).toLowerCase().replace(/[‘’]/g, "'")
+      .replace(/[^a-z0-9' ]+/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function unitTargets(unit) {
+    return {
+      vocab: ((unit && unit.vocabulary) || []).map((w) => normText(w && w.en)).filter(Boolean),
+      grammar: ((unit && unit.grammar) || []).map((g) => normText(g && g.point)).filter(Boolean)
+    };
+  }
+
+  function vocabMatch(n, list) {
+    for (let i = 0; i < list.length; i++) {
+      const v = list[i];
+      if (n === v || n === v + 's' || n === v + 'es' || v === n + 's' || v === n + 'es') return v;
+    }
+    return '';
+  }
+
+  function grammarMatch(n, list) {
+    for (let i = 0; i < list.length; i++) {
+      const g = list[i];
+      if (n === g || (n.length >= 4 && (g.indexOf(n) >= 0 || n.indexOf(g) >= 0))) return g;
+    }
+    return '';
+  }
+
+  // The word (or a form of it) appears in the text.
+  function textHasWord(text, word) {
+    const t = ' ' + normText(text) + ' ';
+    const w = normText(word);
+    if (!w) return false;
+    if (t.indexOf(' ' + w + ' ') >= 0) return true;
+    const stem = w.length > 4 ? w.slice(0, w.length - 1) : w;
+    return t.indexOf(' ' + stem) >= 0;
+  }
+
+  // Everyday words any item may use on top of the unit lists (A1 function words and basics).
+  const BASIC_WORDS = (
+    'a an the and or but so if because not no yes very too also really just only much many more most some any all every each other another ' +
+    'i me my mine you your yours he him his she her hers it its we us our ours they them their theirs this that these those there here ' +
+    'who what where when why how which whose ' +
+    'am is are was were be been being do does did done have has had having can cant could will would should must may might shall ' +
+    "don't doesn't didn't isn't aren't wasn't weren't can't won't i'm you're he's she's it's we're they're i've let's " +
+    'to of in on at for with from by about up down out off over under into near next behind between after before around ' +
+    'go goes went come comes came get gets got make makes made take takes took see sees saw look looks looked say says said tell ' +
+    'like likes liked love loves want wants know knows think play plays played eat eats ate drink live lives give help put use ' +
+    'one two three four five six seven eight nine ten first last ' +
+    'good bad big small little new old nice happy sad great best favorite favourite fun ' +
+    'day days today week year years time morning night home school friend friends family people person thing things way ' +
+    'man woman boy girl child children mom dad mother father brother sister ' +
+    'now then always never often sometimes usually again well' +
+    ' something someone word words mean means meaning sentence correct right wrong same different kind called name'
+  ).split(/\s+/).reduce((o, w) => { if (w) o[w] = true; return o; }, {});
+
+  function wordForms(w) {
+    const out = [w];
+    if (/e$/.test(w)) out.push(w.slice(0, -1) + 'ing', w + 'd', w + 's');
+    if (/y$/.test(w)) out.push(w.slice(0, -1) + 'ies', w.slice(0, -1) + 'ied');
+    out.push(w + 's', w + 'es', w + 'ed', w + 'ing', w + "'s", w + w.slice(-1) + 'ing', w + w.slice(-1) + 'ed');
+    return out;
+  }
+
+  // Every word a unit's own lists use: its vocabulary, grammar points and examples, and title.
+  function unitWordSet(unit) {
+    const set = {};
+    const add = (text) => normText(text).split(' ').forEach((w) => {
+      if (!w) return;
+      wordForms(w).forEach((f) => { set[f] = true; });
+    });
+    add(unit && unit.title);
+    ((unit && unit.vocabulary) || []).forEach((w) => add(w && w.en));
+    ((unit && unit.grammar) || []).forEach((g) => { add(g && g.point); add(g && g.example); });
+    return set;
+  }
+
+  /** Words in the text that are neither in the unit's lists nor everyday basics. */
+  function offListWords(text, unitSet) {
+    return normText(text).split(' ').filter((w) => {
+      if (!w || /^\d+$/.test(w) || w.length < 3) return false;
+      const base = w.replace(/'s$/, '');
+      return !BASIC_WORDS[w] && !BASIC_WORDS[base] && !unitSet[w] && !unitSet[base];
+    });
+  }
+
+  /** 'vocab' | 'grammar' | '' (off target) */
+  function targetKind(target, text, targets) {
+    const n = normText(target);
+    if (!n) return '';
+    const v = vocabMatch(n, targets.vocab);
+    if (v) return (text == null || textHasWord(text, v)) ? 'vocab' : '';
+    if (grammarMatch(n, targets.grammar)) return 'grammar';
+    return '';
+  }
+
+  /**
+   * An item is kept only if it practises one of its unit's words or grammar points AND
+   * does not lean on words from outside the unit. Grammar sentences must be built from
+   * unit vocabulary (at most one outside word); meaning items may use a few simple
+   * defining words, but must still name a unit word.
+   */
+  function itemOnUnit(item, text, unit, targets, unitSet, opts) {
+    const kind = targetKind(item && item.target, text, targets);
+    if (!kind) return false;
+    if (text == null) return true;
+    const extra = offListWords(text, unitSet);
+    if (kind === 'grammar') {
+      const usesUnitWord = targets.vocab.some((v) => textHasWord(text, v));
+      return (usesUnitWord || !targets.vocab.length) && extra.length <= 1;
+    }
+    return extra.length <= ((opts && opts.definitionWords) || 4);
+  }
+
+  function findBreakdownUnit(breakdown, title, index) {
+    const units = (breakdown && breakdown.units) || [];
+    const n = normText(title).replace(/^unit \d+ /, '');
+    let hit = null;
+    if (n) {
+      hit = units.find((u) => normText(u.title).replace(/^unit \d+ /, '') === n) ||
+        units.find((u) => { const t = normText(u.title); return t.indexOf(n) >= 0 || n.indexOf(t.replace(/^unit \d+ /, '')) >= 0; });
+    }
+    return hit || (typeof index === 'number' ? units[index] : null) || null;
+  }
+
+  /**
+   * Drops AI items that don't practise a word or grammar point from their own unit.
+   * Returns how many were dropped. Without a breakdown there is nothing to check against.
+   */
+  function keepUnitFocus(activityId, pack, breakdown) {
+    if (!breakdown || !Array.isArray(breakdown.units) || !breakdown.units.length) return 0;
+    let dropped = 0;
+    const keep = (list, unit, textOf, opts) => {
+      const t = unitTargets(unit);
+      if (!t.vocab.length && !t.grammar.length) return list;
+      const set = unitWordSet(unit);
+      return (list || []).filter((item) => {
+        const ok = itemOnUnit(item, textOf(item), unit, t, set, opts);
+        if (!ok) dropped += 1;
+        return ok;
+      });
+    };
+    if (activityId === 'jumpingOx') {
+      const units = pack.units || {};
+      Object.keys(units).forEach((k, i) => {
+        const u = units[k];
+        const bu = findBreakdownUnit(breakdown, u && u.title, i);
+        if (!bu || !u || !Array.isArray(u.questions)) return;
+        u.questions = keep(u.questions, bu, (q) => q.text);
+        u.description = u.questions.length + ' questions';
+      });
+    } else if (activityId === 'jeopardy') {
+      const units = pack.units || {};
+      Object.keys(units).forEach((k, i) => {
+        const bu = findBreakdownUnit(breakdown, k, i);
+        if (!bu || !Array.isArray(units[k])) return;
+        // Vocabulary clues: the answer is the word, so it is never in the clue text.
+        units[k] = keep(units[k], bu, (c) => (vocabMatch(normText(c.target), unitTargets(bu).vocab) ? c.a : c.q + ' ' + c.a));
+      });
+    } else if (activityId === 'sentenceScramble') {
+      (pack.units || []).forEach((u, i) => {
+        const bu = findBreakdownUnit(breakdown, u.name, i);
+        if (!bu) return;
+        u.sentences = keep(u.sentences, bu, (s) => s.text);
+      });
+    } else if (activityId === 'gapFill') {
+      (pack.units || []).forEach((u, i) => {
+        const bu = findBreakdownUnit(breakdown, u.name, i);
+        if (!bu) return;
+        u.lines = keep(u.lines, bu, (l) => l.text);
+      });
+    } else if (activityId === 'writingCards') {
+      const all = { vocab: [], grammar: [] };
+      breakdown.units.forEach((u) => { const t = unitTargets(u); all.vocab = all.vocab.concat(t.vocab); });
+      Object.keys(pack.pools || {}).forEach((k) => {
+        const before = pack.pools[k];
+        const after = before.filter((opt) => all.vocab.some((v) => textHasWord(opt, v)));
+        // Small closed sets like he/she or names stay as they are.
+        if (after.length >= 3) { dropped += before.length - after.length; pack.pools[k] = after; }
+      });
+    }
+    return dropped;
+  }
+
   function jumpingOxPrompt(book, cefr, breakdown) {
     const unitBlock = breakdown
       ? breakdownUnitText(breakdown)
       : (book.units || []).join('\n');
     return [
-      'Create classroom Jumping OX items for ' + book.title + ' at CEFR ' + cefr + '.',
-      'Use this book content. Prefer the grammar points and vocabulary below. Do not invent a different syllabus.',
+      'Create classroom Jumping OX items for ' + book.title + ' at CEFR ' + cefr + '. Students jump to O (true / correct) or X (false / wrong).',
+      'Use this book content. Do not invent a different syllabus.',
       unitBlock,
-      'Return JSON only: { "title": string, "cefr": "' + cefr + '", "units": { "1": { "title": string, "description": string, "questions": [ { "text": string, "correct": boolean, "explanation": string } ] } } }',
-      'Need exactly 10 questions per unit. At least 4 questions per unit must be wrong (correct: false).',
-      'Wrong sentences use typical learner errors for the grammar of that unit (is/are, have/has, 3rd person -s, like + -ing, can + base verb, word order, capitals).',
-      'Every item needs a short teacher explanation. Unit keys are "1","2",... Titles must match the unit titles above. No markdown.'
+      focusRules(),
+      'Return JSON only: { "title": string, "cefr": "' + cefr + '", "units": { "1": { "title": string, "description": string, "questions": [ { "kind": "vocab"|"grammar", "target": string, "text": string, "correct": boolean, "explanation": string } ] } } }',
+      'Need exactly 10 questions per unit: 5 vocab and 5 grammar. At least 4 per unit must be false (correct: false), mixed between both kinds.',
+      'vocab: a short statement about what one unit word means, using the word itself. True example: "A vet is a doctor for animals." False example: "Shy means you love to talk to new people." Wrong ones give a clearly wrong meaning, never a wrong fact from the reading.',
+      'grammar: one sentence that uses one unit grammar pattern with unit vocabulary. Wrong sentences contain exactly one typical learner error in THAT pattern (is/are, have/has, 3rd person -s, a/an, like + -ing, can + base verb, word order, prepositions). Correct sentences are natural, simple English.',
+      'explanation: one short teacher line. For vocab, give the real meaning and the Korean word. For grammar, show the correct sentence and name the pattern.',
+      'Unit keys are "1","2",... Titles must match the unit titles above. No markdown.'
     ].join('\n');
   }
 
@@ -672,48 +871,55 @@
       : (book.units || []).join('\n');
     return [
       'Create Jeopardy review clues for ' + book.title + ' at CEFR ' + cefr + '.',
-      'Use this book content. Answers should be the vocabulary words when possible.',
+      'Use this book content. Do not invent a different syllabus.',
       unitBlock,
-      'Return JSON only: { "title": string, "cefr": "' + cefr + '", "units": { "Unit name": [ { "q": string, "a": string } ] } }',
-      'Each unit needs exactly 15 items. q is a short child-friendly English definition. a is the book word or short phrase.',
+      focusRules(),
+      'Return JSON only: { "title": string, "cefr": "' + cefr + '", "units": { "Unit name": [ { "kind": "vocab"|"grammar", "target": string, "q": string, "a": string } ] } }',
+      'Each unit needs exactly 15 items: 10 vocab then 5 grammar, easiest first.',
+      'vocab: q is a short child-friendly English meaning of the word (never the word itself, never a detail from the reading). a is the unit word exactly as listed.',
+      'grammar: q is a sentence using the unit pattern with one blank ___ and the base word in brackets, e.g. "She ___ a pet cat. (have)". a is the correct form, e.g. "has". Only one answer may fit.',
       'Keys of units must match the unit titles above exactly. No markdown.'
     ].join('\n');
   }
 
   function sentenceScramblePrompt(book, cefr, breakdown) {
     return [
-      'Create Sentence Scramble items for ' + book.title + ' at CEFR ' + cefr + '. Students drag shuffled words back into order.',
-      'Use this book content. Each sentence must practise the grammar and vocabulary of its unit. Do not invent a different syllabus.',
+      'Create Sentence Scramble items for ' + book.title + ' at CEFR ' + cefr + '. Students drag shuffled words back into order, so the sentences train word order in the unit grammar patterns.',
+      'Use this book content. Do not invent a different syllabus.',
       breakdownUnitText(breakdown) || (book.units || []).join('\n'),
-      'Return JSON only: { "title": string, "units": [ { "name": string, "sentences": [string] } ] }',
-      'Need 8 to 10 sentences per unit, 4 to 10 words each, correct English with a capital letter and end punctuation.',
-      'Sentences should sound like the model writing a child would produce for that unit (first person, simple, concrete). Avoid duplicate sentences.',
-      'name must match the unit titles above exactly, in the same order. No markdown.'
+      focusRules(),
+      'Return JSON only: { "title": string, "units": [ { "name": string, "sentences": [ { "target": string, "text": string } ] } ] }',
+      'Need 8 to 10 sentences per unit, 4 to 10 words each, correct English with a capital letter and end punctuation. Every unit grammar point is used at least twice.',
+      'target is the grammar point the sentence practises. Each sentence also uses at least one unit vocabulary word. Do not retell the reading: write fresh, simple sentences a child could say about themselves, a friend or family.',
+      'Avoid duplicate sentences. name must match the unit titles above exactly, in the same order. No markdown.'
     ].join('\n');
   }
 
   function gapFillPrompt(book, cefr, breakdown) {
     return [
-      'Create one Model Writing passage per unit for a gap-fill review of ' + book.title + ' at CEFR ' + cefr + '.',
-      'Use this book content. Each passage is a short model text a student could write for that unit (a paragraph, letter or list), using its grammar and vocabulary.',
+      'Create a gap-fill review of the target words and grammar of ' + book.title + ' at CEFR ' + cefr + '. The game shows a word bank of the bracketed answers.',
+      'Use this book content. Do not invent a different syllabus.',
       breakdownUnitText(breakdown) || (book.units || []).join('\n'),
-      'Return JSON only: { "title": string, "units": [ { "name": string, "title": string, "lines": [string] } ] }',
-      'lines is the passage, one sentence per line, 8 to 14 lines. Use an empty string "" between paragraphs.',
-      'Wrap 5 to 8 target words or short phrases in square brackets, e.g. "My favorite [color] is purple." Brackets go around unit vocabulary or the key grammar word. Never bracket names, never more than one bracket per line unless it is a list.',
-      'name must match the unit titles above exactly, in the same order. title is a short passage title. No markdown.'
+      focusRules(),
+      'Return JSON only: { "title": string, "units": [ { "name": string, "title": string, "lines": [ { "target": string, "text": string } ] } ] }',
+      'lines: 8 to 12 separate sentences per unit (not a story). Each text has exactly ONE blank in square brackets, e.g. "A [vet] helps sick animals." or "My brother [has] a red bike."',
+      'Around two thirds of the blanks are unit vocabulary words; the rest are the key word of a unit grammar pattern (is/are, has, -s verb, a/an, preposition...). The bracket holds only that word.',
+      'Each sentence must give a clear meaning or grammar clue so that only one word from the bank fits. Never write a blank that could only be answered by remembering the reading.',
+      'name must match the unit titles above exactly, in the same order. title is a short title, e.g. "Words and patterns". No markdown.'
     ].join('\n');
   }
 
   function writingCardsPrompt(book, cefr, breakdown) {
     return [
       'Create fill-in writing frame cards (like textbook Writing Assignment Cards) for ' + book.title + ' at CEFR ' + cefr + '.',
-      'One card per unit, using that unit\'s grammar and vocabulary. Students say or write the card with their own words; the app can also spin random words into the blanks.',
+      'One card per unit. The card lines are the unit grammar patterns as sentence frames; the blanks are filled with unit vocabulary. Students say or write the card with their own words; the app can also spin random words into the blanks.',
       breakdownUnitText(breakdown) || (book.units || []).join('\n'),
+      'Only use grammar patterns and words from that unit. Do not copy the reading passage; the card is about the student.',
       'Return JSON only: { "title": string, "cards": [ { "title": string, "lines": [string] } ], "pools": { "category": [string] } }',
-      'Each card has 5 to 9 short lines. A blank is written {category} where category is a lowercase word, e.g. "My favorite color is {color}." Use 3 to 7 blanks per card.',
+      'Each card has 5 to 9 short lines and uses every grammar point of its unit at least once. A blank is written {category} where category is a lowercase word, e.g. "My favorite color is {color}." Use 3 to 7 blanks per card.',
       'To repeat the same answer later in the card, use {category#id}, e.g. "My best friend is {name#bf}." ... "{name#bf} is my best friend ever!"',
       'Pronouns that depend on he/she are written {He}, {he}, {his}, {him} (the app switches them).',
-      'Every category used must exist in pools with 6 to 10 short options that fit the sentence grammatically (include articles where needed). Prefer the unit vocabulary. Categories may be shared across cards.',
+      'Every category used must exist in pools with 6 to 10 short options that fit the sentence grammatically (include articles where needed). Pool options are unit vocabulary words. Categories may be shared across cards.',
       'Card titles are short, in Title Case. No markdown.'
     ].join('\n');
   }
@@ -798,9 +1004,23 @@
       pack.pools = pools;
       return pack;
     }
+    // Items arrive as { target, text } (older answers: plain strings, which have no target).
+    const asItem = (x) => (x && typeof x === 'object')
+      ? { target: String(x.target || ''), text: String(x.text || x.sentence || x.line || '') }
+      : { target: '', text: String(x == null ? '' : x) };
     pack.units = asList(pack.units).map((u) => (activityId === 'gapFill'
-      ? { name: String(u.name || u.title || ''), title: String(u.title || u.name || ''), lines: (u.lines || []).map((l) => String(l == null ? '' : l)) }
-      : { name: String(u.name || u.title || ''), sentences: (u.sentences || []).map(String) }));
+      ? { name: String(u.name || u.title || ''), title: String(u.title || u.name || ''), lines: (u.lines || []).map(asItem).filter((l) => l.text.trim()) }
+      : { name: String(u.name || u.title || ''), sentences: (u.sentences || []).map(asItem).filter((l) => l.text.trim()) }));
+    return pack;
+  }
+
+  // After the unit-focus check, the templates want plain strings.
+  function flattenWritingPack(activityId, pack) {
+    if (activityId === 'writingCards') return pack;
+    (pack.units || []).forEach((u) => {
+      if (activityId === 'gapFill') u.lines = (u.lines || []).map((l) => (l && typeof l === 'object' ? l.text : String(l)));
+      else u.sentences = (u.sentences || []).map((l) => (l && typeof l === 'object' ? l.text : String(l)));
+    });
     return pack;
   }
 
@@ -860,16 +1080,14 @@
     };
   }
 
+  // No AI: Jeopardy clues are the Korean meaning; the answer is the unit word.
   function cluesFromBreakdown(book, activityId, cefr, breakdown) {
     const units = {};
     (breakdown.units || []).forEach((unit) => {
       const list = [];
       (unit.vocabulary || []).forEach((w) => {
-        if (!w || !w.en) return;
-        list.push({
-          q: String(w.ko || ('What is “' + w.en + '”?')).trim(),
-          a: String(w.en).trim()
-        });
+        if (!w || !w.en || !w.ko) return;
+        list.push({ kind: 'vocab', target: String(w.en).trim(), q: String(w.ko).trim(), a: String(w.en).trim() });
       });
       if (list.length) units[String(unit.title || 'Unit')] = list;
     });
@@ -882,26 +1100,35 @@
     };
   }
 
+  // No AI: Jumping OX checks word meanings (word = Korean, true or swapped)
+  // and shows the unit's grammar examples as correct model sentences.
   function questionsFromBreakdown(book, activityId, cefr, breakdown) {
     const units = {};
     (breakdown.units || []).forEach((unit, i) => {
       const questions = [];
-      (unit.vocabulary || []).slice(0, 10).forEach((w) => {
-        if (!w || !w.en) return;
+      const words = (unit.vocabulary || []).filter((w) => w && w.en && w.ko);
+      words.slice(0, 8).forEach((w, j) => {
+        const others = words.filter((o) => o.ko !== w.ko);
+        const swap = j % 2 === 1 && others.length ? others[(j * 7) % others.length] : null;
         questions.push({
-          text: 'This word means: ' + (w.ko || w.en) + ' → ' + w.en,
-          correct: true,
-          explanation: 'Yes. ' + w.en + (w.ko ? ' = ' + w.ko : '')
+          kind: 'vocab',
+          target: w.en,
+          text: '\u201c' + w.en + '\u201d means ' + (swap ? swap.ko : w.ko) + '.',
+          correct: !swap,
+          explanation: (swap ? 'No. ' : 'Yes. ') + w.en + ' = ' + w.ko + (swap ? ' (' + swap.ko + ' = ' + swap.en + ')' : '')
         });
       });
-      (unit.grammar || []).slice(0, 4).forEach((g) => {
-        if (!g || !g.point) return;
+      unitExamples(unit).slice(0, 4).forEach((ex, j) => {
+        const g = (unit.grammar || [])[j] || (unit.grammar || [])[0] || {};
         questions.push({
-          text: String(g.example || g.point).trim(),
+          kind: 'grammar',
+          target: String(g.point || ''),
+          text: ex,
           correct: true,
-          explanation: String(g.point).trim()
+          explanation: 'Correct. Pattern: ' + String(g.point || '').trim()
         });
       });
+      if (!questions.length) return;
       units[String(i + 1)] = {
         title: String(unit.title || ('Unit ' + (i + 1))),
         description: questions.length + ' questions',
@@ -1062,9 +1289,15 @@
       if (!book.units || !book.units.length) {
         throw new Error('This book has no units yet. Analyze a PDF on the Curriculum tab first.');
       }
+      const wrongBook = breakdown && Domain.breakdownBookMismatch ? Domain.breakdownBookMismatch(book, breakdown) : '';
+      if (wrongBook) {
+        throw new Error('The saved word list for ' + book.title + ' looks like it came from ' + wrongBook +
+          ' pages, so its games would test the wrong units. On the Curriculum tab, open Units on this book to check it, then re-Analyze or click "This is the right book".');
+      }
 
       let pack;
       let source = 'builtin';
+      let offTarget = 0;
       const style = Domain.getSavedStyle ? Domain.getSavedStyle(activityId) : null;
 
       if (style) {
@@ -1089,6 +1322,8 @@
           ? sentenceScramblePrompt(book, cefr, breakdown)
           : (activityId === 'gapFill' ? gapFillPrompt(book, cefr, breakdown) : writingCardsPrompt(book, cefr, breakdown));
         pack = normalizeWritingPack(activityId, await callAiJson(provider, apiKey, model, prompt));
+        offTarget = keepUnitFocus(activityId, pack, breakdown);
+        flattenWritingPack(activityId, pack);
         pack.title = book.title + ' ' + activityLabel(activityId);
         pack.cefr = cefr;
         pack.bookId = bookId;
@@ -1100,6 +1335,14 @@
         }
         pack = writingPackFromBreakdown(book, activityId, cefr, breakdown);
         source = 'breakdown';
+      } else if ((activityId === 'jumpingOx' || activityId === 'jeopardy') && mode !== 'ai' && !this.hasBuiltinPack(bookId, activityId)) {
+        if (!breakdown) {
+          throw new Error('Analyze the book first (Curriculum tab), or paste an API key so AI can write the content.');
+        }
+        pack = activityId === 'jumpingOx'
+          ? questionsFromBreakdown(book, activityId, cefr, breakdown)
+          : cluesFromBreakdown(book, activityId, cefr, breakdown);
+        source = 'breakdown';
       } else if (mode === 'ai') {
         if (!apiKey) throw new Error('Paste an API key, or use a built-in pack.');
         if (typeof location !== 'undefined' && location.protocol === 'file:') {
@@ -1109,6 +1352,7 @@
           ? jumpingOxPrompt(book, cefr, breakdown)
           : jeopardyPrompt(book, cefr, breakdown);
         pack = await callAiJson(provider, apiKey, model, prompt);
+        offTarget = keepUnitFocus(activityId, pack, breakdown);
         pack.title = pack.title || (book.title + (activityId === 'jumpingOx' ? ' Jumping OX' : ' Review'));
         pack.cefr = cefr;
         pack.bookId = bookId;
@@ -1121,7 +1365,14 @@
         source = 'builtin';
       }
 
-      validatePack(activityId, pack);
+      try {
+        validatePack(activityId, pack);
+      } catch (err) {
+        if (offTarget) {
+          throw new Error(err.message + ' (' + offTarget + ' AI items were removed because they did not practise a word or grammar point from their unit. Try Generate again.)');
+        }
+        throw err;
+      }
       pack.bookId = bookId;
       pack.activityId = activityId;
       const html = bakeHtml(activityId, pack, bookId);
@@ -1130,6 +1381,7 @@
         pack: pack,
         html: html,
         source: source,
+        offTarget: offTarget,
         path: entryPath(bookId, activityId),
         filename: outputFileName(bookId, activityId),
         id: catalogId(bookId, activityId)
