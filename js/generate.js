@@ -659,7 +659,9 @@
       '- Every item practises the target language of its unit: the MEANING of one word from that unit\'s Vocabulary list, or ONE pattern from that unit\'s Grammar list.',
       '- A student who never read the book\'s story or model text must still be able to answer, using only word meaning and grammar. Never ask about details of a reading passage (names, colours, ages, what someone has, likes or does in the text). Never make an item wrong because it disagrees with the reading.',
       '- Use only content words from that unit\'s Vocabulary list, plus very basic words (I, you, he, she, it, we, they, a, an, the, my, is, are, and, very, have, like, go). Do not bring in words, topics or grammar from other units or from outside the lists.',
-      '- Copy the word or grammar point being practised into "target", exactly as it is written in the lists.'
+      '- Copy the word or grammar point being practised into "target", exactly as it is written in the lists.',
+      '- Every item has ONE definite answer that a student who knows the target language can be sure of, never a guess. Never write personal clues or statements ("I play this sport on weekends", "I want to buy these to read", "My favourite food is ..."): many answers could be true for "I", so they are guesses.',
+      '- A meaning clue says what kind of thing the word is AND a feature that fits only that word, so no other word in the unit (or in everyday English) also fits. Good: "A sport where two teams kick a ball into a goal." Bad: "A sport I play on weekends."'
     ].join('\n');
   }
 
@@ -740,6 +742,68 @@
     return set;
   }
 
+  const PERSONAL_START = /^(i|i'm|i've|my|we|we're|our|me)\b/i;
+
+  // ---- Definite answers for Jeopardy clues ----
+
+  /** "soccer" -> "s _ _ _ _ _", "RC car" -> "R _   c _ _" */
+  // level 0: first letter; 1: + last letter; 2: + second letter (used when two answers would share a hint)
+  function letterHint(answer, level) {
+    const lv = level || 0;
+    return String(answer || '').trim().split(/\s+/).map((w) => {
+      const letters = w.split('');
+      return letters.map((ch, i) => (i === 0 || (lv >= 1 && i === letters.length - 1) || (lv >= 2 && i === 1) || !/[a-z]/i.test(ch)) ? ch : '_').join(' ');
+    }).join('   ');
+  }
+
+  const HAS_HINT = /\(\s*\S\s(?:[_\S]\s?)*_/;
+  const isGrammarClue = (c) => /_{2,}/.test(String((c && c.q) || ''));
+
+  /**
+   * Makes every Jeopardy clue have one definite answer.
+   * - Meaning clues get a first-letter hint (with the last letter too if two answers in a unit would share a hint).
+   * - AI clues that are personal ("I play this sport...") or grammar clues without exactly one blank are dropped,
+   *   and the unit is topped up with Korean-meaning clues from the saved word list.
+   * Returns how many clues were dropped.
+   */
+  function makeCluesDefinitive(pack, breakdown, fromAi) {
+    let dropped = 0;
+    const units = (pack && pack.units) || {};
+    Object.keys(units).forEach((k, idx) => {
+      let list = Array.isArray(units[k]) ? units[k] : [];
+      if (fromAi) {
+        list = list.filter((c) => {
+          const q = String((c && c.q) || '').trim();
+          const a = String((c && c.a) || '').trim();
+          let ok = !!q && !!a;
+          if (ok && isGrammarClue(c)) ok = (q.match(/_{2,}/g) || []).length === 1;
+          else if (ok) ok = !PERSONAL_START.test(q) && normText(q).indexOf(normText(a)) < 0;
+          if (!ok) dropped += 1;
+          return ok;
+        });
+        const bu = findBreakdownUnit(breakdown, k, idx);
+        if (bu && list.length < 8) {
+          const used = list.map((c) => normText(c.a));
+          (bu.vocabulary || []).forEach((w) => {
+            if (list.length >= 8 || !w || !w.en || !w.ko || used.indexOf(normText(w.en)) >= 0) return;
+            list.push({ kind: 'vocab', target: String(w.en).trim(), q: 'Korean: ' + String(w.ko).trim(), a: String(w.en).trim() });
+            used.push(normText(w.en));
+          });
+        }
+      }
+      const meaning = list.filter((c) => !isGrammarClue(c) && !HAS_HINT.test(String(c.q || '')));
+      const levels = meaning.map(() => 0);
+      for (let round = 0; round < 2; round++) {
+        const counts = {};
+        meaning.forEach((c, i) => { const h = letterHint(c.a, levels[i]); counts[h] = (counts[h] || 0) + 1; });
+        meaning.forEach((c, i) => { if (counts[letterHint(c.a, levels[i])] > 1) levels[i] += 1; });
+      }
+      meaning.forEach((c, i) => { c.q = String(c.q).trim() + ' (' + letterHint(c.a, levels[i]) + ')'; });
+      units[k] = list;
+    });
+    return dropped;
+  }
+
   /** Words in the text that are neither in the unit's lists nor everyday basics. */
   function offListWords(text, unitSet) {
     return normText(text).split(' ').filter((w) => {
@@ -769,6 +833,8 @@
     const kind = targetKind(item && item.target, text, targets);
     if (!kind) return false;
     if (text == null) return true;
+    // "I like soccer" can't be marked O or X by meaning alone: it's only true for some people.
+    if (kind === 'vocab' && PERSONAL_START.test(String(text).trim())) return false;
     const extra = offListWords(text, unitSet);
     if (kind === 'grammar') {
       const usesUnitWord = targets.vocab.some((v) => textHasWord(text, v));
@@ -876,8 +942,8 @@
       focusRules(),
       'Return JSON only: { "title": string, "cefr": "' + cefr + '", "units": { "Unit name": [ { "kind": "vocab"|"grammar", "target": string, "q": string, "a": string } ] } }',
       'Each unit needs exactly 15 items: 10 vocab then 5 grammar, easiest first.',
-      'vocab: q is a short child-friendly English meaning of the word (never the word itself, never a detail from the reading). a is the unit word exactly as listed.',
-      'grammar: q is a sentence using the unit pattern with one blank ___ and the base word in brackets, e.g. "She ___ a pet cat. (have)". a is the correct form, e.g. "has". Only one answer may fit.',
+      'vocab: q is a short, child-friendly, dictionary-style English meaning that fits ONLY this word (never the word itself, never a detail from the reading, never an "I/my" sentence). Good: "A doctor for animals." / "Pages with a story that you read." Bad: "I want to buy these to read." a is the unit word exactly as listed. The game adds a first-letter hint by itself, so do not add one.',
+      'grammar: q is a sentence using the unit pattern with exactly one blank ___ and the base word in brackets, e.g. "She ___ a pet cat. (have)". a is the correct form, e.g. "has". The bracket and the grammar must leave only one possible answer.',
       'Keys of units must match the unit titles above exactly. No markdown.'
     ].join('\n');
   }
@@ -1087,7 +1153,7 @@
       const list = [];
       (unit.vocabulary || []).forEach((w) => {
         if (!w || !w.en || !w.ko) return;
-        list.push({ kind: 'vocab', target: String(w.en).trim(), q: String(w.ko).trim(), a: String(w.en).trim() });
+        list.push({ kind: 'vocab', target: String(w.en).trim(), q: 'Korean: ' + String(w.ko).trim(), a: String(w.en).trim() });
       });
       if (list.length) units[String(unit.title || 'Unit')] = list;
     });
@@ -1342,6 +1408,7 @@
         pack = activityId === 'jumpingOx'
           ? questionsFromBreakdown(book, activityId, cefr, breakdown)
           : cluesFromBreakdown(book, activityId, cefr, breakdown);
+        if (activityId === 'jeopardy') makeCluesDefinitive(pack, breakdown, false);
         source = 'breakdown';
       } else if (mode === 'ai') {
         if (!apiKey) throw new Error('Paste an API key, or use a built-in pack.');
@@ -1353,6 +1420,7 @@
           : jeopardyPrompt(book, cefr, breakdown);
         pack = await callAiJson(provider, apiKey, model, prompt);
         offTarget = keepUnitFocus(activityId, pack, breakdown);
+        if (activityId === 'jeopardy') offTarget += makeCluesDefinitive(pack, breakdown, true);
         pack.title = pack.title || (book.title + (activityId === 'jumpingOx' ? ' Jumping OX' : ' Review'));
         pack.cefr = cefr;
         pack.bookId = bookId;
@@ -1362,6 +1430,7 @@
         pack = await this.loadBuiltinPack(bookId, activityId);
         pack = clone(pack);
         pack.cefr = cefr;
+        if (activityId === 'jeopardy') makeCluesDefinitive(pack, null, false);
         source = 'builtin';
       }
 

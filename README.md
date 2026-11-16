@@ -91,6 +91,7 @@ Every game question practises the unit's **target language**: the meaning of one
 
 - On **2. Curriculum**, click **Units: grammar & vocab** on a parsed book (or **See unit grammar & vocab** on **3. Generate**). Pick a unit at the top, then check, fix, add or remove its grammar patterns and words. **Save changes**, then Generate again.
 - When the AI writes Jumping OX, Jeopardy, Sentence Scramble, Gap Fill or Writing Card items, any item that doesn't practise a word or pattern from **its own unit**, or leans on words from outside the unit, is thrown out.
+- Every question has one definite answer. Personal clues like "I play this sport on weekends" (any sport could be right) are thrown out and replaced with a Korean-meaning clue from the unit's word list. Every Jeopardy word clue gets a first-letter hint, e.g. `(s _ _ _ _ _)`; if two answers in a category would share a hint, more letters are shown.
 - If the pages you analyzed look like a different book than the card (for example Starter 3 pages on the Starter 2 card), the card shows a warning and Generate stops until you re-Analyze with the right PDF or click **This is the right book** in the unit view.
 
 ## Generate games
