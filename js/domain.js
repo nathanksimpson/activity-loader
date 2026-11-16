@@ -493,13 +493,49 @@
         units.push({ title: title, grammar: grammar, vocabulary: vocabulary });
       });
       if (!units.length) throw new Error('No units found.');
+      // The book card decides the title. What the AI read off the pages is kept
+      // separately so a wrong book (e.g. Starter 3 pages on the Starter 2 card) can be flagged.
+      const detected = String(raw.detectedTitle || raw.title || '').trim();
       return {
         bookId: book ? book.id : String(raw.bookId || ''),
-        title: String((raw.title || (book && book.title) || '')).trim(),
+        title: String(((book && book.title) || raw.title || '')).trim(),
+        detectedTitle: detected,
         cefr: cefr,
         source: raw.source || 'ai-upload',
         units: units,
         savedAt: Date.now()
+      };
+    },
+
+    /**
+     * If the pages behind a breakdown look like a different book than the card it is
+     * saved on, returns the title the pages show. Otherwise ''.
+     */
+    breakdownBookMismatch(book, breakdown) {
+      if (!book || !breakdown) return '';
+      const seen = String(breakdown.detectedTitle || breakdown.title || '').trim();
+      if (!seen) return '';
+      const norm = (s) => String(s).toLowerCase().replace(/^the\s+/, '').replace(/[^a-z0-9]+/g, ' ').trim();
+      const a = norm(book.title);
+      const b = norm(seen);
+      if (!a || !b || a === b) return '';
+      const num = (s) => (s.match(/\d+/g) || []).join(' ');
+      const words = (s) => s.replace(/\d+/g, ' ').split(' ').filter((w) => w.length > 2);
+      const shared = words(a).filter((w) => words(b).indexOf(w) >= 0).length;
+      // Same series, different number: the clearest sign of the wrong book.
+      if (shared && num(a) && num(b) && num(a) !== num(b)) return seen;
+      // Nothing in common at all.
+      if (!shared && words(b).length >= 2) return seen;
+      return '';
+    },
+
+    /** Tidy one unit from the unit view: trims fields, drops empty rows. */
+    cleanBreakdownUnit(unit) {
+      const u = unit || {};
+      return {
+        title: String(u.title || '').trim(),
+        grammar: (u.grammar || []).map((g) => ({ point: String((g && g.point) || '').trim(), example: String((g && g.example) || '').trim() })).filter((g) => g.point),
+        vocabulary: (u.vocabulary || []).map((w) => ({ en: String((w && w.en) || '').trim(), ko: String((w && w.ko) || '').trim(), pos: String((w && w.pos) || '').trim() })).filter((w) => w.en)
       };
     },
 
